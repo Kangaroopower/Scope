@@ -31,7 +31,7 @@
 				$('#fr-ui').show('clip', 200);
 				window.FindReplace.active = true;
 				$('#fr-find-text').focus();
-				$('#fr-find-text').val() = window.FindReplace.GUI.getSelected();
+				document.getElementById('fr-find-text').value = window.FindReplace.GUI.getSelected();
 			}
 		};
  
