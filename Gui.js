@@ -31,6 +31,9 @@
 				$('#fr-ui').show('clip', 200);
 				window.FindReplace.active = true;
 				$('#fr-find-text').focus();
+			} else {
+				$('#fr-ui').show('clip', 200);
+				$('#fr-find-text').focus();
 				document.getElementById('fr-find-text').value = window.FindReplace.GUI.getSelected();
 			}
 		};
@@ -44,7 +47,6 @@
  
 		window.FindReplace.GUI.close = function () {
 			$('#fr-ui').hide('clip', 200);
-			window.FindReplace.active = false;
 		};
  
 		window.FindReplace.GUI.waitForJQueryUI = function() {
