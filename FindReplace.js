@@ -28,4 +28,6 @@ $('document').ready(function( ) {
 		window.FindReplace.registerModule = function (module) {
 			window.FindReplace.modules.push(module); 
 		};
+		
+	$(document).ready(window.FindReplace.init);
 });
