@@ -1,5 +1,5 @@
 // Find and Replace Actions
- 			window.FindReplace.Actions.replaceall = function () {
+ 		window.FindReplace.Actions.replaceall = function () {
 			var txtofind,
 				txtarea = $('textarea')[0].value,
 				rawtxtofind = $('#fr-find-text').val(),
@@ -9,9 +9,8 @@
 			} else {
 				txtofind = RegExp(rawtxtofind,'ig');
 			}
-			var thematches = txtarea.match(txtofind).length,
-			txtoreplace = $('#fr-replace-text').val();
-			txtarea = txtarea.replace(txtofind, txtoreplace);
+			var thematches = txtarea.match(txtofind).length;
+			$('textarea')[0].value = $('textarea')[0].value.replace(txtofind, txtoreplace);
 			$("#fr-status").html( thematches+' replacement(s) made!');
 		};
  
