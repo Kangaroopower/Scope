@@ -1,7 +1,7 @@
 // Find and Replace Actions
-  	window.FindReplace.Actions.replaceall = function () {
+ 			window.FindReplace.Actions.replaceall = function () {
 			var txtofind,
-				txtarea = $('textarea')[0].val(),
+				txtarea = $('textarea')[0].value,
 				rawtxtofind = $('#fr-find-text').val(),
 				txtoreplace = $('#fr-replace-text').val();
 			if ($('input#fr-cs').is(':checked')) {
@@ -17,7 +17,6 @@
  
 		window.FindReplace.Actions.replace = function () {
 			var txtofind,
-				txtarea = $('textarea')[0].val(),
 				rawtxtofind = $('#fr-find-text').val(),
 				txtoreplace = $('#fr-replace-text').val();
 			if ($('input#fr-cs').is(':checked')) {
@@ -25,7 +24,7 @@
 			} else {
 				txtofind = RegExp(rawtxtofind,'i');
 			}
-			txtarea = txtarea.replace(txtofind, txtoreplace);
+			$('textarea')[0].value = $('textarea')[0].value.replace(txtofind, txtoreplace);
 			$("#fr-status").html('One Replacement made.');
 		};
  
