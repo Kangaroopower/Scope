@@ -12,7 +12,7 @@ $('document').ready(function( ) {
  
 		/* Initialize the script */
 		window.FindReplace.init = function () {
-			importScriptURI('//ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js');
+	                importScriptURI('//ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js');
 			importScriptPage('textinputs_jquery.js', 'dev');
 			if (wgAction === "edit") {
 				if (skin !== "monobook") {
@@ -28,4 +28,22 @@ $('document').ready(function( ) {
 		};
 		
 	$(document).ready(window.FindReplace.init);
+	
+	var isCtrl = false;
+	$(document).keyup(function (e) {
+		if(e.which === 17) { 
+			isCtrl = false;
+		}
+	}).keydown(function (e) {
+		if(e.which === 17) { 
+                  isCtrl = true;
+                }
+		if(e.which === 32 && isCtrl === true) {
+			if (window.FindReplace.active === true) {
+				window.FindReplace.GUI.close();
+			} else {
+				window.FindReplace.GUI.initiate();
+			}
+		}
+	});
 });
