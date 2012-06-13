@@ -43,3 +43,4 @@ window.FindReplace.Actions.find = function () {
 	window.FindReplace.Shadow.regex = regex;
 	window.FindReplace.Shadow.synch();
 };
+window.FindReplace.registerModule("Actions");
