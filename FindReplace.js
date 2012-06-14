@@ -5,7 +5,7 @@ $('document').ready(function( ) {
 	}
 	//Base for functions
 	window.FindReplace = {
-		version: "2.29.7 Dev"
+		version: "2.29.8 Dev"
 		modules: [],
 		active: false
 	};
@@ -28,7 +28,7 @@ $('document').ready(function( ) {
 		};
 		
 	$(document).ready(window.FindReplace.init);
-	
+
 	var isCtrl = false;
 	$(document).keyup(function (e) {
 		if(e.which === 17) { 
@@ -36,14 +36,24 @@ $('document').ready(function( ) {
 		}
 	}).keydown(function (e) {
 		if(e.which === 17) { 
-                  isCtrl = true;
-                }
+			isCtrl = true;
+		}
 		if(e.which === 32 && isCtrl === true) {
 			if (window.FindReplace.active === true) {
 				window.FindReplace.GUI.close();
 			} else {
 				window.FindReplace.GUI.initiate();
 			}
+		}
+	});
+	$('input#fr-find-text').keyup(function (e) {
+		find();
+		window.FindReplace.Shadow.next();
+		// when Enter/Return are hit start a search:
+		if (!e.ctrlKey && (10 === e.which || 13 === e.which) && $(this).val().length) {
+			window.FindReplace.Shadow.next();
+		} else {
+			$(this).focus();
 		}
 	});
 });
