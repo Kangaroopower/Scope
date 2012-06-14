@@ -14,7 +14,7 @@ window.FindReplace.Actions.replaceall = function () {
 	if (thematches != "undefined") {
 		$("#fr-status").html( thematches+' replacement(s) made!');
 	} else {
-		$("#fr-status").html( 'No replacement(s) made!');
+		$("#fr-status").html( 'No replacements made!');
 	}
 };
  
