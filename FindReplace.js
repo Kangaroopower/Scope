@@ -5,7 +5,7 @@ $('document').ready(function( ) {
 	}
 	//Base for functions
 	window.FindReplace = {
-		version: "2.29.9 Dev"
+		version: "2.29.9.9 Dev"
 		modules: [],
 		active: false
 	};
@@ -28,7 +28,7 @@ $('document').ready(function( ) {
 		};
 		
 	$(document).ready(window.FindReplace.init);
-
+ 
 	var isCtrl = false;
 	$(document).keyup(function (e) {
 		if(e.which === 17) { 
@@ -48,7 +48,6 @@ $('document').ready(function( ) {
 	});
 	$('input#fr-find-text').keyup(function (e) {
 		window.FindReplace.Actions.find();
-		window.FindReplace.Shadow.next();
 		// when Enter/Return are hit start a search:
 		if (!e.ctrlKey && (10 === e.which || 13 === e.which) && $(this).val().length) {
 			window.FindReplace.Shadow.next();
