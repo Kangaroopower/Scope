@@ -34,9 +34,9 @@ window.FindReplace.Actions.replace = function () {
 window.FindReplace.Actions.find = function () {
 	var regex;
 	if ($('input#fr-cs').is(':checked')) {
-		regex = RegExp(rawtxtofind);
+		regex = RegExp(rawtxtofind, 'g');
 	} else {
-		regex = RegExp(rawtxtofind,'i');
+		regex = RegExp(rawtxtofind,'ig');
 	}
 	$('#fr-find-prev').attr('disabled', null === regex);
 	$('#fr-find-next').attr('disabled', null === regex);
