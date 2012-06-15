@@ -32,7 +32,8 @@ window.FindReplace.Actions.replace = function () {
 };
  
 window.FindReplace.Actions.find = function () {
-	var regex;
+	var regex,
+		rawtxtofind = $('#fr-find-text').val();
 	if ($('input#fr-cs').is(':checked')) {
 		regex = RegExp(rawtxtofind, 'g');
 	} else {
