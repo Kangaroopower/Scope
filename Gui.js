@@ -24,6 +24,8 @@ window.FindReplace.GUI.getSelected = function () {
 window.FindReplace.GUI.close = function () {
 	$('#fr-ui').hide('clip', 200);
 	window.FindReplace.active = false;
+	window.FindReplace.Shadow.regex = null;
+	window.FindReplace.Shadow.synch();
 };
  
 window.FindReplace.GUI.waitForJQueryUI = function() {
