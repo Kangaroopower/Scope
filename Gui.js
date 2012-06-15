@@ -6,6 +6,7 @@ window.FindReplace.GUI.initiate = function () {
 	$('#fr-ui').css({left: 0, top: 0});
 	window.FindReplace.GUI.waitForJQueryUI();
 	$('#fr-find-text').focus();
+	window.FindReplace.Shadow.init();
 	window.FindReplace.active =  true;
 	if (window.FindReplace.active !== false) {
 		document.getElementById('fr-find-text').value = window.FindReplace.GUI.getSelected();
