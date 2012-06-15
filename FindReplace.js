@@ -5,7 +5,7 @@ $('document').ready(function( ) {
 	}
 	//Base for functions
 	window.FindReplace = {
-		version: "2.29.8 Dev"
+		version: "2.29.8.7 Dev"
 		modules: [],
 		active: false
 	};
@@ -47,7 +47,7 @@ $('document').ready(function( ) {
 		}
 	});
 	$('input#fr-find-text').keyup(function (e) {
-		find();
+		window.FindReplace.Actions.find();
 		window.FindReplace.Shadow.next();
 		// when Enter/Return are hit start a search:
 		if (!e.ctrlKey && (10 === e.which || 13 === e.which) && $(this).val().length) {
