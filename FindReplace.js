@@ -5,14 +5,14 @@ $('document').ready(function( ) {
 	}
 	//Base for functions
 	window.FindReplace = {
-		version: "2.29.9.9.7 Dev"
+		version: "2.3 Dev"
 		modules: [],
 		active: false
 	};
  
 		/* Initialize the script */
 		window.FindReplace.init = function () {
-	                importScriptURI('//ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js');
+			importScriptURI('//ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js');
 			importScriptPage('textinputs_jquery.js', 'dev');
 			if (wgAction === "edit") {
 				if (skin !== "monobook") {
@@ -26,8 +26,6 @@ $('document').ready(function( ) {
 		window.FindReplace.registerModule = function (module) {
 			window.FindReplace.modules.push(module); 
 		};
-		
-	$(document).ready(window.FindReplace.init);
  
 	var isCtrl = false;
 	$(document).keyup(function (e) {
@@ -46,16 +44,6 @@ $('document').ready(function( ) {
 			}
 		}
 	});
-	if (window.FindReplace.active === true) {
-		$('input#fr-find-text').keyup(function (e) {
-			e.preventDefault();
-			window.FindReplace.Actions.find();
-			// when Enter/Return are hit start a search:
-			if (!e.ctrlKey && (10 === e.which || 13 === e.which) && $(this).val().length) {
-				window.FindReplace.Shadow.next();
-			} else {
-				$(this).focus();
-			}
-		});
-	}
+	
+	$(document).ready(window.FindReplace.init);
 });
