@@ -13,7 +13,7 @@ $(function( ) {
 	var m;
 	//Base for functions
 	window.FindReplace = {
-		version: "2.3.7 Dev",
+		version: "2.3.7.5 Dev",
 		editorloaded: false,
 		active: false,
 		GUI: {},
@@ -114,7 +114,6 @@ $(function( ) {
 			} else {
 				$("#fr-status").html( 'No replacements made!');
 			}
-			window.FindReplace.Shadow.synch();
 		};
  
 		window.FindReplace.Actions.replace = function () {
@@ -131,8 +130,7 @@ $(function( ) {
 				$("#fr-status").html( 'One replacement made!');
 			} else {
 				$("#fr-status").html( 'No replacements made!');
-			}
-			window.FindReplace.Shadow.synch();		
+			}		
 		};
  
 		window.FindReplace.Actions.find = function () {
