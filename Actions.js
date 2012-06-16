@@ -28,7 +28,7 @@ window.FindReplace.Actions.replace = function () {
 		txtofind = RegExp(rawtxtofind,'i');
 	}
 	$('textarea')[0].value = $('textarea')[0].value.replace(txtofind, txtoreplace);
-	if (thematches != "undefined") {
+	if ($('textarea')[0].value.match(txtofind).length != "undefined") {
 		$("#fr-status").html( 'One replacement made!');
 	} else {
 		$("#fr-status").html( 'No replacements made!');
