@@ -1,9 +1,8 @@
 /**
- * Find and Replace 
+ * Find and Replace
  * 
  * Complete version of FR script- does not contain register module function
  * TODO: Is regex, replace selected match
- *
 **/
 $(function( ) {
 	// Don't load twice...
@@ -14,7 +13,7 @@ $(function( ) {
 	var m;
 	//Base for functions
 	window.FindReplace = {
-		version: "2.3.4 Dev",
+		version: "2.3.5 Dev",
 		editorloaded: false,
 		active: false,
 		GUI: {},
@@ -115,6 +114,7 @@ $(function( ) {
 			} else {
 				$("#fr-status").html( 'No replacements made!');
 			}
+			window.FindReplace.Shadow.find();
 		};
  
 		window.FindReplace.Actions.replace = function () {
@@ -127,7 +127,12 @@ $(function( ) {
 				txtofind = RegExp(rawtxtofind,'i');
 			}
 			$('textarea')[0].value = $('textarea')[0].value.replace(txtofind, txtoreplace);
-			$("#fr-status").html('One Replacement made.');
+			if (thematches != "undefined") {
+				$("#fr-status").html( 'One replacement made!');
+			} else {
+				$("#fr-status").html( 'No replacements made!');
+			}
+			window.FindReplace.Shadow.find();		
 		};
  
 		window.FindReplace.Actions.find = function () {
@@ -261,5 +266,5 @@ $(function( ) {
 		}
 	});
 
-	$(document).ready(window.FindReplace.waitForEditor);;
+	$(document).ready(window.FindReplace.waitForEditor);
 });

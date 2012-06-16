@@ -16,6 +16,7 @@ window.FindReplace.Actions.replaceall = function () {
 	} else {
 		$("#fr-status").html( 'No replacements made!');
 	}
+	window.FindReplace.Shadow.find();
 };
  
 window.FindReplace.Actions.replace = function () {
@@ -28,7 +29,12 @@ window.FindReplace.Actions.replace = function () {
 		txtofind = RegExp(rawtxtofind,'i');
 	}
 	$('textarea')[0].value = $('textarea')[0].value.replace(txtofind, txtoreplace);
-	$("#fr-status").html('One Replacement made.');
+	if (thematches != "undefined") {
+		$("#fr-status").html( 'One replacement made!');
+	} else {
+		$("#fr-status").html( 'No replacements made!');
+	}
+	window.FindReplace.Shadow.find();
 };
  
 window.FindReplace.Actions.find = function () {
