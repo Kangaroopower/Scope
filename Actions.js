@@ -16,7 +16,7 @@ window.FindReplace.Actions.replaceall = function () {
 	} else {
 		$("#fr-status").html( 'No replacements made!');
 	}
-	window.FindReplace.Actions.find();
+	window.FindReplace.Shadow.synch();
 };
  
 window.FindReplace.Actions.replace = function () {
@@ -34,7 +34,7 @@ window.FindReplace.Actions.replace = function () {
 	} else {
 		$("#fr-status").html( 'No replacements made!');
 	}
-	window.FindReplace.Actions.find();
+	window.FindReplace.Shadow.synch();
 };
  
 window.FindReplace.Actions.find = function () {
