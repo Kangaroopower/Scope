@@ -5,7 +5,7 @@ $('document').ready(function( ) {
 	}
 	//Base for functions
 	window.FindReplace = {
-		version: "2.3.3 Dev"
+		version: "2.3.4 Dev"
 		modules: [],
 		active: false
 	};
@@ -61,5 +61,5 @@ $('document').ready(function( ) {
 		}
 	});
 
-	$(document).ready(window.waitForEditor);
+	$(document).ready(window.FindReplace.waitForEditor);
 });
