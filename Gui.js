@@ -20,8 +20,7 @@ window.FindReplace.GUI.initiate = function () {
 window.FindReplace.GUI.getSelected = function () {
 	$('textarea')[0].focus();
 	var sel = window.getSelection();
-	if (sel.start === sel.end) return '';
-	return sel.text;
+	return sel;
 };
  
 window.FindReplace.GUI.close = function () {

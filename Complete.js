@@ -13,7 +13,7 @@ $(function( ) {
 	var m;
 	//Base for functions
 	window.FindReplace = {
-		version: "2.3.8.5 Dev",
+		version: "2.3.9 Dev",
 		editorloaded: false,
 		active: false,
 		GUI: {},
@@ -77,8 +77,7 @@ $(function( ) {
 		window.FindReplace.GUI.getSelected = function () {
 			$('textarea')[0].focus();
 			var sel = window.getSelection();
-			if (sel.start === sel.end) return '';
-			return sel.text;
+			return sel;
 		};
  
 		window.FindReplace.GUI.close = function () {
