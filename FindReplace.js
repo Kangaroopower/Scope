@@ -5,7 +5,7 @@ $('document').ready(function( ) {
 	}
 	//Base for functions
 	window.FindReplace = {
-		version: "2.3 Dev"
+		version: "2.3.1 Dev"
 		modules: [],
 		active: false
 	};
@@ -18,10 +18,26 @@ $('document').ready(function( ) {
 				if (skin !== "monobook") {
 					$('span.cke_toolbar_expand').before('<a href="#" onclick="window.FindReplace.GUI.initiate();"><img title="Replace" src="http://images2.wikia.nocookie.net/__cb20120415071129/central/images/7/71/Replace.png"></a>');	
 				} else {
-					$('#toolbar').append('<a href="#" onclick="window.FindReplace.GUI.initiate();"><img title="Replace" src="http://images2.wikia.nocookie.net/__cb20120415071129/central/images/7/71/Replace.png"></a>');
+					if (window.FindReplace.editorloaded = true) {
+						$('#toolbar').append('<a href="#" onclick="window.FindReplace.GUI.initiate();"><img title="Replace" src="http://images2.wikia.nocookie.net/__cb20120415071129/central/images/7/71/Replace.png"></a>');
+					}
 				}
 			}
 		};
+
+		window.FindReplace.waitForEditor = function () {
+			if (typeof (WikiaEditor || WikiaEditor.getInstance || WikiaEditor.getInstance || WikiaEditor.getInstance() || WikiaEditor.getInstance().mode) == 'undefined'  ||
+            WikiaEditor.getInstance().mode !== 'source') {
+            	window.setTimeout(function () {
+                	console.log('waiting...');
+                	waitForEditor();
+            	}, 500);
+           	 return;
+        	} else {
+        		window.FindReplace.editorloaded = true;
+        		window.FindReplace.init();
+        	}
+		}
 
 		window.FindReplace.registerModule = function (module) {
 			window.FindReplace.modules.push(module); 
@@ -44,6 +60,6 @@ $('document').ready(function( ) {
 			}
 		}
 	});
-	
-	$(document).ready(window.FindReplace.init);
+
+	$(document).ready(window.waitForEditor);
 });
