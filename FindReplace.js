@@ -5,7 +5,7 @@ $('document').ready(function( ) {
 	}
 	//Base for functions
 	window.FindReplace = {
-		version: "2.3.1 Dev"
+		version: "2.3.2 Dev"
 		modules: [],
 		active: false
 	};
@@ -30,7 +30,7 @@ $('document').ready(function( ) {
             WikiaEditor.getInstance().mode !== 'source') {
             	window.setTimeout(function () {
                 	console.log('waiting...');
-                	waitForEditor();
+                	window.FindReplace.waitForEditor();
             	}, 500);
            	 return;
         	} else {
