@@ -5,7 +5,7 @@ $('document').ready(function( ) {
 	}
 	//Base for functions
 	window.FindReplace = {
-		version: "2.29.9.9.6 Dev"
+		version: "2.29.9.9.7 Dev"
 		modules: [],
 		active: false
 	};
@@ -46,13 +46,16 @@ $('document').ready(function( ) {
 			}
 		}
 	});
-	$('input#fr-find-text').keyup(function (e) {
-		window.FindReplace.Actions.find();
-		// when Enter/Return are hit start a search:
-		if (!e.ctrlKey && (10 === e.which || 13 === e.which) && $(this).val().length) {
-			window.FindReplace.Shadow.next();
-		} else {
-			$(this).focus();
-		}
-	});
+	if (window.FindReplace.active === true) {
+		$('input#fr-find-text').keyup(function (e) {
+			e.preventDefault();
+			window.FindReplace.Actions.find();
+			// when Enter/Return are hit start a search:
+			if (!e.ctrlKey && (10 === e.which || 13 === e.which) && $(this).val().length) {
+				window.FindReplace.Shadow.next();
+			} else {
+				$(this).focus();
+			}
+		});
+	}
 });
