@@ -5,7 +5,7 @@ $('document').ready(function( ) {
 	}
 	//Base for functions
 	window.FindReplace = {
-		version: "2.3.2 Dev"
+		version: "2.3.3 Dev"
 		modules: [],
 		active: false
 	};
@@ -18,7 +18,7 @@ $('document').ready(function( ) {
 				if (skin !== "monobook") {
 					$('span.cke_toolbar_expand').before('<a href="#" onclick="window.FindReplace.GUI.initiate();"><img title="Replace" src="http://images2.wikia.nocookie.net/__cb20120415071129/central/images/7/71/Replace.png"></a>');	
 				} else {
-					if (window.FindReplace.editorloaded = true) {
+					if (window.FindReplace.editorloaded === true) {
 						$('#toolbar').append('<a href="#" onclick="window.FindReplace.GUI.initiate();"><img title="Replace" src="http://images2.wikia.nocookie.net/__cb20120415071129/central/images/7/71/Replace.png"></a>');
 					}
 				}
