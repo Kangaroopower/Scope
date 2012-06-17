@@ -5,7 +5,7 @@ $('document').ready(function( ) {
 	}
 	//Base for functions
 	window.FindReplace = {
-		version: "2.42 Dev"
+		version: "2.44.5 Dev"
 		modules: [],
 		active: false
 	};
