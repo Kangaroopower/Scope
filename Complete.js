@@ -2,7 +2,7 @@
  * Find and Replace
  * 
  * Complete version of FR script
- * TODO: Is regex, replace selected match
+ * TODO: replace selected match, shadow breaks when vertical scrollbar shows up
 **/
 $(function( ) {
 	// Don't load twice...
@@ -13,7 +13,7 @@ $(function( ) {
 	var m;
 	//Base for functions
 	window.FindReplace = {
-		version: "2.3.9 Dev",
+		version: "2.42 Dev",
 		editorloaded: false,
 		active: false,
 		GUI: {},
@@ -42,14 +42,14 @@ $(function( ) {
 				}
 			}
 		};
-
+ 
 		window.FindReplace.waitForEditor = function () {
-			if (typeof (WikiaEditor || WikiaEditor.getInstance || WikiaEditor.getInstance || WikiaEditor.getInstance() || WikiaEditor.getInstance().mode) == 'undefined'  ||WikiaEditor.getInstance().mode !== 'source') {
+			if (typeof (WikiaEditor || WikiaEditor.getInstance || WikiaEditor.getInstance ||WikiaEditor.getInstance() || WikiaEditor.getInstance().mode) == 'undefined'  ||WikiaEditor.getInstance().mode !== 'source') {
 				window.setTimeout(function () {
 					console.log('waiting...');
 						window.FindReplace.waitForEditor();
 					}, 500);
-					return;
+				return;
 			} else {
 				window.FindReplace.editorloaded = true;
 				window.FindReplace.init();
@@ -60,7 +60,7 @@ $(function( ) {
 		window.FindReplace.GUI.initiate = function () {
 			if (window.FindReplace.active !== true) {
 				window.FindReplace.active =  true;
-				var popupHTML = '<div id="fr-ui" style="display:none;z-index: 1000;background-color: white;padding: 4px;border: 1px solid rgb(170, 170, 170);border-top-left-radius: 6px;border-top-right-radius: 6px;border-bottom-right-radius: 6px;border-bottom-left-radius: 6px;text-align: left;font-size: 11px;color: black;display: block;position: absolute;top: 244px;left: 207px;" class="ui-draggable"><form action="#" method="get"><div style="font-weight: bold;border-bottom: 1px solid #aaaaaa;padding: 4px;"><span id="fr-title">Find and Replace</span><span style="float:right;text-transform:none;"><a title="Synch textarea contents" href=#" onclick="window.FindReplace.Shadow.synch();"><i class="icon-refresh"></i></a>&nbsp;&nbsp;<a href=#" onclick="window.FindReplace.GUI.close();"><i class="icon-remove"></i></a></span></div><div><div style="display: inline-block;padding: 4px;vertical-align: middle;"><div style="margin: 4px auto;"><div style="display: inline-block;width: 4em;">Find:</div><input id="fr-find-text" size="60" type="text"></div><div style="margin: 4px auto;"><div style="display: inline-block;width: 4em;">Replace:</div><input id="fr-replace-text" size="60" type="text" style="background-color: rgb(255, 255, 255);"></div><div style="margin: 14px auto 0;">Case Sensitive<input id="fr-cs" checked="" style="position: relative; top: 3px; " type="checkbox">&nbsp; | &nbsp;Regex<input id="fr-reg" checked="" style="position: relative; top: 3px; " type="checkbox"></div></div><div style="display: inline-block;padding: 4px;width: 110px;vertical-align: middle;"><input style="width: 100px;font-size: 10px;margin-bottom: 4px;" id="fr-replace" type="button" onclick="window.FindReplace.Actions.replace()" value="Replace"><input style="width: 100px;font-size: 10px;margin-bottom: 4px;" id="fr-replace-all" type="button" onclick="window.FindReplace.Actions.replaceall()" value="Replace All"><input style="width: 100px;font-size: 10px;margin-bottom: 4px;" id="fr-find-prev" type="button" onclick="window.FindReplace.Shadow.prev();" value="Find Previous"><input style="width: 100px;font-size: 10px;margin-bottom: 4px;" id="fr-find-next" type="button" onclick="window.FindReplace.Shadow.next();" value="Find Next"></div></div><div id="fr-status" style="text-align:center; font-weight: bold;border-top: 1px solid #aaaaaa;padding: 4px;">&nbsp;</div></form></div>';
+				var popupHTML = '<div id="fr-ui" style="display:none;z-index: 1000;background-color: white;padding: 4px;border: 1px solid rgb(170, 170, 170);border-top-left-radius: 6px;border-top-right-radius: 6px;border-bottom-right-radius: 6px;border-bottom-left-radius: 6px;text-align: left;font-size: 11px;color: black;display: block;position: absolute;top: 244px;left: 207px;" class="ui-draggable"><form action="#" method="get"><div style="font-weight: bold;border-bottom: 1px solid #aaaaaa;padding: 4px;"><span id="fr-title">Find and Replace</span><span style="float:right;text-transform:none;"><a title="Synch textarea contents" href=#" onclick="window.FindReplace.Shadow.synch();"><i class="icon-refresh"></i></a>&nbsp;&nbsp;<a href=#" onclick="window.FindReplace.GUI.close();"><i class="icon-remove"></i></a></span></div><div><div style="display: inline-block;padding: 4px;vertical-align: middle;"><div style="margin: 4px auto;"><div style="display: inline-block;width: 4em;">Find:</div><input id="fr-find-text" size="60" type="text"></div><div style="margin: 4px auto;"><div style="display: inline-block;width: 4em;">Replace:</div><input id="fr-replace-text" size="60" type="text" style="background-color: rgb(255, 255, 255);"></div><div style="margin: 14px auto 0;">Case Sensitive<input id="fr-cs" checked="" style="position: relative; top: 3px; " type="checkbox">&nbsp; | &nbsp;Regex<input id="fr-reg" checked="" style="position: relative; top: 3px; " type="checkbox"></div></div><div style="display: inline-block;padding: 4px;width: 110px;vertical-align: middle;"><input style="width: 100px;font-size: 10px;margin-bottom: 4px;" id="fr-replace" type="button" onclick="window.FindReplace.Actions.evaluate()" value="Replace"><input style="width: 100px;font-size: 10px;margin-bottom: 4px;" id="fr-replace-all" type="button" onclick="window.FindReplace.Actions.evaluate(\'rall\')" value="Replace All"><input style="width: 100px;font-size: 10px;margin-bottom: 4px;" id="fr-find-prev" type="button" onclick="window.FindReplace.Shadow.prev();" value="Find Previous"><input style="width: 100px;font-size: 10px;margin-bottom: 4px;" id="fr-find-next" type="button" onclick="window.FindReplace.Shadow.next();" value="Find Next"></div></div><div id="fr-status" style="text-align:center; font-weight: bold;border-top: 1px solid #aaaaaa;padding: 4px;">&nbsp;</div></form></div>';
 				$( '#editform' ).prepend(popupHTML);
 				$('#fr-ui').show('clip', 180);
 				$('#fr-ui').css({left: 0, top: 0});
@@ -96,35 +96,22 @@ $(function( ) {
 		};
  
 		// Find and Replace Module
-		window.FindReplace.Actions.replaceall = function () {
-			var txtofind,
-				txtarea = $('textarea')[0].value,
-				rawtxtofind = $('#fr-find-text').val(),
-				txtoreplace = $('#fr-replace-text').val();
-			if ($('input#fr-cs').is(':checked')) {
-				txtofind = RegExp(rawtxtofind, 'g');
-			} else {
-				txtofind = RegExp(rawtxtofind,'ig');
-			}
-			$('textarea')[0].value = $('textarea')[0].value.replace(txtofind, txtoreplace);
-			if (txtarea.match(txtofind).length != "undefined") {
+		window.FindReplace.Actions.replaceall = function (reg) {
+			var txtoreplace = $('#fr-replace-text').val(),
+				thematches = $('textarea')[0].value.match(reg).length;
+			$('textarea')[0].value = $('textarea')[0].value.replace(reg, txtoreplace);
+			if (thematches != "undefined") {
 				$("#fr-status").html( thematches+' replacement(s) made!');
 			} else {
 				$("#fr-status").html( 'No replacements made!');
 			}
 		};
  
-		window.FindReplace.Actions.replace = function () {
-			var txtofind,
-				rawtxtofind = $('#fr-find-text').val(),
-				txtoreplace = $('#fr-replace-text').val();
-			if ($('input#fr-cs').is(':checked')) {
-				txtofind = RegExp(rawtxtofind);
-			} else {
-				txtofind = RegExp(rawtxtofind,'i');
-			}
-			$('textarea')[0].value = $('textarea')[0].value.replace(txtofind, txtoreplace);
-			if ($('textarea')[0].value.match(txtofind).length != "undefined") {
+		window.FindReplace.Actions.replaceone = function (reg) {
+			var txtoreplace = $('#fr-replace-text').val(),
+				thematches =  $('textarea')[0].value.match(reg).length;
+			$('textarea')[0].value = $('textarea')[0].value.replace(reg, txtoreplace);
+			if (thematches != "undefined") {
 				$("#fr-status").html( 'One replacement made!');
 			} else {
 				$("#fr-status").html( 'No replacements made!');
@@ -134,15 +121,71 @@ $(function( ) {
 		window.FindReplace.Actions.find = function () {
 			var regex,
 				rawtxtofind = $('#fr-find-text').val();
-			if ($('input#fr-cs').is(':checked')) {
-				regex = RegExp(rawtxtofind, 'g');
+			if ($('input#fr-reg').is(':checked')) {
+				if ($('input#fr-cs').is(':checked')) {
+					regex = RegExp(rawtxtofind, 'g');
+				} else {
+					regex = RegExp(rawtxtofind,'ig');
+				}
 			} else {
-				regex = RegExp(rawtxtofind,'ig');
+				if ($('input#fr-cs').is(':checked')) {
+					regex = RegExp(window.FindReplace.Actions.escape(rawtxtofind), 'g');
+				} else {
+					regex = RegExp(window.FindReplace.Actions.escape(rawtxtofind),'ig');
+				}				
 			}
 			$('#fr-find-prev').attr('disabled', null === regex);
 			$('#fr-find-next').attr('disabled', null === regex);
 			window.FindReplace.Shadow.regex = regex;
 			window.FindReplace.Shadow.synch(); 
+		};
+ 
+		window.FindReplace.Actions.evaluate = function (rall) {
+			var regex,
+				rawtxtofind = $('#fr-find-text').val();
+			if ($('input#fr-reg').is(':checked')) {
+				if (rall != undefined) {
+					if ($('input#fr-cs').is(':checked')) {
+						regex = RegExp(rawtxtofind, 'g');
+						window.FindReplace.Actions.replaceall(regex);
+					} else {
+						regex = RegExp(rawtxtofind,'ig');
+						window.FindReplace.Actions.replaceall(regex);
+					}					
+				} else {
+					if ($('input#fr-cs').is(':checked')) {
+						regex = RegExp(rawtxtofind);
+						window.FindReplace.Actions.replaceone(regex);
+					} else {
+						regex = RegExp(rawtxtofind,'i');
+						window.FindReplace.Actions.replaceone(regex);
+					}					
+				}
+			} else {
+				var txtofind;
+				if (rall != undefined) {
+					txtofind = window.FindReplace.Actions.escape(rawtxtofind);
+					if ($('input#fr-cs').is(':checked')) {
+						regex = RegExp(txtofind);
+						window.FindReplace.Actions.replaceone(regex, 'g');
+					} else {
+						regex = RegExp(txtofind, 'ig');
+						window.FindReplace.Actions.replaceone(regex);
+					}
+				} else {
+					if ($('input#fr-cs').is(':checked')) {
+						regex = RegExp(txtofind);
+						window.FindReplace.Actions.replaceone(regex);
+					} else {
+						regex = RegExp(txtofind, 'i');
+						window.FindReplace.Actions.replaceone(regex);
+					}
+				}				
+			}
+		};
+ 
+		window.FindReplace.Actions.escape = function (s) {
+			return s.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
 		};
  
 		/* Shadow Module */
@@ -243,7 +286,7 @@ $(function( ) {
 			}
 			window.FindReplace.Shadow.highlight(p);
 		};
-
+ 
 	var isCtrl = false;
 	$(document).keyup(function (e) {
 		if(e.which === 17) { 
@@ -261,6 +304,6 @@ $(function( ) {
 			}
 		}
 	});
-
+ 
 	if (wgAction === 'edit') $(document).ready(window.FindReplace.waitForEditor);
 });
