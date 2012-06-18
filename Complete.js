@@ -13,8 +13,10 @@ $(function( ) {
 	var m;
 	//Base for functions
 	window.FindReplace = {
-		version: "2.42 Dev",
+		version: "2.1.5",
 		editorloaded: false,
+		TextInputsLoaded: false,
+		jQueryUILoaded: false,
 		active: false,
 		GUI: {},
 		Actions: {},
@@ -29,29 +31,45 @@ $(function( ) {
  
 		/* Initialize the script */
 		window.FindReplace.init = function () {
-			importStylesheetURI('http://kangaroopower.x10.mx/css/font-awesome.css');
-			importScriptURI('//ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js');
-			importScriptPage('textinputs_jquery.js', 'dev');
-			if (wgAction === "edit") {
-				if (skin !== "monobook") {
-					$('span.cke_toolbar_expand').before('<a href="#" onclick="window.FindReplace.GUI.initiate();"><img title="Replace" src="http://images2.wikia.nocookie.net/__cb20120415071129/central/images/7/71/Replace.png"></a>');	
-				} else {
-					if (window.FindReplace.editorloaded === true) {
-						$('#toolbar').append('<a href="#" onclick="window.FindReplace.GUI.initiate();"><img title="Replace" src="http://images2.wikia.nocookie.net/__cb20120415071129/central/images/7/71/Replace.png"></a>');
-					}
-				}
+			if (skin !== "monobook") {
+				$('span.cke_toolbar_expand').before('<a href="#" onclick="window.FindReplace.GUI.initiate();"><img title="Replace" src="http://images2.wikia.nocookie.net/__cb20120415071129/central/images/7/71/Replace.png"></a>');	
+			} else {
+					$('#toolbar').append('<a href="#" onclick="window.FindReplace.GUI.initiate();"><img title="Replace" src="http://images2.wikia.nocookie.net/__cb20120415071129/central/images/7/71/Replace.png"></a>');
 			}
+			console.log('Loaded: FindReplace');
 		};
  
 		window.FindReplace.waitForEditor = function () {
-			if (typeof (WikiaEditor || WikiaEditor.getInstance || WikiaEditor.getInstance ||WikiaEditor.getInstance() || WikiaEditor.getInstance().mode) == 'undefined'  ||WikiaEditor.getInstance().mode !== 'source') {
+			if (wgAction === "edit" ) {
+				if (typeof (WikiaEditor || WikiaEditor.getInstance || WikiaEditor.getInstance ||WikiaEditor.getInstance() || WikiaEditor.getInstance().mode) == 'undefined'  ||WikiaEditor.getInstance().mode !== 'source') {
+					window.setTimeout(function () {
+						console.log('waiting for editor...');
+							window.FindReplace.waitForEditor();
+						}, 500);
+					return;
+				} else {
+					window.FindReplace.editorloaded = true;
+					window.FindReplace.loadLibraries();
+				}
+			}
+		};
+
+		window.FindReplace.loadLibraries =  function () {
+			if (window.FindReplace.jQueryUILoaded !== true && window.FindReplace.TextInputsLoaded !== true) {
+				$.getScript('http://dev.wikia.com/index.php?title=textinputs_jquery.js&action=raw&ctype=text/javascript', function () {
+					console.log('FindReplace: Textinputs is ready');
+					window.FindReplace.TextInputsLoaded =  true;
+				});
+				$.getScript('https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js', function () {
+					console.log('FindReplace: Jquery UI is ready');
+					window.FindReplace.jQueryUILoaded = true;
+				});
+				importStylesheetURI('http://kangaroopower.x10.mx/css/font-awesome.css');
 				window.setTimeout(function () {
-					console.log('waiting...');
-						window.FindReplace.waitForEditor();
-					}, 500);
-				return;
+					console.log('waiting for libraries...');
+						window.FindReplace.loadLibraries();
+				}, 500);				
 			} else {
-				window.FindReplace.editorloaded = true;
 				window.FindReplace.init();
 			}
 		};
@@ -60,12 +78,13 @@ $(function( ) {
 		window.FindReplace.GUI.initiate = function () {
 			if (window.FindReplace.active !== true) {
 				window.FindReplace.active =  true;
-				var popupHTML = '<div id="fr-ui" style="display:none;z-index: 1000;background-color: white;padding: 4px;border: 1px solid rgb(170, 170, 170);border-top-left-radius: 6px;border-top-right-radius: 6px;border-bottom-right-radius: 6px;border-bottom-left-radius: 6px;text-align: left;font-size: 11px;color: black;display: block;position: absolute;top: 244px;left: 207px;" class="ui-draggable"><form action="#" method="get"><div style="font-weight: bold;border-bottom: 1px solid #aaaaaa;padding: 4px;"><span id="fr-title">Find and Replace</span><span style="float:right;text-transform:none;"><a title="Synch textarea contents" href=#" onclick="window.FindReplace.Shadow.synch();"><i class="icon-refresh"></i></a>&nbsp;&nbsp;<a href=#" onclick="window.FindReplace.GUI.close();"><i class="icon-remove"></i></a></span></div><div><div style="display: inline-block;padding: 4px;vertical-align: middle;"><div style="margin: 4px auto;"><div style="display: inline-block;width: 4em;">Find:</div><input id="fr-find-text" size="60" type="text"></div><div style="margin: 4px auto;"><div style="display: inline-block;width: 4em;">Replace:</div><input id="fr-replace-text" size="60" type="text" style="background-color: rgb(255, 255, 255);"></div><div style="margin: 14px auto 0;">Case Sensitive<input id="fr-cs" checked="" style="position: relative; top: 3px; " type="checkbox">&nbsp; | &nbsp;Regex<input id="fr-reg" checked="" style="position: relative; top: 3px; " type="checkbox"></div></div><div style="display: inline-block;padding: 4px;width: 110px;vertical-align: middle;"><input style="width: 100px;font-size: 10px;margin-bottom: 4px;" id="fr-replace" type="button" onclick="window.FindReplace.Actions.evaluate()" value="Replace"><input style="width: 100px;font-size: 10px;margin-bottom: 4px;" id="fr-replace-all" type="button" onclick="window.FindReplace.Actions.evaluate(\'rall\')" value="Replace All"><input style="width: 100px;font-size: 10px;margin-bottom: 4px;" id="fr-find-prev" type="button" onclick="window.FindReplace.Shadow.prev();" value="Find Previous"><input style="width: 100px;font-size: 10px;margin-bottom: 4px;" id="fr-find-next" type="button" onclick="window.FindReplace.Shadow.next();" value="Find Next"></div></div><div id="fr-status" style="text-align:center; font-weight: bold;border-top: 1px solid #aaaaaa;padding: 4px;">&nbsp;</div></form></div>';
+				var popupHTML = '<div id="fr-ui" style="display:none;z-index: 1000;background-color: white;padding: 4px;border: 1px solid rgb(170, 170, 170);border-top-left-radius: 6px;border-top-right-radius: 6px;border-bottom-right-radius: 6px;border-bottom-left-radius: 6px;text-align: left;font-size: 11px;color: black;display: block;position: absolute;top: 244px;left: 207px;" class="ui-draggable"><form action="#" method="get"><div style="font-weight: bold;border-bottom: 1px solid #aaaaaa;padding: 4px;"><span id="fr-title">Find and Replace</span><span style="float:right;text-transform:none;"><a title="Synch textarea contents" href=#" onclick="window.FindReplace.Actions.find();"><i class="icon-refresh"></i></a>&nbsp;&nbsp;<a href=#" onclick="window.FindReplace.GUI.close();"><i class="icon-remove"></i></a></span></div><div><div style="display: inline-block;padding: 4px;vertical-align: middle;"><div style="margin: 4px auto;"><div style="display: inline-block;width: 4em;">Find:</div><input id="fr-find-text" size="60" type="text"></div><div style="margin: 4px auto;"><div style="display: inline-block;width: 4em;">Replace:</div><input id="fr-replace-text" size="60" type="text" style="background-color: rgb(255, 255, 255);"></div><div style="margin: 14px auto 0;">Case Sensitive<input id="fr-cs" checked="" style="position: relative; top: 3px; " type="checkbox">&nbsp; | &nbsp;Regex<input id="fr-reg" style="position: relative; top: 3px; " type="checkbox"></div></div><div style="display: inline-block;padding: 4px;width: 110px;vertical-align: middle;"><input style="width: 100px;font-size: 10px;margin-bottom: 4px;" id="fr-replace" type="button" onclick="window.FindReplace.Actions.evaluate()" value="Replace"><input style="width: 100px;font-size: 10px;margin-bottom: 4px;" id="fr-replace-all" type="button" onclick="window.FindReplace.Actions.evaluate(\'rall\')" value="Replace All"><input style="width: 100px;font-size: 10px;margin-bottom: 4px;" id="fr-find-prev" type="button" onclick="window.FindReplace.Shadow.prev();" value="Find Previous"><input style="width: 100px;font-size: 10px;margin-bottom: 4px;" id="fr-find-next" type="button" onclick="window.FindReplace.Shadow.next();" value="Find Next"></div></div><div id="fr-status" style="text-align:center; font-weight: bold;border-top: 1px solid #aaaaaa;padding: 4px;">&nbsp;</div></form></div>';
 				$( '#editform' ).prepend(popupHTML);
 				$('#fr-ui').show('clip', 180);
 				$('#fr-ui').css({left: 0, top: 0});
 				window.FindReplace.GUI.waitForJQueryUI();
 				$('input#fr-find-text').keyup(window.FindReplace.Actions.find);
+				$('input#fr-cs').click(window.FindReplace.Actions.find);
 				$('#fr-find-text').focus();
 				window.FindReplace.Shadow.init();
 				if (window.FindReplace.active !== false) {
@@ -112,32 +131,36 @@ $(function( ) {
 				thematches =  $('textarea')[0].value.match(reg).length;
 			$('textarea')[0].value = $('textarea')[0].value.replace(reg, txtoreplace);
 			if (thematches != "undefined") {
-				$("#fr-status").html( 'One replacement made!');
+				$("#fr-status").html('One replacement/' + thematches);
 			} else {
-				$("#fr-status").html( 'No replacements made!');
+				$("#fr-status").html('No replacements made!');
 			}	
 		};
  
 		window.FindReplace.Actions.find = function () {
 			var regex,
 				rawtxtofind = $('#fr-find-text').val();
-			if ($('input#fr-reg').is(':checked')) {
-				if ($('input#fr-cs').is(':checked')) {
-					regex = RegExp(rawtxtofind, 'g');
+			if (rawtxtofind !== "") {
+				if ($('input#fr-reg').is(':checked')) {
+					if ($('input#fr-cs').is(':checked')) {
+						regex = RegExp(rawtxtofind, 'g');
+					} else {
+						regex = RegExp(rawtxtofind,'ig');
+					}
 				} else {
-					regex = RegExp(rawtxtofind,'ig');
+					if ($('input#fr-cs').is(':checked')) {
+						regex = RegExp(window.FindReplace.Actions.escape(rawtxtofind), 'g');
+					} else {
+						regex = RegExp(window.FindReplace.Actions.escape(rawtxtofind),'ig');
+					}				
 				}
 			} else {
-				if ($('input#fr-cs').is(':checked')) {
-					regex = RegExp(window.FindReplace.Actions.escape(rawtxtofind), 'g');
-				} else {
-					regex = RegExp(window.FindReplace.Actions.escape(rawtxtofind),'ig');
-				}				
+				regex = null;
 			}
 			$('#fr-find-prev').attr('disabled', null === regex);
 			$('#fr-find-next').attr('disabled', null === regex);
 			window.FindReplace.Shadow.regex = regex;
-			window.FindReplace.Shadow.synch(); 
+			window.FindReplace.Shadow.synch();
 		};
  
 		window.FindReplace.Actions.evaluate = function (rall) {
@@ -162,15 +185,14 @@ $(function( ) {
 					}					
 				}
 			} else {
-				var txtofind;
+				var txtofind = window.FindReplace.Actions.escape(rawtxtofind);
 				if (rall != undefined) {
-					txtofind = window.FindReplace.Actions.escape(rawtxtofind);
 					if ($('input#fr-cs').is(':checked')) {
-						regex = RegExp(txtofind);
-						window.FindReplace.Actions.replaceone(regex, 'g');
+						regex = RegExp(txtofind, 'g');
+						window.FindReplace.Actions.replaceall(regex);
 					} else {
 						regex = RegExp(txtofind, 'ig');
-						window.FindReplace.Actions.replaceone(regex);
+						window.FindReplace.Actions.replaceall(regex);
 					}
 				} else {
 					if ($('input#fr-cs').is(':checked')) {

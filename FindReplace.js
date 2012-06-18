@@ -1,3 +1,13 @@
+/**
+ * Find and Replace 2.0
+ * 
+ * Creates a Find and Replace Module
+ *
+ * @author Kangaroopower
+ * @Shadow author Pecoes
+ *
+ * Adapt loadlibrary for modules
+ */
 $('document').ready(function( ) {
   // Don't load twice...
 	if ( typeof window.FindReplace != 'undefined' && typeof window.Frdev == 'undefined') {
@@ -5,39 +15,60 @@ $('document').ready(function( ) {
 	}
 	//Base for functions
 	window.FindReplace = {
-		version: "2.44.5 Dev"
+		version: "2.1.5",
+		editorloaded: false,
+		TextInputsLoaded: false,
+		jQueryUILoaded: false,
 		modules: [],
 		active: false
 	};
  
 		/* Initialize the script */
 		window.FindReplace.init = function () {
-			importStylesheetURI('http://kangaroopower.x10.mx/css/font-awesome.css');
-			importScriptURI('//ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js');
-			importScriptPage('textinputs_jquery.js', 'dev');
-			if (wgAction === "edit") {
-				if (skin !== "monobook") {
-					$('span.cke_toolbar_expand').before('<a href="#" onclick="window.FindReplace.GUI.initiate();"><img title="Replace" src="http://images2.wikia.nocookie.net/__cb20120415071129/central/images/7/71/Replace.png"></a>');	
+			if (skin !== "monobook") {
+				$('span.cke_toolbar_expand').before('<a href="#" onclick="window.FindReplace.GUI.initiate();"><img title="Replace" src="http://images2.wikia.nocookie.net/__cb20120415071129/central/images/7/71/Replace.png"></a>');	
+			} else {
+					$('#toolbar').append('<a href="#" onclick="window.FindReplace.GUI.initiate();"><img title="Replace" src="http://images2.wikia.nocookie.net/__cb20120415071129/central/images/7/71/Replace.png"></a>');
+			}
+			console.log('Loaded: FindReplace');
+			importScriptURI('https://raw.github.com/Kangaroopower/FindReplace/master/Actions.js');
+			importScriptURI('https://raw.github.com/Kangaroopower/FindReplace/master/Gui.js');
+			importScriptURI('https://raw.github.com/Kangaroopower/FindReplace/master/Shadow.js');
+
+		};
+
+
+		window.FindReplace.waitForEditor = function () {
+			if (wgAction === "edit" ) {
+				if (typeof (WikiaEditor || WikiaEditor.getInstance || WikiaEditor.getInstance ||WikiaEditor.getInstance() || WikiaEditor.getInstance().mode) == 'undefined'  ||WikiaEditor.getInstance().mode !== 'source') {
+					window.setTimeout(function () {
+						console.log('waiting for editor...');
+							window.FindReplace.waitForEditor();
+						}, 500);
+					return;
 				} else {
-					if (window.FindReplace.editorloaded === true) {
-						$('#toolbar').append('<a href="#" onclick="window.FindReplace.GUI.initiate();"><img title="Replace" src="http://images2.wikia.nocookie.net/__cb20120415071129/central/images/7/71/Replace.png"></a>');
-					}
+					window.FindReplace.editorloaded = true;
+					window.FindReplace.loadLibraries();
 				}
-				importScriptURI('https://raw.github.com/Kangaroopower/FindReplace/master/Actions.js');
-				importScriptURI('https://raw.github.com/Kangaroopower/FindReplace/master/Gui.js');
-				importScriptURI('https://raw.github.com/Kangaroopower/FindReplace/master/Shadow.js');
 			}
 		};
 
-		window.FindReplace.waitForEditor = function () {
-			if (typeof (WikiaEditor || WikiaEditor.getInstance || WikiaEditor.getInstance || WikiaEditor.getInstance() || WikiaEditor.getInstance().mode) == 'undefined'  || WikiaEditor.getInstance().mode !== 'source') {
+		window.FindReplace.loadLibraries =  function () {
+			if (window.FindReplace.jQueryUILoaded !== true && window.FindReplace.TextInputsLoaded !== true) {
+				$.getScript('http://dev.wikia.com/index.php?title=textinputs_jquery.js&action=raw&ctype=text/javascript', function () {
+					console.log('FindReplace: Textinputs is ready');
+					window.FindReplace.TextInputsLoaded =  true;
+				});
+				$.getScript('https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js', function () {
+					console.log('FindReplace: Jquery UI is ready');
+					window.FindReplace.jQueryUILoaded = true;
+				});
+				importStylesheetURI('http://kangaroopower.x10.mx/css/font-awesome.css');
 				window.setTimeout(function () {
-					console.log('waiting...');
-					window.FindReplace.waitForEditor();
-				}, 500);
-				return;
+					console.log('waiting for libraries...');
+						window.FindReplace.loadLibraries();
+				}, 500);				
 			} else {
-				window.FindReplace.editorloaded = true;
 				window.FindReplace.init();
 			}
 		};
