@@ -1,9 +1,21 @@
 /**
- * Find and Replace
+ * Find and Replace 2.0
  * 
- * Complete version of FR script
- * TODO: replace selected match, shadow breaks when vertical scrollbar shows up
-**/
+ * Creates a Find and Replace Module
+ *
+ * @author Kangaroopower
+ * @Shadow author Pecoes
+ *
+ * What's new:
+ * - Highlight Matches
+ * - Just find
+ * - Regex vs non Regex
+ * - Custom Editbutton
+ * - Animations on open/close
+ * - MAJOR CODE REWRITE
+ * - Keyboard Shortcuts (Ctrl + Space to open/close)
+ *
+ */
 $(function( ) {
 	// Don't load twice...
 	if ( typeof window.FindReplace != 'undefined' && typeof window.Frdev == 'undefined') {
@@ -13,7 +25,7 @@ $(function( ) {
 	var m;
 	//Base for functions
 	window.FindReplace = {
-		version: "2.1.5",
+		version: "2.1.7",
 		editorloaded: false,
 		TextInputsLoaded: false,
 		jQueryUILoaded: false,
@@ -32,9 +44,9 @@ $(function( ) {
 		/* Initialize the script */
 		window.FindReplace.init = function () {
 			if (skin !== "monobook") {
-				$('span.cke_toolbar_expand').before('<a href="#" onclick="window.FindReplace.GUI.initiate();"><img title="Replace" src="http://images2.wikia.nocookie.net/__cb20120415071129/central/images/7/71/Replace.png"></a>');	
+				$('span.cke_toolbar_expand').before('<a style="cursor:pointer;" onclick="window.FindReplace.GUI.initiate();"><img title="Replace" src="http://images2.wikia.nocookie.net/__cb20120415071129/central/images/7/71/Replace.png"></a>');	
 			} else {
-					$('#toolbar').append('<a href="#" onclick="window.FindReplace.GUI.initiate();"><img title="Replace" src="http://images2.wikia.nocookie.net/__cb20120415071129/central/images/7/71/Replace.png"></a>');
+					$('#toolbar').append('<a style="cursor:pointer;" onclick="window.FindReplace.GUI.initiate();"><img title="Replace" src="http://images2.wikia.nocookie.net/__cb20120415071129/central/images/7/71/Replace.png"></a>');
 			}
 			console.log('Loaded: FindReplace');
 		};
@@ -78,7 +90,7 @@ $(function( ) {
 		window.FindReplace.GUI.initiate = function () {
 			if (window.FindReplace.active !== true) {
 				window.FindReplace.active =  true;
-				var popupHTML = '<div id="fr-ui" style="display:none;z-index: 1000;background-color: white;padding: 4px;border: 1px solid rgb(170, 170, 170);border-top-left-radius: 6px;border-top-right-radius: 6px;border-bottom-right-radius: 6px;border-bottom-left-radius: 6px;text-align: left;font-size: 11px;color: black;display: block;position: absolute;top: 244px;left: 207px;" class="ui-draggable"><form action="#" method="get"><div style="font-weight: bold;border-bottom: 1px solid #aaaaaa;padding: 4px;"><span id="fr-title">Find and Replace</span><span style="float:right;text-transform:none;"><a title="Synch textarea contents" href=#" onclick="window.FindReplace.Actions.find();"><i class="icon-refresh"></i></a>&nbsp;&nbsp;<a href=#" onclick="window.FindReplace.GUI.close();"><i class="icon-remove"></i></a></span></div><div><div style="display: inline-block;padding: 4px;vertical-align: middle;"><div style="margin: 4px auto;"><div style="display: inline-block;width: 4em;">Find:</div><input id="fr-find-text" size="60" type="text"></div><div style="margin: 4px auto;"><div style="display: inline-block;width: 4em;">Replace:</div><input id="fr-replace-text" size="60" type="text" style="background-color: rgb(255, 255, 255);"></div><div style="margin: 14px auto 0;">Case Sensitive<input id="fr-cs" checked="" style="position: relative; top: 3px; " type="checkbox">&nbsp; | &nbsp;Regex<input id="fr-reg" style="position: relative; top: 3px; " type="checkbox"></div></div><div style="display: inline-block;padding: 4px;width: 110px;vertical-align: middle;"><input style="width: 100px;font-size: 10px;margin-bottom: 4px;" id="fr-replace" type="button" onclick="window.FindReplace.Actions.evaluate()" value="Replace"><input style="width: 100px;font-size: 10px;margin-bottom: 4px;" id="fr-replace-all" type="button" onclick="window.FindReplace.Actions.evaluate(\'rall\')" value="Replace All"><input style="width: 100px;font-size: 10px;margin-bottom: 4px;" id="fr-find-prev" type="button" onclick="window.FindReplace.Shadow.prev();" value="Find Previous"><input style="width: 100px;font-size: 10px;margin-bottom: 4px;" id="fr-find-next" type="button" onclick="window.FindReplace.Shadow.next();" value="Find Next"></div></div><div id="fr-status" style="text-align:center; font-weight: bold;border-top: 1px solid #aaaaaa;padding: 4px;">&nbsp;</div></form></div>';
+				var popupHTML = '<div id="fr-ui" style="display:none;z-index: 1000;background-color: white;padding: 4px;border: 1px solid rgb(170, 170, 170);border-top-left-radius: 6px;border-top-right-radius: 6px;border-bottom-right-radius: 6px;border-bottom-left-radius: 6px;text-align: left;font-size: 11px;color: black;display: block;position: absolute;top: 244px;left: 207px;" class="ui-draggable"><form action="#" method="get"><div style="font-weight: bold;border-bottom: 1px solid #aaaaaa;padding: 4px;"><span id="fr-title">Find and Replace</span><span style="float:right;text-transform:none;"><a title="Synch textarea contents" style="cursor:pointer;" onclick="window.FindReplace.Actions.find();"><i class="icon-refresh"></i></a>&nbsp;&nbsp;<a style="cursor:pointer;" onclick="window.FindReplace.GUI.close();"><i class="icon-remove"></i></a></span></div><div><div style="display: inline-block;padding: 4px;vertical-align: middle;"><div style="margin: 4px auto;"><div style="display: inline-block;width: 4em;">Find:</div><input id="fr-find-text" size="60" type="text"></div><div style="margin: 4px auto;"><div style="display: inline-block;width: 4em;">Replace:</div><input id="fr-replace-text" size="60" type="text" style="background-color: rgb(255, 255, 255);"></div><div style="margin: 14px auto 0;">Case Sensitive<input id="fr-cs" checked="" style="position: relative; top: 3px; " type="checkbox">&nbsp; | &nbsp;Regex<input id="fr-reg" style="position: relative; top: 3px; " type="checkbox"></div></div><div style="display: inline-block;padding: 4px;width: 110px;vertical-align: middle;"><input style="width: 100px;font-size: 10px;margin-bottom: 4px;" id="fr-replace" type="button" onclick="window.FindReplace.Actions.evaluate()" value="Replace"><input style="width: 100px;font-size: 10px;margin-bottom: 4px;" id="fr-replace-all" type="button" onclick="window.FindReplace.Actions.evaluate(\'rall\')" value="Replace All"><input style="width: 100px;font-size: 10px;margin-bottom: 4px;" id="fr-find-prev" type="button" onclick="window.FindReplace.Shadow.prev();" value="Find Previous"><input style="width: 100px;font-size: 10px;margin-bottom: 4px;" id="fr-find-next" type="button" onclick="window.FindReplace.Shadow.next();" value="Find Next"></div></div><div id="fr-status" style="text-align:center; font-weight: bold;border-top: 1px solid #aaaaaa;padding: 4px;">&nbsp;</div></form></div>';
 				$( '#editform' ).prepend(popupHTML);
 				$('#fr-ui').show('clip', 180);
 				$('#fr-ui').css({left: 0, top: 0});
@@ -131,7 +143,7 @@ $(function( ) {
 				thematches =  $('textarea')[0].value.match(reg).length;
 			$('textarea')[0].value = $('textarea')[0].value.replace(reg, txtoreplace);
 			if (thematches != "undefined") {
-				$("#fr-status").html('One replacement/' + thematches);
+				$("#fr-status").html('One replacement made');
 			} else {
 				$("#fr-status").html('No replacements made!');
 			}	
