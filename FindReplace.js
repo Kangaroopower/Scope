@@ -19,7 +19,7 @@ $('document').ready(function( ) {
 		editorloaded: false,
 		TextInputsLoaded: false,
 		jQueryUILoaded: false,
-		modulesReady,
+		modulesReady: false,
 		modules: [],
 		active: false
 	};
