@@ -15,10 +15,11 @@ $('document').ready(function( ) {
 	}
 	//Base for functions
 	window.FindReplace = {
-		version: "2.1.5",
+		version: "2.1.7",
 		editorloaded: false,
 		TextInputsLoaded: false,
 		jQueryUILoaded: false,
+		modulesReady,
 		modules: [],
 		active: false
 	};
@@ -26,15 +27,11 @@ $('document').ready(function( ) {
 		/* Initialize the script */
 		window.FindReplace.init = function () {
 			if (skin !== "monobook") {
-				$('span.cke_toolbar_expand').before('<a href="#" onclick="window.FindReplace.GUI.initiate();"><img title="Replace" src="http://images2.wikia.nocookie.net/__cb20120415071129/central/images/7/71/Replace.png"></a>');	
+				$('span.cke_toolbar_expand').before('<a style="cursor:pointer;" onclick="window.FindReplace.GUI.initiate();"><img title="Replace" src="http://images2.wikia.nocookie.net/__cb20120415071129/central/images/7/71/Replace.png"></a>');	
 			} else {
-					$('#toolbar').append('<a href="#" onclick="window.FindReplace.GUI.initiate();"><img title="Replace" src="http://images2.wikia.nocookie.net/__cb20120415071129/central/images/7/71/Replace.png"></a>');
+					$('#toolbar').append('<a style="cursor:pointer;" onclick="window.FindReplace.GUI.initiate();"><img title="Replace" src="http://images2.wikia.nocookie.net/__cb20120415071129/central/images/7/71/Replace.png"></a>');
 			}
 			console.log('Loaded: FindReplace');
-			importScriptURI('https://raw.github.com/Kangaroopower/FindReplace/master/Actions.js');
-			importScriptURI('https://raw.github.com/Kangaroopower/FindReplace/master/Gui.js');
-			importScriptURI('https://raw.github.com/Kangaroopower/FindReplace/master/Shadow.js');
-
 		};
 
 
@@ -69,9 +66,36 @@ $('document').ready(function( ) {
 						window.FindReplace.loadLibraries();
 				}, 500);				
 			} else {
-				window.FindReplace.init();
+				window.FindReplace.loadModules();
 			}
 		};
+
+		window.FindReplace.loadModules = function () {
+			var Shadowready, GUIready, Actionsready;
+			if (window.FindReplace.modulesReady !== true) {
+				$.getScript('https://raw.github.com/Kangaroopower/FindReplace/master/Actions.js', function () {
+					console.log('FindReplace Module: Actions is ready');
+					Actionsready =  true;
+				});
+				$.getScript('https://raw.github.com/Kangaroopower/FindReplace/master/Gui.js', function () {
+					console.log('FindReplace Module: GUI is ready');
+					GUIready = true;
+				});
+				$.getScript('https://raw.github.com/Kangaroopower/FindReplace/master/Shadow.js', function () {
+					console.log('FindReplace Module: Shadow is ready');
+					Shadowready = true;
+				});
+				if (Actionsready === true && GUIready === true && Shadowready === true) {
+					window.FindReplace.modulesReady = true;
+				}
+				window.setTimeout(function () {
+					console.log('waiting for modules...');
+						window.FindReplace.loadModules();
+				}, 500);
+			} else {
+				window.FindReplace.init();
+			}
+		}
 
 		window.FindReplace.registerModule = function (module) {
 			window.FindReplace.modules.push(module); 
