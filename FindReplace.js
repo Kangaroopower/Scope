@@ -6,7 +6,6 @@
  * @author Kangaroopower
  * @Shadow author Pecoes
  *
- * Adapt loadlibrary for modules
  */
 $('document').ready(function( ) {
   // Don't load twice...
@@ -15,7 +14,7 @@ $('document').ready(function( ) {
 	}
 	//Base for functions
 	window.FindReplace = {
-		version: "2.1.7",
+		version: "2.1.9",
 		editorloaded: false,
 		TextInputsLoaded: false,
 		jQueryUILoaded: false,
@@ -111,6 +110,7 @@ $('document').ready(function( ) {
 			isCtrl = true;
 		}
 		if(e.which === 32 && isCtrl === true) {
+			e.preventDefault();
 			if (window.FindReplace.active === true) {
 				window.FindReplace.GUI.close();
 			} else {

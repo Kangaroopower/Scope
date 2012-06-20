@@ -25,7 +25,7 @@ $(function( ) {
 	var m;
 	//Base for functions
 	window.FindReplace = {
-		version: "2.1.7",
+		version: "2.1.9",
 		editorloaded: false,
 		TextInputsLoaded: false,
 		jQueryUILoaded: false,
@@ -46,7 +46,7 @@ $(function( ) {
 			if (skin !== "monobook") {
 				$('span.cke_toolbar_expand').before('<a style="cursor:pointer;" onclick="window.FindReplace.GUI.initiate();"><img title="Replace" src="http://images2.wikia.nocookie.net/__cb20120415071129/central/images/7/71/Replace.png"></a>');	
 			} else {
-					$('#toolbar').append('<a style="cursor:pointer;" onclick="window.FindReplace.GUI.initiate();"><img title="Replace" src="http://images2.wikia.nocookie.net/__cb20120415071129/central/images/7/71/Replace.png"></a>');
+				$('#toolbar').append('<a style="cursor:pointer;" onclick="window.FindReplace.GUI.initiate();"><img title="Replace" src="http://images2.wikia.nocookie.net/__cb20120415071129/central/images/7/71/Replace.png"></a>');
 			}
 			console.log('Loaded: FindReplace');
 		};
@@ -331,6 +331,7 @@ $(function( ) {
 			isCtrl = true;
 		}
 		if(e.which === 32 && isCtrl === true) {
+			e.preventDefault();
 			if (window.FindReplace.active === true) {
 				window.FindReplace.GUI.close();
 			} else {
