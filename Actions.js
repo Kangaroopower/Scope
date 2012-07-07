@@ -1,99 +1,90 @@
-// Find and Replace Module
-window.FindReplace.Actions.replaceall = function (reg) {
-	var txtoreplace = $('#fr-replace-text').val(),
-		thematches = $('textarea')[0].value.match(reg).length;
-	$('textarea')[0].value = $('textarea')[0].value.replace(reg, txtoreplace);
+/* Actions */
+Scope.Actions.replace = function (reg, rall) {
+	var txtoreplace = $('#sc-replace-text').val(),
+		thematches = Scope.textarea.value.match(reg).length;
+	Scope.textarea.value = Scope.textarea.value.replace(reg, txtoreplace);
 	if (thematches != "undefined") {
-		$("#fr-status").html( thematches+' replacement(s) made!');
+		if (rall === true) {
+			$("#sc-status").html( thematches+' replacement(s) made!');
+		} else {
+			$("#sc-status").html( 'One replacement made!');
+		}
 	} else {
-		$("#fr-status").html( 'No replacements made!');
+		$("#sc-status").html( 'No replacements made!');
 	}
 };
  
-window.FindReplace.Actions.replaceone = function (reg) {
-	var txtoreplace = $('#fr-replace-text').val(),
-		thematches =  $('textarea')[0].value.match(reg).length;
-	$('textarea')[0].value = $('textarea')[0].value.replace(reg, txtoreplace);
-		if (thematches != "undefined") {
-			$("#fr-status").html('One replacement made');
-		} else {
-			$("#fr-status").html('No replacements made!');
-		}	
-};
- 
-window.FindReplace.Actions.find = function () {
+Scope.Actions.find = function () {
 	var regex,
-		rawtxtofind = $('#fr-find-text').val();
+		rawtxtofind = $('#sc-find-text').val();
 	if (rawtxtofind !== "") {
-		if ($('input#fr-reg').is(':checked')) {
-			if ($('input#fr-cs').is(':checked')) {
+		if ($('input#sc-reg').is(':checked')) {
+			if ($('input#sc-cs').is(':checked')) {
 				regex = RegExp(rawtxtofind, 'g');
 			} else {
 				regex = RegExp(rawtxtofind,'ig');
 			}
 		} else {
-			if ($('input#fr-cs').is(':checked')) {
-				regex = RegExp(window.FindReplace.Actions.escape(rawtxtofind), 'g');
+			if ($('input#sc-cs').is(':checked')) {
+				regex = RegExp(Scope.Actions.escape(rawtxtofind), 'g');
 			} else {
-				regex = RegExp(window.FindReplace.Actions.escape(rawtxtofind),'ig');
+				regex = RegExp(Scope.Actions.escape(rawtxtofind),'ig');
 			}				
 		}
 	} else {
 		regex = null;
 	}
-	$('#fr-find-prev').attr('disabled', null === regex);
-	$('#fr-find-next').attr('disabled', null === regex);
-	window.FindReplace.Shadow.regex = regex;
-	window.FindReplace.Shadow.synch();
+	$('#sc-find-prev').attr('disabled', null === regex);
+	$('#sc-find-next').attr('disabled', null === regex);
+	Scope.Shadow.regex = regex;
+	Scope.Shadow.synch();
 };
  
- // This is where all the regex (except for Shadow) runs through
- // It processes the params and returns plain regex or escaped regex depending on the params
-window.FindReplace.Actions.evaluate = function (rall) {
+Scope.Actions.evaluate = function (rall) {
 	var regex,
-		rawtxtofind = $('#fr-find-text').val();
-	if ($('input#fr-reg').is(':checked')) {
+		rawtxtofind = $('#sc-find-text').val();
+	if ($('input#sc-reg').is(':checked')) {
 		if (rall != undefined) {
-			if ($('input#fr-cs').is(':checked')) {
+			if ($('input#sc-cs').is(':checked')) {
 				regex = RegExp(rawtxtofind, 'g');
-				window.FindReplace.Actions.replaceall(regex);
+				Scope.Actions.replace(regex, true);
 			} else {
 				regex = RegExp(rawtxtofind,'ig');
-				window.FindReplace.Actions.replaceall(regex);
+				Scope.Actions.replace(regex, true);
 			}					
 		} else {
-			if ($('input#fr-cs').is(':checked')) {
+			if ($('input#sc-cs').is(':checked')) {
 				regex = RegExp(rawtxtofind);
-				window.FindReplace.Actions.replaceone(regex);
+				Scope.Actions.replace(regex);
 			} else {
 				regex = RegExp(rawtxtofind,'i');
-				window.FindReplace.Actions.replaceone(regex);
+				Scope.Actions.replace(regex);
 			}					
-		}
+				}
 	} else {
-		var txtofind = window.FindReplace.Actions.escape(rawtxtofind);
+		var txtofind = Scope.Actions.escape(rawtxtofind);
 		if (rall != undefined) {
-			if ($('input#fr-cs').is(':checked')) {
+			if ($('input#sc-cs').is(':checked')) {
 				regex = RegExp(txtofind, 'g');
-				window.FindReplace.Actions.replaceall(regex);
+				Scope.Actions.replace(regex, true);
 			} else {
 				regex = RegExp(txtofind, 'ig');
-				window.FindReplace.Actions.replaceall(regex);
+				Scope.Actions.replace(regex, true);
 			}
 		} else {
-			if ($('input#fr-cs').is(':checked')) {
+			if ($('input#sc-cs').is(':checked')) {
 				regex = RegExp(txtofind);
-				window.FindReplace.Actions.replaceone(regex);
+				Scope.Actions.replace(regex);
 			} else {
 				regex = RegExp(txtofind, 'i');
-				window.FindReplace.Actions.replaceone(regex);
+				Scope.Actions.replace(regex);
 			}
 		}				
 	}
 };
  
-window.FindReplace.Actions.escape = function (s) {
+Scope.Actions.escape = function (s) {
 	return s.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
 };
 
-window.FindReplace.registerModule("Actions");
+Scope.registerModule("Actions", {});
