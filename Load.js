@@ -9,12 +9,12 @@
  */
 $('document').ready(function( ) {
   // Don't load twice...
-	if ( typeof Scope != 'undefined' && typeof window.Frdev == 'undefined') {
+	if ( typeof window.Scope != 'undefined' && typeof window.Frdev == 'undefined') {
 		return false;
 	}
 	//Base for functions
 	window.Scope = {
-		version: "2.25 Dev",
+		version: "2.25.8 Dev",
 		editorloaded: false,
 		librariesready: false,
 		libraries: {
@@ -23,8 +23,7 @@ $('document').ready(function( ) {
 		},
 		modulesReady: false,
 		modules: {},
-		active: false,
-		textarea: WikiaEditor.getInstance().getEditbox(),
+		active: false
 	};
 	var Scope = window.Scope;
 

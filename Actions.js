@@ -1,8 +1,8 @@
 /* Actions */
 Scope.Actions.replace = function (reg, rall) {
 	var txtoreplace = $('#sc-replace-text').val(),
-		thematches = Scope.textarea.value.match(reg).length;
-	Scope.textarea.value = Scope.textarea.value.replace(reg, txtoreplace);
+		thematches = WikiaEditor.getInstance().getEditbox().val().match(reg).length;
+	WikiaEditor.getInstance().getEditbox().val(WikiaEditor.getInstance().getEditbox().val().replace(reg, txtoreplace));
 	if (thematches != "undefined") {
 		if (rall === true) {
 			$("#sc-status").html( thematches+' replacement(s) made!');

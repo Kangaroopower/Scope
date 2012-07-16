@@ -11,7 +11,7 @@ Scope.GUI.initiate = function () {
 		$('input#sc-cs').click(Scope.Actions.find);
 		$('#sc-find-text').focus();
 		Scope.Shadow.init();
-		$('#sc-find-text').value = Scope.textarea.getSelection().text;
+		$('#sc-find-text').value = WikiaEditor.getInstance().getEditbox().getSelection().text;
 	}
 };
  
@@ -21,7 +21,7 @@ Scope.GUI.close = function () {
 	Scope.Shadow.regex = null;
 	Scope.Shadow.synch(); 
 	$('#sc-shadow').remove();
-	Scope.textarea.css({height: WikiaEditor.getInstance().getEditbox().height()});
+	WikiaEditor.getInstance().getEditbox().css({height: WikiaEditor.getInstance().getEditbox().height()});
 };
 
 Scope.registerModule("GUI", {});
