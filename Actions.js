@@ -3,6 +3,7 @@ Scope.Actions.replace = function (reg, rall) {
 	var txtoreplace = $('#sc-replace-text').val(),
 		thematches = WikiaEditor.getInstance().getEditbox().val().match(reg).length;
 	WikiaEditor.getInstance().getEditbox().val(WikiaEditor.getInstance().getEditbox().val().replace(reg, txtoreplace));
+	Scope.Actions.find();
 	if (thematches != "undefined") {
 		if (rall === true) {
 			$("#sc-status").html( thematches+' replacement(s) made!');

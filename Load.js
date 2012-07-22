@@ -14,7 +14,7 @@ $('document').ready(function( ) {
 	}
 	//Base for functions
 	window.Scope = {
-		version: "2.25.8 Dev",
+		version: "2.26 Dev",
 		editorloaded: false,
 		librariesready: false,
 		libraries: {
@@ -61,7 +61,6 @@ $('document').ready(function( ) {
 						console.log('Scope: '+ i +' is ready');
 					});
 				}
-				importStylesheetURI('http://kangaroopower.x10.mx/css/font-awesome.css');
 				Scope.librariesready = true;
 				window.setTimeout(function () {
 					console.log('Scope: waiting for libraries...');
