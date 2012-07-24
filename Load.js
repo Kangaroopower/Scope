@@ -14,7 +14,7 @@ $('document').ready(function( ) {
 	}
 	//Base for functions
 	window.Scope = {
-		version: "2.26 Dev",
+		version: "2.27.5 Dev",
 		editorloaded: false,
 		librariesready: false,
 		libraries: {

@@ -1,17 +1,21 @@
 /* Actions */
+Scope.Actions = {
+	undotext: null
+};
 Scope.Actions.replace = function (reg, rall) {
 	var txtoreplace = $('#sc-replace-text').val(),
 		thematches = WikiaEditor.getInstance().getEditbox().val().match(reg).length;
+	Scope.Actions.undotext = WikiaEditor.getInstance().getEditbox().val();
 	WikiaEditor.getInstance().getEditbox().val(WikiaEditor.getInstance().getEditbox().val().replace(reg, txtoreplace));
 	Scope.Actions.find();
 	if (thematches != "undefined") {
 		if (rall === true) {
-			$("#sc-status").html( thematches+' replacement(s) made!');
+			$("#sc-status").html( thematches+' replacement(s) made! <a href="javascript:Scope.Actions.undo()"><img src="http://kangaroopower.x10.mx/undo.png" style="vertical-align:middle;"/></a>');
 		} else {
-			$("#sc-status").html( 'One replacement made!');
+			$("#sc-status").html( 'One replacement made! <a href="javascript:Scope.Actions.undo()"><img src="http://kangaroopower.x10.mx/undo.png" style="vertical-align:middle;" /></a>');
 		}
 	} else {
-		$("#sc-status").html( 'No replacements made!');
+		$("#sc-status").html('No replacements made!');
 	}
 };
  
@@ -86,6 +90,17 @@ Scope.Actions.evaluate = function (rall) {
  
 Scope.Actions.escape = function (s) {
 	return s.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
+};
+
+Scope.Actions.undo = function () {
+	if (Scope.Actions.undotext !== null) {
+		WikiaEditor.getInstance().getEditbox().val(Scope.Actions.undotext);
+		$("#sc-status").html('Undid last replace!');
+		Scope.Actions.undotext = null;
+		Scope.Actions.synch();
+	} else {
+		$("#sc-status").html('Could not undo last replace!');
+	}
 };
 
 Scope.registerModule("Actions", {});
