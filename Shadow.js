@@ -1,4 +1,11 @@
 /* Shadow Module */
+ Scope.Shadow = {
+	'matches': [],
+	'highlighted': -1,
+	'regex': null, 
+	'replace': null,
+	'numTraversed': 0
+};
 var m;
 Scope.Shadow.init = function () {
 	WikiaEditor.getInstance().getEditbox().after('<div id="sc-shadow" style="left: 0px; top: 0px; border: 0px none; display: block; outline: none medium; margin: 0px; padding: 0px; resize: none; position: absolute; z-index: 0; font-family: Consolas, Eupheima UCAS, Ayuthaya, Menlo, monospace; font-size: 14px; line-height: normal; white-space: pre-wrap; background-color: transparent; color: transparent; overflow: auto; height: 529px; "></div>');
@@ -99,10 +106,4 @@ Scope.Shadow.prev = function  () {
 	Scope.Shadow.highlight(p);
 };
 
-window.FindReplace.registerModule("Shadow", {
-	'matches': [],
-	'highlighted': -1,
-	'regex': null, 
-	'replace': null,
-	'numTraversed': 0
-});
+window.FindReplace.registerModule("Shadow", {});
