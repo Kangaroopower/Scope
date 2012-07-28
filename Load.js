@@ -22,7 +22,11 @@ $('document').ready(function( ) {
 			'TextInputs': 'http://dev.wikia.com/index.php?title=textinputs_jquery.js&action=raw&ctype=text/javascript'
 		},
 		modulesReady: false,
-		modules: {},
+		modules: {
+			'Actions', 'https://raw.github.com/Kangaroopower/FindReplace/master/Actions.js',
+			'GUI', 'https://raw.github.com/Kangaroopower/FindReplace/master/Gui.js',
+			'Shadow', 'https://raw.github.com/Kangaroopower/FindReplace/master/Shadow.js'
+		},
 		active: false
 	};
 	var Scope = window.Scope;
@@ -75,27 +79,19 @@ $('document').ready(function( ) {
 		Scope.loadModules = function () {
 			var Shadowready, GUIready, Actionsready;
 			if (Scope.modulesReady !== true) {
-				$.getScript('https://raw.github.com/Kangaroopower/FindReplace/master/Actions.js', function () {
-					console.log('FindReplace Module: Actions is ready');
-					Actionsready =  true;
-				});
-				$.getScript('https://raw.github.com/Kangaroopower/FindReplace/master/Gui.js', function () {
-					console.log('FindReplace Module: GUI is ready');
-					GUIready = true;
-				});
-				$.getScript('https://raw.github.com/Kangaroopower/FindReplace/master/Shadow.js', function () {
-					console.log('FindReplace Module: Shadow is ready');
-					Shadowready = true;
-				});
-				if (Actionsready === true && GUIready === true && Shadowready === true) {
-					Scope.modulesReady = true;
+				for (var i in Scope.modules) {
+					$.getScript(Scope.modules[i], function () {
+						console.log('Scope Module: '+ i +' is ready');
+					});
 				}
+				Scope.modulesReady = true;
 				window.setTimeout(function () {
 					console.log('waiting for modules...');
-						Scope.loadModules();
+					Scope.loadModules();
 				}, 500);
 			} else {
 				Scope.init();
+				console.log('Scope: Modules Loaded');
 			}
 		};
 
