@@ -2,16 +2,26 @@
 Scope.GUI.initiate = function () {
 	if (Scope.active !== true) {
 		Scope.active =  true;
-		var popupHTML = '<div id="sc-ui" style="display:none;z-index: 1000;background-color: white;padding: 4px;border: 1px solid rgb(170, 170, 170);border-top-left-radius: 6px;border-top-right-radius: 6px;border-bottom-right-radius: 6px;border-bottom-left-radius: 6px;text-align: left;font-size: 11px;color: black;display: block;position: absolute;top: 244px;left: 207px;" class="ui-draggable"><form action="#" method="get"><div style="font-weight: bold;border-bottom: 1px solid #aaaaaa;padding: 4px;"><span id="sc-title">Find and Replace</span><span style="float:right;text-transform:none;"><a style="cursor:pointer;" onclick="Scope.GUI.close();"><img title="close" src="http://upload.wikimedia.org/wikipedia/commons/b/b6/Chrome_close_button.png"></a></span></div><div><div style="display: inline-block;padding: 4px;vertical-align: middle;"><div style="margin: 4px auto;"><div style="display: inline-block;width: 4em;">Find:</div><input id="sc-find-text" size="60" type="text"></div><div style="margin: 4px auto;"><div style="display: inline-block;width: 4em;">Replace:</div><input id="sc-replace-text" size="60" type="text" style="background-color: rgb(255, 255, 255);"></div><div style="margin: 14px auto 0;">Case Sensitive<input id="sc-cs" checked="" style="position: relative; top: 3px; " type="checkbox">&nbsp; | &nbsp;Regex<input id="sc-reg" style="position: relative; top: 3px; " type="checkbox"></div></div><div style="display: inline-block;padding: 4px;width: 110px;vertical-align: middle;"><input style="width: 100px;font-size: 10px;margin-bottom: 4px;" id="sc-replace" type="button" onclick="Scope.Actions.evaluate()" value="Replace"><input style="width: 100px;font-size: 10px;margin-bottom: 4px;" id="sc-replace-all" type="button" onclick="Scope.Actions.evaluate(\'rall\')" value="Replace All"><input style="width: 100px;font-size: 10px;margin-bottom: 4px;" id="sc-find-prev" type="button" onclick="Scope.Shadow.prev();" value="Find Previous"><input style="width: 100px;font-size: 10px;margin-bottom: 4px;" id="sc-find-next" type="button" onclick="Scope.Shadow.next();" value="Find Next"></div></div><div id="sc-status" style="text-align:center; font-weight: bold;border-top: 1px solid #aaaaaa;padding: 4px;">&nbsp;</div></form></div>';
+		$('head').append('<style type="text/css">#sc-ui{left: 247px;top: 50.5px;box-shadow: 0 4px 16px rgba(0, 0, 0, .2);background: white;background-clip: padding-box;border: 1px solid #ACACAC;outline: 0;position: absolute;color: black;padding: 15px 22px;z-index: 1001;}#sc-ui-inner{cursor: default;font-size: 13px;margin: 0 0 14px;font-weight: bold;}.sc-button{background-color: whiteSmoke;background-image: -webkit-linear-gradient(top,whiteSmoke,#F1F1F1);background-image: -moz-linear-gradient(top,whiteSmoke,#F1F1F1);background-image: -ms-linear-gradient(top,whiteSmoke,#F1F1F1);background-image: -o-linear-gradient(top,whiteSmoke,#F1F1F1);background-image: linear-gradient(top,whiteSmoke,#F1F1F1);color: #333;border: 1px solid gainsboro;-webkit-user-select: none;border-top-right-radius: 0;border-bottom-right-radius: 0;margin-right: 0px;z-index: 1;border-radius: 2px;cursor: pointer;font-size: 11px;font-weight: bold;text-align: center;height: 27px;line-height: 27px;min-width: 54px;outline: 0px;padding: 0 8px;position: relative;display: -moz-inline-box;display: inline-block;margin-right: 16px;}#sc-find-text{background: transparent!important;border: none!important;box-shadow: none!important;font-size: 13px;height: 20px;margin: 0;outline: none!important;padding: 1px 0px!important;width: 100%;}#sc-replace-text{width: 330px;border-radius: 1px;border: 1px solid #D9D9D9;border-top: 1px solid silver;outline:none!important;font-size: 13px;height: 20px;padding: 1px 8px;}#sc-operator{width: 107px;border-radius: 1px;border: 1px solid #D9D9D9;border-top: 1px solid silver;outline:none!important;font-size: 13px;height: 20px;padding: 1px 3px;}#sc-findwrapper{position: relative;display: inline-block;width: 348px;}#sc-findinnerwrapper{background: white;border: 1px solid #D9D9D9;border-top: 1px solid silver;min-width: 20px;padding: 0 8px;width: 100%;}#sc-replacewrapper{padding-bottom: 10px;text-align: left;width: 90px;}#sc-count{max-width: 120px;overflow: hidden;padding-right: 8px;text-align: right;}#sc-countwrapper{max-width: 120px;overflow: hidden;padding-right: 8px;text-align: right;}#sc-status{text-align:center;font-weight: bold;padding:4px;font-size: 11;}</style>');
+		var popupHTML = '<div id="sc-ui" style="left: 248px;top: 34.5px;"><div id="sc-ui-inner">Find and replace<span style="float:right;text-transform:none;"><a style="cursor:pointer;" onclick="Scope.GUI.close();"><img title="close" src="http://upload.wikimedia.org/wikipedia/commons/b/b6/Chrome_close_button.png"></a></span></div><div style="background-color: white;line-height: 1.4em;border-bottom: 1px solid #AAA;"><table cellspacing="0"><tbody><tr><td><table cellspacing="0"><tbody><tr><td style="padding-bottom: 5px;text-align: left;width: 90px;"><label>Find</label></td><td style="padding-bottom: 5px;"><div id="findwrapper"><table cellpadding="0" cellspacing="0" id="sc-findinnerwrapper"><tbody><tr><td><input type="text" id="sc-find-text"></td><td id="sc-countwrapper"><span id="sc-count"> </span></td></tr></tbody></table></div></td></tr><tr><td id="sc-replacewrapper"><label>Replace</label></td><td style="padding-bottom: 10px;"><input type="text" id="sc-replace-text"></td></tr><tr><td></td><td><input type="checkbox" id="sc-cs"><label style="padding-left: 2px;">Match case</label><input type="checkbox" id="sc-reg"><label style="padding-left: 2px;">Regex</label><img src="https://github.com/Kangaroopower/Scope/raw/master/cog.png" style="vertical-align:middle;" height="20px" width="20px" title="Operators"><select id="sc-op" style="width: 57px;"><option value="None">None</option><option value="and">and</option><option value="but">alone</option></select>&nbsp;<input id="sc-operator" type="text"></td></tr></tbody></table></td></tr><tr><td><div style="margin-top: 20px;position: relative;margin-bottom: 5px;"><div><div onclick="Scope.Actions.params()" class="sc-button">Replace</div><div onclick="Scope.Actions.params(\'rall\')" class="sc-button">Replace all</div></div><div style="position: absolute;top: 0px;right: 0px;"><div onclick="Scope.Shadow.prev();" id="sc-find-prev" class="sc-button">Prev</div><div onclick="Scope.Shadow.next();" id="sc-find-next" class="sc-button">Next</div></div></div></td></tr></tbody></table></div><div id="sc-status">&nbsp;</div></div>';
 		$( '#editform' ).prepend(popupHTML);
 		$('#sc-ui').show('clip', 180);
-		$('#sc-ui').css({left: 0, top: 0});
 		$('#sc-ui').draggable();
 		$('input#sc-find-text').keyup(Scope.Actions.find);
+		$('#sc-operator').keyup(Scope.Actions.find);
 		$('input#sc-cs').click(Scope.Actions.find);
+		$('#sc-op').change(function () {
+			Scope.Actions.find();
+			if ($("#sc-op option:selected").val() === "but") {
+				$("#sc-operator").val('');
+				$("#sc-operator").attr('disabled', 'disabled');
+			} else {
+				$("#sc-operator").attr('disabled', false);
+			}
+		});
 		$('#sc-find-text').focus();
 		Scope.Shadow.init();
-		$('#sc-find-text').value = WikiaEditor.getInstance().getEditbox().getSelection().text;
+		$('#sc-find-text').val(WikiaEditor.getInstance().getEditbox().getSelection().text);
 	}
 };
  
@@ -19,9 +29,11 @@ Scope.GUI.close = function () {
 	$('#sc-ui').hide('clip', 200);
 	Scope.active = false;
 	Scope.Shadow.regex = null;
+	Scope.Actions.operator = null;
+	Scope.Actions.undotext = null;
 	Scope.Shadow.synch(); 
 	$('#sc-shadow').remove();
-	WikiaEditor.getInstance().getEditbox().css({height: WikiaEditor.getInstance().getEditbox().height()});
+	var eh = WikiaEditor.getInstance().getEditbox().height();
+	WikiaEditor.getInstance().getEditbox().removeAttr('style')
+	WikiaEditor.getInstance().getEditbox().css({height: eh});
 };
-
-Scope.registerModule("GUI", {});
