@@ -1,93 +1,118 @@
 /* Actions */
 Scope.Actions = {
-	undotext: null
+	undotext: null,
+	operator: null
 };
-Scope.Actions.replace = function (reg, rall) {
-	var txtoreplace = $('#sc-replace-text').val(),
-		thematches = WikiaEditor.getInstance().getEditbox().val().match(reg).length;
+Scope.Actions.replace = function (reg, type) {
+	var txtoreplace = $('#sc-replace-text').val();
 	Scope.Actions.undotext = WikiaEditor.getInstance().getEditbox().val();
-	WikiaEditor.getInstance().getEditbox().val(WikiaEditor.getInstance().getEditbox().val().replace(reg, txtoreplace));
-	Scope.Actions.find();
-	if (thematches != "undefined") {
-		if (rall === true) {
-			$("#sc-status").html( thematches+' replacement(s) made! <a href="javascript:Scope.Actions.undo()"><img src="http://kangaroopower.x10.mx/undo.png" style="vertical-align:middle;"/></a>');
-		} else {
-			$("#sc-status").html( 'One replacement made! <a href="javascript:Scope.Actions.undo()"><img src="http://kangaroopower.x10.mx/undo.png" style="vertical-align:middle;" /></a>');
+	if ($("#sc-op option:selected").val() === "and") {
+		var rne = WikiaEditor.getInstance().getEditbox().val().match(reg[0]).length,
+			rwo = WikiaEditor.getInstance().getEditbox().val().match(reg[1]).length;
+		for(var  i=0 ; i < reg.length; i+ ) {
+			WikiaEditor.getInstance().getEditbox().val(WikiaEditor.getInstance().getEditbox().val().replace(reg[i], txtoreplace));
 		}
+		Scope.Actions.status([reg[0], reg[1]], [rne, rwo]);
 	} else {
-		$("#sc-status").html('No replacements made!');
+		Scope.Actions.status(reg, WikiaEditor.getInstance().getEditbox().val().match(reg).length);
+		WikiaEditor.getInstance().getEditbox().val(WikiaEditor.getInstance().getEditbox().val().replace(reg, txtoreplace));
+	}
+	$('#sc-operator').css({width: '99px'})
+	$('#sc-operator').after(' <a href="javascript:Scope.Actions.undo()"><img src="https://github.com/Kangaroopower/Scope/raw/master/undo.png" style="vertical-align:middle;"/></a>');
+	Scope.Actions.find();
+};
+
+
+Scope.Actions.status = function (word, number) {
+	var scfind = $('#sc-find-text').val();
+	if ($("#sc-op option:selected").val() === "and") {
+			if (number[0] === null) number[0] = "no";
+			if (number[1] === null) number[1] = "no";
+			$("#sc-status").html('Replaced '+number[0] +' matches of '+scfind+' and '+number[1] +' matches of '+$('#sc-operator').val()+'!');
+	} else if ($("#sc-op option:selected").val() === "but") {
+		if (number === null) number = "no";
+		$("#sc-status").html('Replaced '+number+' matches of '+scfind+' standing alone!');
+	} else {
+		if (number === 1) number = "One";
+		if (number === null) number = "No";
+		$("#sc-status").html(number+' replacement(s) made!');
 	}
 };
- 
+
 Scope.Actions.find = function () {
 	var regex,
 		rawtxtofind = $('#sc-find-text').val();
-	if (rawtxtofind !== "") {
-		if ($('input#sc-reg').is(':checked')) {
-			if ($('input#sc-cs').is(':checked')) {
-				regex = RegExp(rawtxtofind, 'g');
-			} else {
-				regex = RegExp(rawtxtofind,'ig');
-			}
-		} else {
-			if ($('input#sc-cs').is(':checked')) {
-				regex = RegExp(Scope.Actions.escape(rawtxtofind), 'g');
-			} else {
-				regex = RegExp(Scope.Actions.escape(rawtxtofind),'ig');
-			}				
-		}
-	} else {
-		regex = null;
-	}
+	if (rawtxtofind !== "") regex = Scope.Actions.evaluate(true);
+	else regex = null;
 	$('#sc-find-prev').attr('disabled', null === regex);
 	$('#sc-find-next').attr('disabled', null === regex);
 	Scope.Shadow.regex = regex;
 	Scope.Shadow.synch();
 };
  
-Scope.Actions.evaluate = function (rall) {
-	var regex,
-		rawtxtofind = $('#sc-find-text').val();
+Scope.Actions.evaluate = function (rall, find) {
+	var rawtxtofind, but;
+	if (find === undefined) rawtxtofind = $('#sc-find-text').val();
+	else rawtxtofind = $('#sc-operator').val();
+
+	if ($("#sc-op option:selected").val() === "but") but = true;
+	else but = false;
+
 	if ($('input#sc-reg').is(':checked')) {
-		if (rall != undefined) {
+		if (rall === true) {
 			if ($('input#sc-cs').is(':checked')) {
-				regex = RegExp(rawtxtofind, 'g');
-				Scope.Actions.replace(regex, true);
+				if (but === true) return RegExp('\\b'+rawtxtofind+'\\b', 'g');
+				else RegExp(rawtxtofind, 'g');
 			} else {
-				regex = RegExp(rawtxtofind,'ig');
-				Scope.Actions.replace(regex, true);
-			}					
-		} else {
-			if ($('input#sc-cs').is(':checked')) {
-				regex = RegExp(rawtxtofind);
-				Scope.Actions.replace(regex);
-			} else {
-				regex = RegExp(rawtxtofind,'i');
-				Scope.Actions.replace(regex);
-			}					
-				}
-	} else {
-		var txtofind = Scope.Actions.escape(rawtxtofind);
-		if (rall != undefined) {
-			if ($('input#sc-cs').is(':checked')) {
-				regex = RegExp(txtofind, 'g');
-				Scope.Actions.replace(regex, true);
-			} else {
-				regex = RegExp(txtofind, 'ig');
-				Scope.Actions.replace(regex, true);
+				if (but === true) return RegExp('\\b'+rawtxtofind+'\\b', 'ig');
+				else return RegExp(rawtxtofind, 'ig');
 			}
 		} else {
 			if ($('input#sc-cs').is(':checked')) {
-				regex = RegExp(txtofind);
-				Scope.Actions.replace(regex);
+				if (but === true) return RegExp('\\b'+rawtxtofind+'\\b', 'g');
+				else return RegExp(rawtxtofind);
 			} else {
-				regex = RegExp(txtofind, 'i');
-				Scope.Actions.replace(regex);
+				if (but === true) return RegExp('\\b'+rawtxtofind+'\\b', 'ig');
+				else return RegExp(rawtxtofind, 'i');
+			}
+		}
+	} else {
+		var txtofind = Scope.Actions.escape(rawtxtofind);
+		if (rall === true) {
+			if ($('input#sc-cs').is(':checked')) {
+				if (but === true) return RegExp('\\b'+txtofind+'\\b', 'g');
+				else return RegExp(txtofind, 'g');
+			} else {
+				if (but === true) return RegExp('\\b'+txtofind+'\\b', 'ig');
+				else return RegExp(txtofind, 'ig');
+				}
+		} else {
+			if ($('input#sc-cs').is(':checked')) {
+				if (but === true) return RegExp('\\b'+txtofind+'\\b', 'g');
+				else return RegExp(txtofind);
+			} else {
+				if (but === true) return RegExp('\\b'+txtofind+'\\b', 'ig');
+				else return RegExp(txtofind, 'i');
 			}
 		}				
 	}
 };
- 
+
+
+Scope.Actions.params = function (rall) {
+	if (rall !== "undefined") {
+		if ($('#sc-operator').val() !== "" && $("#sc-op option:selected").val() !== 'none') {
+			if ($("#sc-op option:selected").val() === "and") Scope.Actions.replace([Scope.Actions.evaluate(true), Scope.Actions.evaluate(true)]);
+			else Scope.Actions.replace(Scope.Actions.evaluate(true));
+		} else Scope.Actions.replace(Scope.Actions.evaluate(true));
+	} else {
+		if ($('#sc-operator').val() !== "" && $("#sc-op option:selected").val() !== 'none') {
+			if ($("#sc-op option:selected").val() === "and") Scope.Actions.replace([Scope.Actions.evaluate(),Scope.Actions.evaluate(false)]);
+			else Scope.Actions.replace(Scope.Actions.evaluate(false));
+		} else Scope.Actions.replace(Scope.Actions.evaluate());
+	}
+};
+
 Scope.Actions.escape = function (s) {
 	return s.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
 };
@@ -102,5 +127,3 @@ Scope.Actions.undo = function () {
 		$("#sc-status").html('Could not undo last replace!');
 	}
 };
-
-Scope.registerModule("Actions", {});
