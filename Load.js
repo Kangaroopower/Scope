@@ -1,5 +1,5 @@
 /**
- * Find and Replace 2.0
+ * Find and Replace 2.5
  * 
  * Creates a Find and Replace Module
  *
@@ -13,7 +13,7 @@ $('document').ready(function( ) {
 	
 	//Base for functions
 	window.Scope = {
-		version: "2.63.5 Dev",
+		version: "2.63.7 Dev",
 		editorloaded: false,
 		librariesready: false,
 		libraries: {

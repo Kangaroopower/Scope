@@ -9,9 +9,7 @@ Scope.Actions.replace = function (reg, type) {
 	if ($("#sc-op option:selected").val() === "and") {
 		var rne = WikiaEditor.getInstance().getEditbox().val().match(reg[0]).length,
 			rwo = WikiaEditor.getInstance().getEditbox().val().match(reg[1]).length;
-		for(var  i=0 ; i < reg.length; i++ ) {
-			WikiaEditor.getInstance().getEditbox().val(WikiaEditor.getInstance().getEditbox().val().replace(reg[i], txtoreplace));
-		}
+		for(var  j=0 ; i < reg.length; j++ ) WikiaEditor.getInstance().getEditbox().val(WikiaEditor.getInstance().getEditbox().val().replace(reg[j], txtoreplace));
 		Scope.Actions.status([reg[0], reg[1]], [rne, rwo]);
 	} else {
 		Scope.Actions.status(reg, WikiaEditor.getInstance().getEditbox().val().match(reg).length);
@@ -101,7 +99,7 @@ Scope.Actions.evaluate = function (rall, find) {
 
 Scope.Actions.params = function (rall) {
 	if (rall !== "undefined") {
-		if ($('#sc-operator').val() !== "" && $("#sc-op option:selected").val() !== 'and') Scope.Actions.replace([Scope.Actions.evaluate(true), Scope.Actions.evaluate(true, true)]);
+		if ($('#sc-operator').val() !== "" && $("#sc-op option:selected").val() === 'and') Scope.Actions.replace([Scope.Actions.evaluate(true), Scope.Actions.evaluate(true, true)]);
 		else Scope.Actions.replace(Scope.Actions.evaluate(true));
 	} else {
 		if ($('#sc-operator').val() !== "" && $("#sc-op option:selected").val() === 'and') Scope.Actions.replace([Scope.Actions.evaluate(),Scope.Actions.evaluate(false, true)]);
