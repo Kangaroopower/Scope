@@ -9,12 +9,11 @@
  */
 $('document').ready(function( ) {
   // Don't load twice...
-	if ( typeof window.Scope != 'undefined' && typeof window.Frdev == 'undefined') {
-		return false;
-	}
+	if ( typeof window.Scope != 'undefined' && typeof window.Frdev == 'undefined') return false;
+	
 	//Base for functions
 	window.Scope = {
-		version: "2.27.5 Dev",
+		version: "2.63 Dev",
 		editorloaded: false,
 		librariesready: false,
 		libraries: {
@@ -30,17 +29,6 @@ $('document').ready(function( ) {
 		active: false
 	};
 	var Scope = window.Scope;
-
-		/* Initialize the script */
-		Scope.init = function () {
-			if (skin !== "monobook") {
-				$('span.cke_toolbar_expand').before('<a style="cursor:pointer;" onclick="Scope.GUI.initiate();"><img title="Replace" src="http://images2.wikia.nocookie.net/__cb20120415071129/central/images/7/71/Replace.png"></a>');	
-			} else {
-				$('#toolbar').append('<a style="cursor:pointer;" onclick="Scope.GUI.initiate();"><img title="Replace" src="http://images2.wikia.nocookie.net/__cb20120415071129/central/images/7/71/Replace.png"></a>');
-			}
-			console.log('Loaded: Scope');
-		};
-
 
 		Scope.waitForEditor = function () {
 			if (wgAction === "edit" && wgCanonicalNamespace !== ("Message_Wall" || "Thread") ) {
@@ -71,7 +59,7 @@ $('document').ready(function( ) {
 						Scope.loadLibraries();
 				}, 500);				
 			} else {
-				Scope.init();
+				Scope.loadModules();
 				console.log('Scope: Libraries Loaded');
 			}
 		};
@@ -90,15 +78,12 @@ $('document').ready(function( ) {
 					Scope.loadModules();
 				}, 500);
 			} else {
-				Scope.init();
+				$('span.cke_toolbar_expand').before('<a style="cursor:pointer;" onclick="Scope.GUI.initiate();"><img title="Replace" src="http://images2.wikia.nocookie.net/__cb20120415071129/central/images/7/71/Replace.png"></a>');	
 				console.log('Scope: Modules Loaded');
+				console.log('Loaded: Scope');
 			}
 		};
 
-		Scope.registerModule = function (module, data) {
-			Scope.modules[module] = data;
-		};
- 
 	var isCtrl = false;
 	$(document).keyup(function (e) {
 		if(e.which === 17) { 
