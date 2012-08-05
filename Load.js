@@ -13,7 +13,7 @@ $('document').ready(function( ) {
 	
 	//Base for functions
 	window.Scope = {
-		version: "2.63.2 Dev",
+		version: "2.63.4 Dev",
 		editorloaded: false,
 		librariesready: false,
 		libraries: {

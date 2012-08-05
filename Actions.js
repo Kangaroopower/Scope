@@ -28,10 +28,10 @@ Scope.Actions.status = function (word, number) {
 	if ($("#sc-op option:selected").val() === "and") {
 			if (number[0] === null) number[0] = "no";
 			if (number[1] === null) number[1] = "no";
-			$("#sc-status").html('Replaced '+number[0] +' matches of '+scfind+' and '+number[1] +' matches of '+$('#sc-operator').val()+'!');
+			$("#sc-status").html('Replaced '+number[0] +' match(es) of '+scfind+' and '+number[1] +' match(es) of '+$('#sc-operator').val()+'!');
 	} else if ($("#sc-op option:selected").val() === "but") {
 		if (number === null) number = "no";
-		$("#sc-status").html('Replaced '+number+' matches of '+scfind+' standing alone!');
+		$("#sc-status").html('Replaced '+number+' match(es) of '+scfind+' standing alone!');
 	} else {
 		if (number === 1) number = "One";
 		if (number === null) number = "No";
@@ -101,15 +101,11 @@ Scope.Actions.evaluate = function (rall, find) {
 
 Scope.Actions.params = function (rall) {
 	if (rall !== "undefined") {
-		if ($('#sc-operator').val() !== "" && $("#sc-op option:selected").val() !== 'none') {
-			if ($("#sc-op option:selected").val() === "and") Scope.Actions.replace([Scope.Actions.evaluate(true), Scope.Actions.evaluate(true)]);
-			else Scope.Actions.replace(Scope.Actions.evaluate(true));
-		} else Scope.Actions.replace(Scope.Actions.evaluate(true));
+		if ($('#sc-operator').val() !== "" && $("#sc-op option:selected").val() !== 'and') Scope.Actions.replace([Scope.Actions.evaluate(true), Scope.Actions.evaluate(true, true)]);
+		else Scope.Actions.replace(Scope.Actions.evaluate(true));
 	} else {
-		if ($('#sc-operator').val() !== "" && $("#sc-op option:selected").val() !== 'none') {
-			if ($("#sc-op option:selected").val() === "and") Scope.Actions.replace([Scope.Actions.evaluate(),Scope.Actions.evaluate(false)]);
-			else Scope.Actions.replace(Scope.Actions.evaluate(false));
-		} else Scope.Actions.replace(Scope.Actions.evaluate());
+		if ($('#sc-operator').val() !== "" && $("#sc-op option:selected").val() === 'and') Scope.Actions.replace([Scope.Actions.evaluate(),Scope.Actions.evaluate(false, true)]);
+		else Scope.Actions.replace(Scope.Actions.evaluate());
 	}
 };
 
