@@ -17,8 +17,8 @@ Scope.Actions.replace = function (reg, type) {
 		Scope.Actions.status(reg, WikiaEditor.getInstance().getEditbox().val().match(reg).length);
 		WikiaEditor.getInstance().getEditbox().val(WikiaEditor.getInstance().getEditbox().val().replace(reg, txtoreplace));
 	}
-	$('#sc-operator').css({width: '99px'})
-	$('#sc-operator').after(' <a href="javascript:Scope.Actions.undo()"><img src="https://github.com/Kangaroopower/Scope/raw/master/undo.png" style="vertical-align:middle;"/></a>');
+	$('#sc-operator').css({width: '99px'});
+	if (!$('#sc-undo')) $('#sc-operator').after('<a id="sc-undo" href="javascript:Scope.Actions.undo()"><img src="https://github.com/Kangaroopower/Scope/raw/master/undo.png" style="vertical-align:middle;"/></a>');
 	Scope.Actions.find();
 };
 
@@ -119,6 +119,7 @@ Scope.Actions.undo = function () {
 		$("#sc-status").html('Undid last replace!');
 		Scope.Actions.undotext = null;
 		Scope.Actions.synch();
+		$('#sc-undo').hide();
 	} else {
 		$("#sc-status").html('Could not undo last replace!');
 	}
