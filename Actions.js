@@ -9,7 +9,7 @@ Scope.Actions.replace = function (reg, type) {
 	if ($("#sc-op option:selected").val() === "and") {
 		var rne = WikiaEditor.getInstance().getEditbox().val().match(reg[0]).length,
 			rwo = WikiaEditor.getInstance().getEditbox().val().match(reg[1]).length;
-		for(var  i=0 ; i < reg.length; i+ ) {
+		for(var  i=0 ; i < reg.length; i++ ) {
 			WikiaEditor.getInstance().getEditbox().val(WikiaEditor.getInstance().getEditbox().val().replace(reg[i], txtoreplace));
 		}
 		Scope.Actions.status([reg[0], reg[1]], [rne, rwo]);
