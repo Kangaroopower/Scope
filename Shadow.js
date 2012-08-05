@@ -7,6 +7,7 @@
 	'numTraversed': 0
 };
 var m;
+
 Scope.Shadow.init = function () {
 	WikiaEditor.getInstance().getEditbox().after('<div id="sc-shadow" style="left: 0px; top: 0px; border: 0px none; display: block; outline: none medium; margin: 0px; padding: 0px; resize: none; position: absolute; z-index: 0; font-family: Consolas, Eupheima UCAS, Ayuthaya, Menlo, monospace; font-size: 14px; line-height: normal; white-space: pre-wrap; background-color: transparent; color: transparent; overflow: auto; height: 529px; "></div>');
 	var commonCSS = {
@@ -25,7 +26,7 @@ Scope.Shadow.init = function () {
 	WikiaEditor.getInstance().getEditbox().click (Scope.Shadow.synch);
 	Scope.Shadow.synch();
 };
- 
+
 Scope.Shadow.synch = function() {
 	console.log('synching');
 	Scope.Shadow.matches = [];
@@ -38,9 +39,9 @@ Scope.Shadow.synch = function() {
 			});
 			Scope.Shadow.regex.lastIndex = m.index + m[0].length;
 		}
-		$('#sc-status').html('found ' + Scope.Shadow.matches.length + ' matches');
+		$('#sc-count').html(Scope.Shadow.matches.length + ' matches');
 	} else {
-		$('#sc-status').html('&nbsp;');
+		$('#sc-count').html('&nbsp;');
 	}
 	$('#sc-shadow').html(function () {
 		var s = WikiaEditor.getInstance().getEditbox().val();
@@ -52,14 +53,14 @@ Scope.Shadow.synch = function() {
 		}
 		if (s.substr(start+1).length > 0) {
 			r += s.substr(start+1);
-		}
-		return r.length ? r : s;
+		} 
+			return r.length ? r : s;
 	});
 	$('#sc-shadow').css('height', WikiaEditor.getInstance().getEditbox().height()); 
 	$('#sc-shadow').css('width', WikiaEditor.getInstance().getEditbox().width());
 	$('#sc-shadow').scrollTop(WikiaEditor.getInstance().getEditbox().scrollTop());
 };
- 
+
 Scope.Shadow.highlight = function(high) {
 	if (-1 !== Scope.Shadow.highlighted) {
 		$('#sc' + Scope.Shadow.highlighted).css({backgroundColor:'#700066'});
@@ -74,10 +75,10 @@ Scope.Shadow.highlight = function(high) {
 	if (!Scope.Shadow.matches[high].traversed) {
 		Scope.Shadow.matches[high].traversed = true;
 		Scope.Shadow.numTraversed++;
-		$('#sc-status').html('match ' + Scope.Shadow.numTraversed + ' of ' + Scope.Shadow.matches.length);
+		$('#sc-count').html(Scope.Shadow.numTraversed + ' of ' + Scope.Shadow.matches.length);
 	} 
 };
- 
+
 Scope.Shadow.next = function  () {
 	if (!Scope.Shadow.matches.length) return;
 	WikiaEditor.getInstance().getEditbox().focus();
@@ -91,7 +92,7 @@ Scope.Shadow.next = function  () {
 	}
 	Scope.Shadow.highlight(n);
 };
- 
+
 Scope.Shadow.prev = function  () {
 	if (!Scope.Shadow.matches.length) return;
 	WikiaEditor.getInstance().getEditbox().focus();
@@ -105,5 +106,3 @@ Scope.Shadow.prev = function  () {
 	}
 	Scope.Shadow.highlight(p);
 };
-
-window.FindReplace.registerModule("Shadow", {});
