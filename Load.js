@@ -13,7 +13,7 @@ $('document').ready(function( ) {
 	
 	//Base for functions
 	window.Scope = {
-		version: "2.63.7 Dev",
+		version: "2.74 Dev",
 		editorloaded: false,
 		librariesready: false,
 		libraries: {
@@ -28,7 +28,7 @@ $('document').ready(function( ) {
 		},
 		active: false
 	};
-	var Scope = window.Scope;
+	var Scope = window.Scope, sctextarea;
 
 		Scope.waitForEditor = function () {
 			if (wgAction === "edit" && wgCanonicalNamespace !== ("Message_Wall" || "Thread") ) {
@@ -39,6 +39,7 @@ $('document').ready(function( ) {
 						}, 500);
 					return;
 				} else {
+					sctextarea = WikiaEditor.getInstance().getEditbox();
 					Scope.editorloaded = true;
 					Scope.loadLibraries();
 					console.log('Scope: Editor Loaded');
@@ -80,26 +81,19 @@ $('document').ready(function( ) {
 			} else {
 				$('span.cke_toolbar_expand').before('<a style="cursor:pointer;" onclick="Scope.GUI.initiate();"><img title="Replace" src="http://images2.wikia.nocookie.net/__cb20120415071129/central/images/7/71/Replace.png"></a>');	
 				console.log('Scope: Modules Loaded');
-				console.log('Loaded: Scope');
+				console.log('Loaded: Scope', Scope.version);
 			}
 		};
 
 	var isCtrl = false;
 	$(document).keyup(function (e) {
-		if(e.which === 17) { 
-			isCtrl = false;
-		}
+		if(e.which === 17) isCtrl = false;
 	}).keydown(function (e) {
-		if(e.which === 17) { 
-			isCtrl = true;
-		}
+		if(e.which === 17) isCtrl = true;
 		if(e.which === 32 && isCtrl === true) {
 			e.preventDefault();
-			if (Scope.active === true) {
-				Scope.GUI.close();
-			} else {
-				Scope.GUI.initiate();
-			}
+			if (Scope.active === true) Scope.GUI.close();
+			else Scope.GUI.initiate();
 		}
 	});
 
