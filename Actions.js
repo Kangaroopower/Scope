@@ -3,25 +3,33 @@ Scope.Actions = {
 	undotext: null,
 	operator: null
 };
-Scope.Actions.replace = function (reg, type) {
+Scope.Actions.replace = function (reg, rall) {
 	var txtoreplace = $('#sc-replace-text').val();
-	Scope.Actions.undotext = WikiaEditor.getInstance().getEditbox().val();
+	Scope.Actions.undotext = sctextarea.val();
 	if ($("#sc-op option:selected").val() === "and") {
-		var rne = WikiaEditor.getInstance().getEditbox().val().match(reg[0]).length,
-			rwo = WikiaEditor.getInstance().getEditbox().val().match(reg[1]).length;
-		for(var  j=0 ; i < reg.length; j++ ) WikiaEditor.getInstance().getEditbox().val(WikiaEditor.getInstance().getEditbox().val().replace(reg[j], txtoreplace));
-		Scope.Actions.status([reg[0], reg[1]], [rne, rwo]);
+		var rne = sctextarea.val().match(reg[0]).length,
+			rwo = sctextarea.val().match(reg[1]).length;
+		for(var  j=0; j < reg.length; j++ ) sctextarea.val(sctextarea.val().replace(reg[j], txtoreplace));
+		Scope.Actions.status([rne, rwo]);
 	} else {
-		Scope.Actions.status(reg, WikiaEditor.getInstance().getEditbox().val().match(reg).length);
-		WikiaEditor.getInstance().getEditbox().val(WikiaEditor.getInstance().getEditbox().val().replace(reg, txtoreplace));
+		if (rall === true) {
+			Scope.Actions.status(sctextarea.val().match(reg).length);
+			sctextarea.val(sctextarea.val().replace(reg, txtoreplace));
+		} else {
+			var sel = sctextarea.getSelection();
+			if (sel.text === "") sctextarea.val(sctextarea.val().replace(reg, txtoreplace));
+			else if (sel && reg.test(sctextarea.val().substring(sel.start, sel.end))) sctextarea.val(sctextarea.val().substring(0, sel.start) + txtoreplace + sctextarea.val().substring(sel.end));
+			Scope.Shadow.next();
+			Scope.Actions.status(1);
+		}
 	}
 	$('#sc-operator').css({width: '99px'});
-	if (!$('#sc-undo')) $('#sc-operator').after('<a id="sc-undo" href="javascript:Scope.Actions.undo()"><img src="https://github.com/Kangaroopower/Scope/raw/master/undo.png" style="vertical-align:middle;"/></a>');
+	if (!document.querySelector('#sc-undo')) $('#sc-operator').after('<a id="sc-undo" href="javascript:Scope.Actions.undo()"><img src="https://github.com/Kangaroopower/Scope/raw/master/undo.png" style="vertical-align:middle;"/></a>');
 	Scope.Actions.find();
 };
 
 
-Scope.Actions.status = function (word, number) {
+Scope.Actions.status = function (number) {
 	var scfind = $('#sc-find-text').val();
 	if ($("#sc-op option:selected").val() === "and") {
 			if (number[0] === null) number[0] = "no";
@@ -38,8 +46,7 @@ Scope.Actions.status = function (word, number) {
 };
 
 Scope.Actions.find = function () {
-	var regex,
-		rawtxtofind = $('#sc-find-text').val();
+	var regex, rawtxtofind = $('#sc-find-text').val();
 	if (rawtxtofind !== "") regex = Scope.Actions.evaluate(true);
 	else regex = null;
 	$('#sc-find-prev').attr('disabled', null === regex);
@@ -98,9 +105,9 @@ Scope.Actions.evaluate = function (rall, find) {
 
 
 Scope.Actions.params = function (rall) {
-	if (rall !== "undefined") {
+	if (rall === "rall") {
 		if ($('#sc-operator').val() !== "" && $("#sc-op option:selected").val() === 'and') Scope.Actions.replace([Scope.Actions.evaluate(true), Scope.Actions.evaluate(true, true)]);
-		else Scope.Actions.replace(Scope.Actions.evaluate(true));
+		else Scope.Actions.replace(Scope.Actions.evaluate(true), true);
 	} else {
 		if ($('#sc-operator').val() !== "" && $("#sc-op option:selected").val() === 'and') Scope.Actions.replace([Scope.Actions.evaluate(),Scope.Actions.evaluate(false, true)]);
 		else Scope.Actions.replace(Scope.Actions.evaluate());
@@ -113,10 +120,10 @@ Scope.Actions.escape = function (s) {
 
 Scope.Actions.undo = function () {
 	if (Scope.Actions.undotext !== null) {
-		WikiaEditor.getInstance().getEditbox().val(Scope.Actions.undotext);
+		sctextarea.val(Scope.Actions.undotext);
 		$("#sc-status").html('Undid last replace!');
 		Scope.Actions.undotext = null;
-		Scope.Actions.synch();
+		Scope.Shadow.synch();
 		$('#sc-undo').hide();
 	} else {
 		$("#sc-status").html('Could not undo last replace!');
