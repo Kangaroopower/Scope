@@ -21,7 +21,7 @@ Scope.GUI.initiate = function () {
 		});
 		$('#sc-find-text').focus();
 		Scope.Shadow.init();
-		$('#sc-find-text').val(WikiaEditor.getInstance().getEditbox().getSelection().text);
+		$('#sc-find-text').val(sctextarea.getSelection().text);
 	}
 };
  
@@ -33,7 +33,7 @@ Scope.GUI.close = function () {
 	Scope.Actions.undotext = null;
 	Scope.Shadow.synch(); 
 	$('#sc-shadow').remove();
-	var eh = WikiaEditor.getInstance().getEditbox().height();
-	WikiaEditor.getInstance().getEditbox().removeAttr('style')
-	WikiaEditor.getInstance().getEditbox().css({height: eh});
+	var eh = sctextarea.height();
+	sctextarea.removeAttr('style');
+	sctextarea.css({height: eh});
 };
