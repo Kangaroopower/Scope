@@ -15,7 +15,6 @@ $('document').ready(function( ) {
 	window.Scope = {
 		version: "3.0 Dev",
 		libraries: {
-			'jQueryUI': '//ajax.googleapis.com/ajax/libs/jqueryui/1.8.22/jquery-ui.min.js',
 			'TextInputs': 'http://dev.wikia.com/index.php?title=textinputs_jquery.js&action=raw&ctype=text/javascript',
 			'Dialog': 'http://kangaroopower.wikia.com/index.php?title=MediaWiki:Scope.js/gui.js&action=raw&ctype=text/javascript'
 		},
@@ -43,7 +42,10 @@ $('document').ready(function( ) {
 				} else console.log('Cannot detect editor');
 			} else if (window.CKEDITOR) {
 				CKEDITOR.on('instanceReady', function () {
-					RTE.getInstance().on('wysiwygModeReady',Scope.GUI.close());
+					RTE.getInstance().on('wysiwygModeReady', function () {
+						$('#sc-shadow, #sc-ui').remove();
+						sctxtarea.removeAttr('style');
+					});
 					RTE.getInstance().on('sourceModeReady',Scope.Sequencer('editor').loaded());
 				});
 			} else if (window.WikiaEditor) {
@@ -75,15 +77,6 @@ $('document').ready(function( ) {
 			Scope.Sequencer('modules').loaded();
 			console.log('Loaded: Scope', Scope.version);
 		}());
-
-	/* Keyboard Shortcuts- Ctrl + Space to open and close the dialog */
-	$(document).keydown(function (e) {
-		if (e.which === 32 && e.ctrlKey) {
-			e.preventDefault();
-			if (document.querySelector('#sc-ui')) Scope.GUI.close();
-			else Scope.GUI.initiate();
-		}
-	});
 
 	if (wgAction === 'edit') $(document).ready(Scope.waitForEditor);
 });
