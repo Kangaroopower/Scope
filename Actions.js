@@ -1,6 +1,6 @@
 /* Actions */
  
-/* Replaces text */
+/* Does the replace */
 Scope.replace = function (rall) {
 	var replacetxt = $('#sc-replace-text').val(),
 		undotext = sctxtarea.val();
