@@ -19,9 +19,9 @@ $('document').ready(function( ) {
 			'Dialog': 'http://kangaroopower.wikia.com/index.php?title=MediaWiki:Scope.js/gui.js&action=raw&ctype=text/javascript'
 		},
 		modules: {
-			'Actions', 'https://raw.github.com/Kangaroopower/FindReplace/master/Actions.js',
-			'GUI', 'https://raw.github.com/Kangaroopower/FindReplace/master/Gui.js',
-			'Shadow', 'https://raw.github.com/Kangaroopower/FindReplace/master/Shadow.js'
+			'Actions', '/Kangaroopower/Scope/master/Actions.js',
+			'GUI', '/Kangaroopower/Scope/master/Gui.js',
+			'Shadow', '/Kangaroopower/Scope/master/Shadow.js'
 		},
 		Shadow: {
 			'matches': [],
