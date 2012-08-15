@@ -22,11 +22,6 @@ $('document').ready(function( ) {
 			'Actions', '/Kangaroopower/Scope/master/Actions.js',
 			'GUI', '/Kangaroopower/Scope/master/Gui.js',
 			'Shadow', '/Kangaroopower/Scope/master/Shadow.js'
-		},
-		Shadow: {
-			'matches': [],
-			'highlighted': -1,
-			'nTrav': 0
 		}
 	};
 	//Vars
