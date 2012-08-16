@@ -1,5 +1,5 @@
 /**
- * Find and Replace 2.5
+ * Find and Replace 3.0
  * 
  * Creates a Find and Replace Module
  *

@@ -1,2 +1,1 @@
-A Find and Replace Script currently only for mediawiki. This will eventually become a script that can be called with 
-a few arguments and be usable in any textarea, anywhere on the Web.
+A Find and Replace Script for mediawiki. Comes with match highlighting, case sensitive/insensitve replaces, replace all and replace one features and a sleek UI.

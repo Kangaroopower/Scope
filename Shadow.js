@@ -45,8 +45,8 @@
 					$('#sc' + (high + 1)).css({backgroundColor:'#700066'});
 				}
 				sctxtarea.setSelection(matches[high], matches[high] + scfind.length);
-				if (nTrav === matches.length) ns.numTraversed = 0;
-				ns.numTraversed++;
+				if (nTrav === matches.length) nTrav = 0;
+				nTrav++;
 				$('#sc-count').html(nTrav + ' of ' + matches.length);
 				highlighted = high;
 			};
