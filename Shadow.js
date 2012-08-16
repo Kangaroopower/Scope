@@ -6,7 +6,7 @@
 		console.log('synching');
 		var ref = 0;
 		matches = [];
-		while(text.regexIndexOf(scfind, ref) !== -1) {
+		while(text.indexOf(scfind, ref) !== -1) {
 			if (!$('input#sc-cs').is(':checked')) matches.push(sctextarea.val().toLowerCase().indexOf(scfind));
 			else ns.push(sctextarea.val().toLowerCase().indexOf(scfind));
 			ref = sctextarea.val().indexOf(scfind, ref) + 1;

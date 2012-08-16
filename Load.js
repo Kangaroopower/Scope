@@ -66,7 +66,7 @@ $('document').ready(function( ) {
 				else console.log('Cannot detect editor');
 			} else console.log('Cannot detect editor');
 		};
-
+		
 		/* Load libraries before modules */
 		Scope.Sequencer('editor').onload(function () {
 			sctxtarea = WikiaEditor.getInstance().getEditbox();
