@@ -26,12 +26,24 @@ $('document').ready(function( ) {
 	};
 	//Vars
 	var Scope = window.Scope, sctxtarea, sequence = {}, scfind = $('#sc-find').val();
-
+ 
+		/* Controls loading process */
+		Scope.Sequencer = function (name) {
+			if (!sequence[name]) {
+				var callbacks = $.Callbacks('memory unique');
+				sequence[name] = {
+					loaded: callbacks.fire,
+					onload: callbacks.add
+				};
+			}
+			return sequence[name];
+		}; 
+ 
 		/* Load editor before everything else (and make sure it's in source mode!)*/
 		Scope.load = function () {
 			if (window.RTE && RTE.getInstance && RTE.getInstance()) {
 				if ('source' === RTE.getInstance().mode) Scope.Sequencer('editor').loaded();
-				} else if ('wysiwyg' === RTE.getInstance().mode) {
+				else if (RTE.getInstance().mode === 'wysiwyg') {
 					$('#sc-shadow, #sc-ui').remove();
 					sctxtarea.removeAttr('style');
 				} else console.log('Cannot detect editor');
@@ -46,7 +58,7 @@ $('document').ready(function( ) {
 			} else if (window.WikiaEditor) {
 				if (WikiaEditor.getInstance && WikiaEditor.getInstance()) {
 					if ('source' === WikiaEditor.getInstance().mode) Scope.Sequencer('editor').loaded();
-					} else if ('wysiwyg' === WikiaEditor.getInstance().mode) {
+					else if ('wysiwyg' === WikiaEditor.getInstance().mode) {
 						$('#sc-shadow, #sc-ui').remove();
 						sctxtarea.removeAttr('style');
 					} else console.log('Cannot detect editor');
@@ -54,7 +66,7 @@ $('document').ready(function( ) {
 				else console.log('Cannot detect editor');
 			} else console.log('Cannot detect editor');
 		};
- 
+
 		/* Load libraries before modules */
 		Scope.Sequencer('editor').onload(function () {
 			sctxtarea = WikiaEditor.getInstance().getEditbox();
