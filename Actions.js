@@ -20,12 +20,5 @@ Scope.replace = function (rall) {
 		Scope.Shadow.highlight(true);
 		$("#sc-status").html('One replacement made!');
 	}
-	if (!document.querySelector('#sc-undo')) $('#sc-status').append('<img id="sc-undo"src="https://github.com/Kangaroopower/Scope/raw/master/undo.png" style="vertical-align:middle;"/>');
-	$('#sc-undo').click(function () {
-		sctxtarea.val(undotext);
-		$("#sc-status").html('Undid last replace!');
-		Scope.Shadow.synch();
-		$('#sc-undo').hide();				
-	});
 	Scope.Shadow.synch();
 };
