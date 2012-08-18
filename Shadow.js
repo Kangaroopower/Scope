@@ -6,13 +6,13 @@
 		console.log('synching');
 		var ref = 0;
 		matches = [];
-		while(text.indexOf(scfind, ref) !== -1) {
-			if (!$('input#sc-cs').is(':checked')) matches.push(sctextarea.val().toLowerCase().indexOf(scfind));
-			else ns.push(sctextarea.val().toLowerCase().indexOf(scfind));
-			ref = sctextarea.val().indexOf(scfind, ref) + 1;
+		while(scfind.indexOf(scfind, ref) !== -1) {
+			if (!$('input#sc-cs').is(':checked')) matches.push(sctxtarea.val().toLowerCase().indexOf(scfind));
+			else ns.push(sctxtarea.val().toLowerCase().indexOf(scfind));
+			ref = sctxtarea.val().indexOf(scfind, ref) + 1;
 		}
 		$('#sc-shadow').html(function () {
-			var r = '', s = sctextarea.val();
+			var r = '', s = sctxtarea.val();
 			for (var i = 0, start = 0; i < matches.length; i++) {
 				r += s.substr(start, matches[i] - start);
 				start = matches[i] + scfind.length;
@@ -27,26 +27,21 @@
 	};
 
 	//Does the actual match highlighting
-	ns.highlight = function (next) {
-		var high;
+	ns.highlight = function (high) {
 		if (!matches.length) return;
 		sctxtarea.focus();
-		if (typeof high === "undefined") high = 0;
-		if (next === true) {
-			if (high === matches.length) high = 0; 
-			else high++;
-			$('#sc' + high).css({backgroundColor:'#0000FF'});
-			$('#sc' + (high + 1)).css({backgroundColor:'#700066'});
-		} else {
-			if (high === 0) high = matches.length;
-			else high--;
-			$('#sc' + high).css({backgroundColor:'#0000FF'});
-			$('#sc' + (high + 1)).css({backgroundColor:'#700066'});
-		}
+		$('#sc' + high).css({backgroundColor:'#0000FF'});
+		highlighted = high;
 		sctxtarea.setSelection(matches[high], matches[high] + scfind.length);
 		if (nTrav === matches.length) nTrav = 0;
 		nTrav++;
 		$('#sc-count').html(nTrav + ' of ' + matches.length);
-		highlighted = high;
 	};
+
+	//This exists because I am lazy... integrate into highlight
+	ns.dir = function  (next) {
+		if (next === true) for (var n = 0; n < matches.length; n++) if (sel.end < matches[n] + matches[n].length) Scope.Shadow.highlight(n);
+		else for (var p = matches.length-1; p >= 0; p--) if (sel.start > matches[p]) Scope.Shadow.highlight(p);
+	};
+
 })(Scope.Shadow = Scope.Shadow || {});
