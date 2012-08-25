@@ -1,7 +1,7 @@
 /* Does the replace */
-Scope.replace = function (rall) {
+$.sub('replace', function () {
 	var replacetxt = $('#sc-replace-text').val(), undotext = sctxtarea.val();
-	if (rall === true) {
+	if ($('input#sc-rall').is(':checked')) {
 		var matchIndex = sctxtarea.val().indexOf(scfind), count = 0;
 		while (matchIndex !== -1) {
 			if (!$('input#sc-cs').is(':checked')) sctxtarea.val(sctxtarea.val().toLowerCase().replace(scfind, replacetxt));
@@ -18,12 +18,12 @@ Scope.replace = function (rall) {
 		Scope.Shadow.dir(true);
 		$("#sc-status").html('One replacement made!');
 	}
-	if (!document.querySelector('#sc-undo')) $('#sc-status').append('<img id="sc-undo"src="https://github.com/Kangaroopower/Scope/raw/master/undo.png" style="vertical-align:middle;"/>');
+	if (!document.querySelector('#sc-undo')) $('#sc-status').append('<img id="sc-undo"src="https://github.com/Kangaroopower/Scope/raw/master/undo.png"/>');
 	$('#sc-undo').click(function () {
 		sctxtarea.val(undotext);
 		$("#sc-status").html('Undid last replace!');
-		Scope.Shadow.synch();
-		$('#sc-undo').hide();				
+		$.pub('synch');
+		$('#sc-undo').hide();
 	});
-	Scope.Shadow.synch();
-};
+	$.pub('synch');
+});
