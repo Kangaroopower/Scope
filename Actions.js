@@ -21,7 +21,7 @@ $.sub('replace', function () {
 	if (!$('#sc-undo').length) $('#sc-replace-text').append('<img id="sc-undo"src="'+root+'undo.png"/>');
 	$('#sc-undo').click(function () {
 		sctxt.val(undotext);
-		$("#sc-count").html('Undone!').attr('title', '');;
+		$("#sc-count").html('Undone!').attr('title', '');
 		$.pub('synch');
 		$('#sc-undo').hide();
 	});

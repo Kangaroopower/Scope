@@ -57,7 +57,7 @@ $('document').ready(function( ) {
 			else $.pub('close');
 		} else if (window.CKEDITOR) {
 			CKEDITOR.on('instanceReady', function () {
-				RTE.getInstance().on('wysiwygModeReady', $.pub('close'););
+				RTE.getInstance().on('wysiwygModeReady', $.pub('close'));
 				RTE.getInstance().on('sourceModeReady', $.pub('editor'));
 			});
 		} else if (window.WikiaEditor) {

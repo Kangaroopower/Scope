@@ -29,7 +29,7 @@ $.sub('next', function  () {
 	if (!matches.length) return;
 	sctxt.focus();
 	for (var n = 0; n < matches.length; n++) {
-		if (sel.end < matches[n] + matches[n]l.ength) {
+		if (sel.end < matches[n] + matches[n].length) {
 			$('#sc' + n).css({backgroundColor:'#0000FF'});
 			sctxt.setSelection(matches[n], matches[n] + scfind.length);
 		}
