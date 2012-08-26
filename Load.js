@@ -13,8 +13,8 @@ $('document').ready(function( ) {
 	window.Scope = {
 		version: "3.0 Dev",
 		libraries: {
-			'TextInputs': 'http://dev.wikia.com/index.php?title=textinputs_jquery.js&action=raw&ctype=text/javascript',
-			'Dialog': 'http://kangaroopower.wikia.com/index.php?title=MediaWiki:Scope.js/gui.js&action=raw&ctype=text/javascript'
+			'TextInputs': '/Kangaroopower/Scope/master/Rangy.js',
+			'Dialog': '/Kangaroopower/Scope/master/Dialog.js',
 		},
 		modules: {
 			'Actions', '/Kangaroopower/Scope/master/Actions.js',
