@@ -1,27 +1,27 @@
 /* Does the replace */
 $.sub('replace', function () {
-	var replacetxt = $('#sc-replace-text').val(), undotext = sctxtarea.val();
-	if ($('input#sc-rall').is(':checked')) {
-		var matchIndex = sctxtarea.val().indexOf(scfind), count = 0;
+	var replacetxt = $('#sc-replace-text').val(), s = sctxt.val(), undotext = s;
+	if ($('#sc-rall').is(':checked')) {
+		var matchIndex = s.indexOf(scfind), count = 0;
 		while (matchIndex !== -1) {
-			if (!$('input#sc-cs').is(':checked')) sctxtarea.val(sctxtarea.val().toLowerCase().replace(scfind, replacetxt));
-			else sctxtarea.val(sctxtarea.val().replace(scfind, replacetxt));
-			matchIndex = sctxtarea.val().indexOf(scfind);
+			if (!$('#sc-cs').is(':checked')) sctxt.val(s.toLowerCase().replace(scfind, replacetxt));
+			else sctxt.val(s.replace(scfind, replacetxt));
+			matchIndex = s.indexOf(scfind);
 			count++;
 		}
 		if (count === 1) count = "One";
-		$("#sc-status").html(count + ' replacement(s) made!');
+		$("#sc-count").html('Done!').attr('title', count + ' replacement(s) made!');
 	} else {
-		if (!$('input#sc-cs').is(':checked')) sctxtarea.val(sctxtarea.val().toLowerCase().replace(scfind, replacetxt));
-		if (sel.text === "") sctxtarea.val(sctxtarea.val().replace(scfind, replacetxt));
-		else if (sel && scfind.test(sctxtarea.val().substring(sel.start, sel.end))) sctxtarea.val(sctxtarea.val().substring(0, sel.start) + replacetxt + sctxtarea.val().substring(sel.end));
-		Scope.Shadow.dir(true);
-		$("#sc-status").html('One replacement made!');
+		if (!$('#sc-cs').is(':checked')) sctxt.val(s.toLowerCase().replace(scfind, replacetxt));
+		if (sel.text === "") sctxt.val(s.replace(scfind, replacetxt));
+		else if (scfind.test(s.substring(sel.start, sel.end))) sctxt.val(s.substring(0, sel.start) + replacetxt + s.substring(sel.end));
+		$.pub('next');
+		$("#sc-count").html('Done!').attr('title', 'One replacement made!');
 	}
-	if (!document.querySelector('#sc-undo')) $('#sc-status').append('<img id="sc-undo"src="https://github.com/Kangaroopower/Scope/raw/master/undo.png"/>');
+	if (!$('#sc-undo').length) $('#sc-replace-text').append('<img id="sc-undo"src="'+root+'undo.png"/>');
 	$('#sc-undo').click(function () {
-		sctxtarea.val(undotext);
-		$("#sc-status").html('Undid last replace!');
+		sctxt.val(undotext);
+		$("#sc-count").html('Undone!').attr('title', '');;
 		$.pub('synch');
 		$('#sc-undo').hide();
 	});
