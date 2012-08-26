@@ -43,9 +43,7 @@ $(document).ready(function( ) {
 		});
 		$.extend({
 			pub: function (topic) {
-				var parameters = [];
-				for (var i = 1; i < arguments.length; i++) parameters.push(arguments[i]);
-				subs[topic] && $.each(subs[topic], this.callback.apply(this.subscriber, parameters));
+				subs[topic] && $.each(subs[topic], this.callback.apply(this.subscriber, topic));
 			}
 		});
 	})();
