@@ -72,7 +72,7 @@ $(function( ) {
 	});
 	/* Load libraries before actual script */
 	$.sub('editor', function () {
-		for (var i in Scope.libraries) $.getScript(Scope.libraries[i], console.log('Scope: '+i+' loaded');
+		for (var i in Scope.libraries) $.getScript(Scope.libraries[i], console.log('Scope: '+i+' loaded'));
 		sctxt = WikiaEditor.getInstance().getEditbox();
 		sel = sctxt.getSelection();
 		console.log('Scope: Editor Loaded');
@@ -81,7 +81,7 @@ $(function( ) {
 
 	/* Load modules before script */
 	$.sub('modules', function () {
-		for (var i in Scope.modules) $.getScript(Scope.modules[i], console.log('Scope: '+i+' loaded');
+		for (var i in Scope.modules) $.getScript(Scope.modules[i], console.log('Scope: '+i+' loaded'));
 		$('span.cke_toolbar_expand').before('<img id="sc-start" src="'+root+'/util/Replace.png"/>');
 		$('#sc-start').click($.pub('open'));
 		console.log('Loaded: Scope', Scope.version);

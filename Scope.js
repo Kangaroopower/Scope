@@ -64,7 +64,7 @@ $(function () {
 		sctxt = WikiaEditor.getInstance().getEditbox();
 		sel = sctxt.getSelection();
 		console.log('Scope: Editor Loaded');
-		for (var i in Scope.libraries) $.getScript(Scope.libraries[i], console.log('Scope: '+i+' loaded');
+		for (var i in Scope.libraries) $.getScript(Scope.libraries[i], console.log('Scope: '+i+' loaded'));
 		$('span.cke_toolbar_expand').before('<img id="sc-start" src="'+root+'/util/Replace.png"/>');
 		$('#sc-start').click($.pub('open'));
 		console.log('Loaded: Scope', Scope.version);
