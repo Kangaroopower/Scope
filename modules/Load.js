@@ -47,7 +47,7 @@ $(function( ) {
 				var params = [];
 				for (var i = 0; i < arguments.length; i++) params.push(arguments[i]);
 				subs[topic] && $.each(subs[topic], function () {
-					this.callback.apply(this.subscriber, parameters);
+					this.callback.apply(this.subscriber, params);
 				});
 			}
 		});

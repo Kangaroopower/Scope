@@ -6,7 +6,7 @@ $.sub('open', function () {
 		$('#sc-cog').click(function (e) {
 			e.preventDefault();
 			if ($('##sc-drop').css('display') === 'none') $('#sc-drop').show();
-			else $('#sc-drop').hide()
+			else $('#sc-drop').hide();
 		});
 		$('#sc-count').tooltip();
 		if (matches.length) $('#sc-down').css({cursor: 'pointer'});

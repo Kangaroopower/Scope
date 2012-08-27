@@ -35,7 +35,7 @@ $(function () {
 				var params = [];
 				for (var i = 0; i < arguments.length; i++) params.push(arguments[i]);
 				subs[topic] && $.each(subs[topic], function () {
-					this.callback.apply(this.subscriber, parameters);
+					this.callback.apply(this.subscriber, params);
 				});
 			}
 		});
@@ -78,7 +78,7 @@ $(function () {
 			$('#sc-cog').click(function (e) {
 				e.preventDefault();
 				if ($('##sc-drop').css('display') === 'none') $('#sc-drop').show();
-				else $('#sc-drop').hide()
+				else $('#sc-drop').hide();
 			});
 			$('#sc-count').tooltip();
 			if (matches.length) $('#sc-down').css({cursor: 'pointer'});
