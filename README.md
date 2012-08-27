@@ -3,7 +3,7 @@ This is a Find and Replace Script for wikia. It comes with match highlighting, c
 replaces, replace all/one features and a sleek UI.
 
 ##Warning
-Because Scope is approaching it's 3.0 release, this has turned into the alpha channel for the code. 
+Because Scope is approaching it's 3.0 release, this has turned into the alpine (alpha) channel for the code. 
 The program may be buggy and is in very active development so what you see today may be completely different tommorow. 
 To use the beta and stable versions of the script, visit [the official code page](http://kangaroopower.wikia.com/wiki/Scope).
 

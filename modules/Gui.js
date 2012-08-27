@@ -8,6 +8,7 @@ $.sub('open', function () {
 			if ($('##sc-drop').css('display') === 'none') $('#sc-drop').show();
 			else $('#sc-drop').hide()
 		});
+		$('#sc-count').tooltip();
 		if (matches.length) $('#sc-down').css({cursor: 'pointer'});
 		$('#sc-find, #sc-cs, '+ sctxt).on('keyup paste', $.pub('synch'));
 		$('#sc-find').val(sel.text).focus();

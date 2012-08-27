@@ -12,21 +12,22 @@ $(function( ) {
 	var sctxt, sel, scfind = $('#sc-find').val(), matches = [], root ='https://raw.github.com/Kangaroopower/Scope/master/';
 
 	//Base for functions
-	var Scope = {
-		version: "3.0 Dev",
+	window.Scope = {
+		version: "3.0 Alpha",
 		libraries: {
-			'TextInputs': root+'Rangy.js',
-			'Dialog': root+'Dialog.js',
+			'TextInputs': root+'/lib/Rangy.js',
+			'Dialog': root+'/lib/Dialog.js',
 			'jQueryUI': '//ajax.googleapis.com/ajax/libs/jqueryui/1.8.23/jquery-ui.min.js',
 			'Tooltip': 'http://view.jqueryui.com/master/ui/jquery.ui.tooltip.js'
 		},
 		modules: {
-			'Actions': root+'Actions.js',
-			'GUI': root+'Gui.js',
-			'Shadow': root+'Shadow.js'
+			'Actions': root+'/modules/Actions.js',
+			'GUI': root+'/modules/Gui.js',
+			'Shadow': root+'/modules/Shadow.js'
 		}
 	};
 
+	var Scope = window.Scope;
 
 	/* Controls loading process */
 	(function () {
@@ -71,7 +72,7 @@ $(function( ) {
 	});
 	/* Load libraries before actual script */
 	$.sub('editor', function () {
-		for (var i in Scope.libraries) $.getScript(Scope.libraries[i]);
+		for (var i in Scope.libraries) $.getScript(Scope.libraries[i], $.log('Scope: '+i+' loaded'));
 		sctxt = WikiaEditor.getInstance().getEditbox();
 		sel = sctxt.getSelection();
 		console.log('Scope: Editor Loaded');
@@ -80,8 +81,8 @@ $(function( ) {
 
 	/* Load modules before script */
 	$.sub('modules', function () {
-		for (var i in Scope.modules) $.getScript(Scope.modules[i]);
-		$('span.cke_toolbar_expand').before('<img id="sc-start" src="'+root+'Replace.png"/>');
+		for (var i in Scope.modules) $.getScript(Scope.modules[i], $.log('Scope: '+i+' loaded'));
+		$('span.cke_toolbar_expand').before('<img id="sc-start" src="'+root+'/util/Replace.png"/>');
 		$('#sc-start').click($.pub('open'));
 		console.log('Loaded: Scope', Scope.version);
 	});

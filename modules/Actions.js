@@ -18,7 +18,7 @@ $.sub('replace', function () {
 		$.pub('next');
 		$("#sc-count").html('Done!').attr('title', 'One replacement made!');
 	}
-	if (!$('#sc-undo').length) $('#sc-replace-text').append('<img id="sc-undo"src="'+root+'undo.png"/>');
+	if (!$('#sc-undo').length) $('#sc-replace-text').append('<img id="sc-undo"src="'+root+'/util/undo.png"/>');
 	$('#sc-undo').click(function () {
 		sctxt.val(undotext);
 		$("#sc-count").html('Undone!').attr('title', '');
