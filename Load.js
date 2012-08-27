@@ -32,7 +32,7 @@ $(document).ready(function( ) {
 	(function () {
 		var subs = {};
 		$.fn.extend({
-			subscribe: function (topic, callback) {
+			sub: function (topic, callback) {
 				if (!subs[topic]) subs[topic] = [];
 				subs[topic].push({
 					subscriber: this,
@@ -42,7 +42,7 @@ $(document).ready(function( ) {
 			}
 		});
 		$.extend({
-			publish: function (topic) {
+			pub: function (topic) {
 				var params = [];
 				for (var i = 0; i < arguments.length; i++) params.push(arguments[i]);
 				subs[topic] && $.each(subs[topic], function () {
