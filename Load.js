@@ -7,7 +7,7 @@
  * @Shadow author Pecoes
  *
  */
-$(document).ready(function( ) {
+$(function( ) {
 	//Meta Vars
 	var sctxt, sel, scfind = $('#sc-find').val(), matches = [], root ='https://raw.github.com/Kangaroopower/Scope/master/';
 

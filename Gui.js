@@ -3,6 +3,11 @@ $.sub('open', function () {
 	if (document.querySelector('#sc-ui')) $.pub('close');
 	else {
 		$('.cke_toolbar_expand').after(Scope.dialog);
+		$('#sc-cog').click(function (e) {
+			e.preventDefault();
+			if ($('##sc-drop').css('display') === 'none') $('#sc-drop').show();
+			else $('#sc-drop').hide()
+		});
 		if (matches.length) $('#sc-down').css({cursor: 'pointer'});
 		$('#sc-find, #sc-cs, '+ sctxt).on('keyup paste', $.pub('synch'));
 		$('#sc-find').val(sel.text).focus();
