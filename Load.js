@@ -30,7 +30,7 @@ $(document).ready(function( ) {
 
 	/* Controls loading process */
 	(function () {
-		var subs;
+		var subs = {};
 		$.fn.extend({
 			sub: function (topic, callback) {
 				if (!subs[topic]) subs[topic] = [];
@@ -43,7 +43,7 @@ $(document).ready(function( ) {
 		});
 		$.extend({
 			pub: function (topic) {
-				subs[topic] && $.each(subs[topic], this.callback.apply(this.subscriber, topic));
+				$.each(subs[topic], this.callback.apply(this.subscriber, topic));
 			}
 		});
 	})();
