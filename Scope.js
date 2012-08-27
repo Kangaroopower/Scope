@@ -20,7 +20,7 @@ $(function () {
 	/* Controls loading process */
 	(function () {
 		var subs = {};
-		$.extend({
+		$.fn.extend({
 			sub: function (topic, callback) {
 				if (!subs[topic]) subs[topic] = [];
 				subs[topic].push({
