@@ -9,7 +9,7 @@
  */
 $(function( ) {
 	//Meta Vars
-	var sctxt, sel, scfind = $('#sc-find').val(), matches = [], root ='https://raw.github.com/Kangaroopower/Scope/master/';
+	var sctxt, sel, scfind = $('#sc-find').val(), matches = [], root ='https://raw.github.com/Kangaroopower/Scope/master';
 
 	//Base for functions
 	window.Scope = {
