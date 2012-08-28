@@ -17,8 +17,7 @@ $(function( ) {
 		libraries: {
 			'TextInputs': root+'/lib/Rangy.js',
 			'Dialog': root+'/lib/Dialog.js',
-			'jQueryUI': '//ajax.googleapis.com/ajax/libs/jqueryui/1.8.23/jquery-ui.min.js',
-			'Tooltip': 'http://view.jqueryui.com/master/ui/jquery.ui.tooltip.js'
+			'jQueryUI': 'http://code.jquery.com/ui/1.9.0-rc.1/jquery-ui.min.js'
 		},
 		modules: {
 			'Actions': root+'/modules/Actions.js',
@@ -45,7 +44,7 @@ $(function( ) {
 		$.extend({
 			pub: function (topic) {
 				var params = [];
-				for (var i = 0; i < arguments.length; i++) params.push(arguments[i]);
+				for (var i = 1; i < arguments.length; i++) params.push(arguments[i]);
 				subs[topic] && $.each(subs[topic], function () {
 					this.callback.apply(this.subscriber, params);
 				});

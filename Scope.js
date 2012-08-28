@@ -8,10 +8,7 @@ $(function () {
 		libraries: {
 			'TextInputs': root+'/lib/Rangy.js',
 			'Dialog': root+'/lib/Dialog.js',
-			'jQueryUI Core': 'http://view.jqueryui.com/master/ui/jquery.ui.core.js',
-			'jQueryUI Widget': 'http://view.jqueryui.com/master/ui/jquery.ui.widget.js',
-			'jQueryUI Position': 'http://view.jqueryui.com/master/ui/jquery.ui.position.js',
-			'Tooltip': 'http://view.jqueryui.com/master/ui/jquery.ui.tooltip.js'
+			'jQueryUI': 'http://code.jquery.com/ui/1.9.0-rc.1/jquery-ui.min.js'
 		}
 	};
 
@@ -33,7 +30,7 @@ $(function () {
 		$.extend({
 			pub: function (topic) {
 				var params = [];
-				for (var i = 0; i < arguments.length; i++) params.push(arguments[i]);
+				for (var i = 1; i < arguments.length; i++) params.push(arguments[i]);
 				subs[topic] && $.each(subs[topic], function () {
 					this.callback.apply(this.subscriber, params);
 				});
