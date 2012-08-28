@@ -5,7 +5,7 @@ $.sub('open', function () {
 		$('.cke_toolbar_expand').after(Scope.dialog);
 		$('#sc-cog').click(function (e) {
 			e.preventDefault();
-			if ($('##sc-drop').css('display') === 'none') $('#sc-drop').show();
+			if ($('#sc-drop').css('display') === 'none') $('#sc-drop').show();
 			else $('#sc-drop').hide();
 		});
 		$('#sc-count').tooltip();
