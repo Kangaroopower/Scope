@@ -1,5 +1,5 @@
 //Synchs shadow with the textarea
-$.sub('synch', function () {
+$.csub('synch', function () {
 	console.log('synching');
 	var ref = 0, s = sctxt.val();
 	matches = [];
@@ -24,7 +24,7 @@ $.sub('synch', function () {
 });
 
 //Highlights next match
-$.sub('next', function  () {
+$.csub('next', function  () {
 	var nTrav = 0;
 	if (!matches.length) return;
 	sctxt.focus();

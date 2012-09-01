@@ -1,75 +1,71 @@
 $(function () {
 	//Meta Vars
-	var sctxt, sel, scfind = $('#sc-find').val(), matches = [], root ='https://raw.github.com/Kangaroopower/Scope/master';
+	var sctxt, sel, scfind = $('#sc-find').val(), matches = [], root = '//raw.github.com/Kangaroopower/Scope/master';
 
 	//Base for functions
 	window.Scope = {
-		version: "3.0 Alpha",
-		libraries: {
+		version: "3.0 Alpine",
+		lib: {
 			'TextInputs': root+'/lib/Rangy.js',
 			'Dialog': root+'/lib/Dialog.js',
 			'jQueryUI': 'http://code.jquery.com/ui/1.9.0-rc.1/jquery-ui.min.js'
-		}
+		},
+		subs: {}
 	};
 
 	var Scope = window.Scope;
 
 	/* Controls loading process */
 	(function () {
-		var subs = {};
-		$.fn.extend({
-			sub: function (topic, callback) {
-				if (!subs[topic]) subs[topic] = [];
-				subs[topic].push({
-					subscriber: this,
-					callback: callback
-				});
-				return this;
-			}
-		});
 		$.extend({
+			scribe: function (topic, callback) {
+			if (!Scope.subs[topic]) Scope.subs[topic] = $.Callbacks();
+				Scope.subs[topic].add(callback);
+			},
 			pub: function (topic) {
-				var params = [];
-				for (var i = 1; i < arguments.length; i++) params.push(arguments[i]);
-				subs[topic] && $.each(subs[topic], function () {
-					this.callback.apply(this.subscriber, params);
-				});
+				if (!Scope.subs[topic]) console.log('unknown topic');
+				else {
+					var parameters = Array.prototype.splice.call(arguments, 1);
+					Scope.subs[topic].fire.apply(null, parameters);
+				}
 			}
 		});
 	}());
 
 	/* Load editor before everything else (and make sure it's in source mode!)*/
-	$.sub('doc', function () {
+	$.scribe('doc', function () {
 		if (window.RTE && RTE.getInstance && RTE.getInstance()) {
-			if ('source' === RTE.getInstance().mode) $.pub('editor');
-			else $.pub('close');
+			if (RTE.getInstance().mode === 'source') $.pub('editor');
+			else if(RTE.getInstance().mode === 'wysiwyg') $.pub('close');
+			else console.log('Cannot detect editor');
 		} else if (window.CKEDITOR) {
 			CKEDITOR.on('instanceReady', function () {
-				RTE.getInstance().on('wysiwygModeReady', $.pub('close'));
+				RTE.getInstance().on('wysiwygModeReady', $.pub('editor'));
 				RTE.getInstance().on('sourceModeReady', $.pub('editor'));
 			});
 		} else if (window.WikiaEditor) {
 			if (WikiaEditor.getInstance && WikiaEditor.getInstance()) {
-				if ('source' === WikiaEditor.getInstance().mode) $.pub('editor');
+				if (WikiaEditor.getInstance().mode === 'source') $.pub('editor');
 				else $.pub('close');
 			} else if (GlobalTriggers) GlobalTriggers.on('WikiaEditorReady', $.pub('editor'));
-		}
+			else console.log('Cannot detect editor');
+		} else console.log('Cannot detect editor');
 	});
 
 	/* Load libraries before actual script */
-	$.sub('editor', function () {
+	$.scribe('editor', function () {
+		console.log('Scope: Editor Loaded');
+		for (var i in Scope.lib) $.getScript(Scope.lib[i], console.log('Scope: '+i+' loaded'));
 		sctxt = WikiaEditor.getInstance().getEditbox();
 		sel = sctxt.getSelection();
-		console.log('Scope: Editor Loaded');
-		for (var i in Scope.libraries) $.getScript(Scope.libraries[i], console.log('Scope: '+i+' loaded'));
 		$('span.cke_toolbar_expand').before('<img id="sc-start" src="'+root+'/util/Replace.png"/>');
 		$('#sc-start').click($.pub('open'));
 		console.log('Loaded: Scope', Scope.version);
 	});
 
-	/* GUI operations- open/close (Actual dialog is stored at Mediawiki:Scope/gui.js) */
-	$.sub('open', function () {
-		if (document.querySelector('#sc-ui')) $.pub('close');
+	/* GUI operations- open/close (Actual dialog is stored at Mediawiki:Sc/gui.js) */
+	$.scribe('open', function () {
+		if (document.querySelector('#sc-ui')) $.pub('return');
 		else {
 			$('.cke_toolbar_expand').after(Scope.dialog);
 			$('#sc-cog').click(function (e) {
@@ -91,28 +87,28 @@ $(function () {
 		}
 	});
 
-	$.sub('close', function () {
+	$.scribe('close', function () {
 		$('#sc-shadow, #sc-ui, #sc-style').remove();
 		sctxt.removeAttr('style');
 	});
 
 	/* Does the replace */
-	$.sub('replace', function () {
-		var replacetxt = $('#sc-replace-text').val(), s = sctxt.val(), undotext = s;
+	$.scribe('replace', function () {
+		var rtxt = $('#sc-replace-text').val(), s = sctxt.val(), undotext = s;
 		if ($('#sc-rall').is(':checked')) {
 			var matchIndex = s.indexOf(scfind), count = 0;
 			while (matchIndex !== -1) {
-				if (!$('#sc-cs').is(':checked')) sctxt.val(s.toLowerCase().replace(scfind, replacetxt));
-				else sctxt.val(s.replace(scfind, replacetxt));
+				if (!$('#sc-cs').is(':checked')) sctxt.val(s.toLowerCase().replace(scfind, rtxt));
+				else sctxt.val(s.replace(scfind, rtxt));
 				matchIndex = s.indexOf(scfind);
 				count++;
 			}
 			if (count === 1) count = "One";
 			$("#sc-count").html('Done!').attr('title', count + ' replacement(s) made!');
 		} else {
-			if (!$('#sc-cs').is(':checked')) sctxt.val(s.toLowerCase().replace(scfind, replacetxt));
-			if (sel.text === "") sctxt.val(s.replace(scfind, replacetxt));
-			else if (scfind.test(s.substring(sel.start, sel.end))) sctxt.val(s.substring(0, sel.start) + replacetxt + s.substring(sel.end));
+			if (!$('#sc-cs').is(':checked')) sctxt.val(s.toLowerCase().replace(scfind, rtxt));
+			if (sel.text === "") sctxt.val(s.replace(scfind, rtxt));
+			else if (scfind.test(s.substring(sel.start, sel.end))) sctxt.val(s.substring(0, sel.start) + rtxt + s.substring(sel.end));
 			$.pub('next');
 			$("#sc-count").html('Done!').attr('title', 'One replacement made!');
 		}
@@ -127,7 +123,7 @@ $(function () {
 	});
 	
 	//Synchs shadow with the textarea
-	$.sub('synch', function () {
+	$.scribe('synch', function () {
 		console.log('synching');
 		var ref = 0, s = sctxt.val();
 		matches = [];
@@ -152,7 +148,7 @@ $(function () {
 	});
 
 	//Highlights next match
-	$.sub('next', function  () {
+	$.scribe('next', function  () {
 		var nTrav = 0;
 		if (!matches.length) return;
 		sctxt.focus();

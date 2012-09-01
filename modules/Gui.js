@@ -1,6 +1,6 @@
 /* GUI operations- open/close (Actual dialog is stored at Mediawiki:Scope/gui.js) */
-$.sub('open', function () {
-	if (document.querySelector('#sc-ui')) $.pub('close');
+$.csub('open', function () {
+	if (document.querySelector('#sc-ui')) $.psub('close');
 	else {
 		$('.cke_toolbar_expand').after(Scope.dialog);
 		$('#sc-cog').click(function (e) {
@@ -10,7 +10,7 @@ $.sub('open', function () {
 		});
 		$('#sc-count').tooltip();
 		if (matches.length) $('#sc-down').css({cursor: 'pointer'});
-		$('#sc-find, #sc-cs, '+ sctxt).on('keyup paste', $.pub('synch'));
+		$('#sc-find, #sc-cs, '+ sctxt).on('keyup paste', $.psub('synch'));
 		$('#sc-find').val(sel.text).focus();
 		var commonCSS = {
 			width: '100%', left: 0, top: 0, border: '0 none', display: 'block',
@@ -18,11 +18,11 @@ $.sub('open', function () {
 		};
 		sctxt.css(commonCSS).after('<div id="sc-shadow"></div>').focus();
 		$('#sc-shadow').css(commonCSS);
-		$.pub('synch');
+		$.psub('synch');
 	}
 });
 
-$.sub('close', function () {
+$.csub('close', function () {
 	$('#sc-shadow, #sc-ui, #sc-style').remove();
 	sctxt.removeAttr('style');
 });
