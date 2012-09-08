@@ -17,7 +17,7 @@ $(function () {
 		lib: {
 			'Dialog': root+'/lib/Dialog.js',
 			'Rangy': root+'/lib/Rangy.js',
-			'jQueryUI': 'http://code.jquery.com/ui/1.9.0-rc.1/jquery-ui.min.js's
+			'jQueryUI': 'http://code.jquery.com/ui/1.9.0-rc.1/jquery-ui.min.js'
 		}
 	};
 
