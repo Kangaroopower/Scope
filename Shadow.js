@@ -1,5 +1,7 @@
 $(function () {
-	function Shadow (shadowcss, textareacss, commoncss, matchcolor, highlightcolor, textarea) {
+	function Shadow (textarea, find, shadowcss, textareacss, commoncss, matchcolor, highlightcolor) {
+		this.textarea = textarea;
+		this.find = find || $('#sc-find-text');
 		this.shadowcss = shadowcss || {
 				left: '0px', top: '0px', border: '0px none', display: 'block',
 				outline: 'none medium', margin: '0px', padding: '0px', resize: 'none', 
@@ -17,7 +19,6 @@ $(function () {
 			};
 		this.matchcolor = matchcolor || '08c';
 		this.highlight = highlightcolor || '#0000FF';
-		this.textarea = textarea || WikiaEditor.getInstance().getEditbox();
 	}
 
 	var matches = [], nTrav = 0, sch = -1, note = (window.console && function () {
@@ -29,6 +30,7 @@ $(function () {
 	Shadow.prototype.init = function () {
 		this.textarea.after('<div id="sc-shadow"></div>');
 		this.textarea.css(this.commoncss).css(this.textareacss);
+		$('#sc-shadow').css(this.commoncss).css(this.shadowcss);
 		this.textarea.scroll(function () {
 			$('#sc-shadow').scrollTop(this.textarea.scrollTop());
 		});
@@ -39,8 +41,8 @@ $(function () {
 	Shadow.prototype.synch = function () {
 		note('synching');
 		var s = this.textarea.val(), regex, m;
-		if (scfind.val() === '') regex = null;
-		else regex = evaluate(true);
+		if (this.find.val() === '') regex = null;
+		else regex = window.Scope.evaluate(true);
 		matches = [];
 		if (regex instanceof RegExp) {
 			while (m = regex.exec(s)) matches.push(m.index);
@@ -51,8 +53,8 @@ $(function () {
 			var r = '';
 			for (var i = 0, start = 0; i < matches.length; i++) {
 				r += s.substr(start, matches[i] - start);
-				start = matches[i] + scfind.val().length;
-				r += '<span id="sc' + i + '"class="sc-match">' + scfind.val() + '</span>';
+				start = matches[i] + this.find.val().length;
+				r += '<span id="sc' + i + '"class="sc-match">' + this.find.val() + '</span>';
 			}
 			if (s.substr(start+1).length > 0) r += s.substr(start+1);
 			return r.length ? r : s;
@@ -63,7 +65,7 @@ $(function () {
 	};
 
 	Shadow.prototype.highlight = function (high) {
-		this.textarea.setSelection(matches[high], matches[high] + scfind.val().length);
+		this.textarea.setSelection(matches[high], matches[high] + this.find.val().length);
 		$('#sc' + sch).removeAttr('style');
 		$('#sc' + high).css({backgroundColor:'#0000FF'});
 		sch = high;
@@ -102,7 +104,7 @@ $(function () {
 			sel = this.textarea.getSelection();
 		}
 		for (var i = 0; i < matches.length; i++) {
-			if (sel.end < matches[i] + scfind.val().length) {
+			if (sel.end < matches[i] + this.find.val().length) {
 				n = i;
 				break;
 			}
