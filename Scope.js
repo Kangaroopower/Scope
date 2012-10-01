@@ -14,7 +14,7 @@
 		version: "3.0 Alpine",
 		lib: [
 				{ name: 'Dialog', url: 'http://kangaroopower.wikia.com/wiki/Mediawiki:Dialog.js?action=raw&ctype=text/javascript&maxage=0&smaxage=0' },
-				{ name: 'Rangy', url: 'http://dev.wikia.com/wiki/Textinputs_jquery.js?action=raw&ctype=text/javascript' }
+				{ name: 'Rangy', url: 'http://dev.wikia.com/wiki/Textinputs_jquery.js?action=raw&ctype=text/javascript' },
 				{ name: 'Shadow', url: 'http://raw.github.com/Kangaroopower/Scope/master/Shadow.js' }
 			]
 	};
@@ -73,7 +73,7 @@
 		scshadow = new Shadow(WikiaEditor.getInstance().getEditbox());
 		if (!$('#sc-start').length) $('span.cke_toolbar_expand').before('<img id="sc-start" src="//raw.github.com/Kangaroopower/Scope/master/util/Replace.png"/>');
 		$('#sc-start').click(show);
-		log('Loaded: Scope', Scope.version);
+		log('Loaded version:', Scope.version);
 	}
  
 	/* Opens and sets up gui */
