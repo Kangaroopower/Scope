@@ -28,6 +28,16 @@
 		args.unshift('Scope:');
 		return window.console.log.apply(window.console, args);
 	}) || $.noop;
+
+	//Script easy loading
+	var asset = function (script, callback) {
+		if(typeof script !== "string") return log('Script must be a string or an array');
+		var s = document.createElement('script');
+			s.setAttribute('src', script);
+			s.setAttribute('type', 'text/javascript');
+		document.getElementsByTagName('head')[0].appendChild(s);
+		script.onload = eval.call(window, callback);
+	};
  
 	/* Load libraries first */
 	function load () {
@@ -40,8 +50,8 @@
 				};
 			};
 		for (var i = 0; i < Scope.lib.length; i++) {
-			console.log('loading ', Scope.lib[i].name, '...');
-			$.getScript(Scope.lib[i].url, onload(Scope.lib[i].name));
+			log('loading ', Scope.lib[i].name, '...');
+			asset(Scope.lib[i].url, onload(Scope.lib[i].name));
 		}
 	}
 
@@ -129,7 +139,7 @@
 		var rtxt = $('#sc-replace-text').val(), s = sctxt.val(), undotext = sctxt.val();
 		if (rall === true) {
 			var count;
-			if (evaluate(true).length === 1) count = "One";
+			if (s.match(evaluate(true)).length === 1) count = "One";
 			else count = s.match(evaluate(true)).length;
 			sctxt.val(s.replace(evaluate(true), rtxt));
 			$("#sc-count").html('Done!').attr('title', count + ' replacement(s) made!');
