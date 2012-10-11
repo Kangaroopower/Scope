@@ -1,7 +1,8 @@
 $(function () {
-	function Shadow (textarea, find, shadowcss, textareacss, commoncss, matchcolor, highlightcolor) {
+	function Shadow (textarea, find, msgplace, shadowcss, textareacss, commoncss, matchcolor, highlightcolor) {
 		this.textarea = textarea;
 		this.find = find || $('#sc-find-text');
+		this.msgplace = msgplace || $('#sc-count')
 		this.shadowcss = shadowcss || {
 				left: '0px', top: '0px', border: '0px none', display: 'block',
 				outline: 'none medium', margin: '0px', padding: '0px', resize: 'none', 
@@ -21,7 +22,9 @@ $(function () {
 		this.highlight = highlightcolor || '#0000FF';
 	}
 
-	var matches = [], nTrav = 0, sch = -1, note = (window.console && function () {
+	var matches = [], nTrav = 0, sch = -1;
+
+	var note = (window.console && function () {
 		var args = Array.prototype.slice.call(arguments);
 		args.unshift('Shadow:');
 		return window.console.log.apply(window.console, args);
@@ -46,9 +49,9 @@ $(function () {
 		matches = [];
 		if (regex instanceof RegExp) {
 			while (m = regex.exec(s)) matches.push(m.index);
-			$('#sc-count').html(matches.length + ' matches!');
+			this.msgplace.html(matches.length + ' matches!');
 			note(matches);
-		} else $('#sc-count').html('&nbsp;');
+		} else this.msgplace.html('&nbsp;');
 		$('#sc-shadow').html(function () {
 			var r = '';
 			for (var i = 0, start = 0; i < matches.length; i++) {
@@ -71,13 +74,13 @@ $(function () {
 		sch = high;
 		if (nTrav === matches.length) nTrav = 0;
 		nTrav++;
-		$('#sc-count').html(nTrav + ' of ' + matches.length).attr('title', '');
+		this.msgplace.html(nTrav + ' of ' + matches.length).attr('title', '');
 	};
 
 	Shadow.prototype.prev = function () {
 		note(nTrav);
 		if (!matches.length) {
-			$('#sc-count').html('No matches found').attr('title', '');
+			this.msgplace.html('No matches found').attr('title', '');
 			return;
 		}
 		this.textarea.focus();
@@ -94,7 +97,7 @@ $(function () {
 	Shadow.prototype.next = function () {
 		note(nTrav);
 		if (!matches.length) {
-			$('#sc-count').html('No matches found').attr('title', '');
+			this.msgplace.html('No matches found').attr('title', '');
 			return;
 		}
 		this.textarea.focus();
