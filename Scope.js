@@ -29,16 +29,6 @@
 		return window.console.log.apply(window.console, args);
 	}) || $.noop;
 
-	//Script easy loading
-	var asset = function (script, callback) {
-		if(typeof script !== "string") return log('Script must be a string or an array');
-		var s = document.createElement('script');
-			s.setAttribute('src', script);
-			s.setAttribute('type', 'text/javascript');
-		document.getElementsByTagName('head')[0].appendChild(s);
-		script.onload = eval.call(window, callback);
-	};
- 
 	/* Load libraries first */
 	function load () {
 		if (mw.config.get('wgAction') !== 'edit'  && [1200,1201].indexOf(mw.config.get('wgNamespaceNumber')) !== -1 ) return;
@@ -51,7 +41,7 @@
 			};
 		for (var i = 0; i < Scope.lib.length; i++) {
 			log('loading ', Scope.lib[i].name, '...');
-			asset(Scope.lib[i].url, onload(Scope.lib[i].name));
+			$.getScript(Scope.lib[i].url, onload(Scope.lib[i].name));
 		}
 	}
 
@@ -73,15 +63,28 @@
 				else hide();
 			} else if (GlobalTriggers) GlobalTriggers.on('WikiaEditorReady', setup);
 			else log('Cannot detect editor');
-		} else log('Cannot detect editor');
+		} else if (mw.config.get('skin') === 'monobook') setup(true);
+		else log('Cannot detect editor');
 	}
  
 	/* Load script */
-	function setup () {
+	function setup (monobook) {
 		log('Editor Loaded');
-		sctxt = WikiaEditor.getInstance().getEditbox();
-		scshadow = new Shadow(WikiaEditor.getInstance().getEditbox());
-		if (!$('#sc-start').length) $('span.cke_toolbar_expand').before('<img id="sc-start" src="//raw.github.com/Kangaroopower/Scope/master/util/Replace.png"/>');
+		if (monobook) {
+			sctxt = $('#wpTextbox1');
+			scshadow = new Shadow($('#wpTextbox1'));
+		} else {
+			sctxt = WikiaEditor.getInstance().getEditbox();
+			scshadow = new Shadow(WikiaEditor.getInstance().getEditbox(), $('#sc-find-text'), $('#sc-count'),
+				{
+					backgroundColor: 'transparent', color: 'transparent', overflow: 'auto', 
+					height: '529px'
+				});
+		}
+		if (!$('#sc-start').length) {
+			if (monobook) $('div#toolbar').append('<img id="sc-start" src="//raw.github.com/Kangaroopower/Scope/master/util/Replace.png"/>');
+			else $('span.cke_toolbar_expand').before('<img id="sc-start" src="//raw.github.com/Kangaroopower/Scope/master/util/Replace.png"/>');
+		} 
 		$('#sc-start').click(show);
 		log('Loaded version:', Scope.version);
 	}
@@ -90,7 +93,8 @@
 	function show () {
 		log('opening dialog');
 		if ($('#sc-ui').length) return hide();
-		$('.cke_toolbar_expand').after(Scope.dialog);
+		if ($('.cke_toolbar_expand').length) $('.cke_toolbar_expand').after(Scope.dialog);
+		else $('div#toolbar').after(Scope.dialog);
 		scshadow.init();
 		$('#sc-replace-button').click(replace);
 		$('#sc-down').click(scshadow.next);
