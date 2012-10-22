@@ -60,7 +60,8 @@ $(function () {
 				r += '<span id="sc' + i + '"class="sc-match">' + this.find.val() + '</span>';
 			}
 			if (s.substr(start+1).length > 0) r += s.substr(start+1);
-			return r.length ? r : s;
+			var rltxt = r.length ? r : s;
+			return rltxt.replace('<', '&lt;');
 		});
 		if (matches.length) $('#sc-down').css({cursor: 'pointer'});
 		$('#sc-shadow').css('height', this.textarea.height()); 
