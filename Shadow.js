@@ -1,16 +1,16 @@
 $(function () {
-	function Shadow (textarea, find, msgplace, shadowcss, textareacss, commoncss, matchcolor, highlightcolor) {
+	var Shadow = function (textarea, find, msgplace, shadowcss, textareacss, commoncss, matchcolor, highlightcolor) {
 		this.textarea = textarea;
 		this.find = find || $('#sc-find-text');
 		this.msgplace = msgplace || $('#sc-count')
-		this.shadowcss = shadowcss || {
+		this.shadowcss = shadowcss || $.extend({
 				left: '0px', top: '0px', border: '0px none', display: 'block',
 				outline: 'none medium', margin: '0px', padding: '0px', resize: 'none', 
 				position: 'absolute', zIndex: '0', 'font-size': '14px', 'line-height': '140%',
 				'font-family': 'Consolas, Eupheima UCAS, Ayuthaya, Menlo, monospace',
 				'white-space': 'pre-wrap', backgroundColor: 'transparent', color: 'transparent',
 				overflow: 'auto', height: '529px'
-			};
+			}, shadowcss);
 		this.textareacss = textareacss || {
 			position: 'relative', zIndex: '1', backgroundColor: 'transparent'
 		};
@@ -115,4 +115,6 @@ $(function () {
 		}
 		this.highlight(n);
 	};
+	//Expose Shadow
+	window.Shadow = Shadow;
 });

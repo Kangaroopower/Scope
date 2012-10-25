@@ -75,11 +75,7 @@
 			scshadow = new Shadow($('#wpTextbox1'));
 		} else {
 			sctxt = WikiaEditor.getInstance().getEditbox();
-			scshadow = new Shadow(WikiaEditor.getInstance().getEditbox(), $('#sc-find-text'), $('#sc-count'),
-				{
-					backgroundColor: 'transparent', color: 'transparent', overflow: 'auto', 
-					height: '529px'
-				});
+			scshadow = new Shadow(WikiaEditor.getInstance().getEditbox(), $('#sc-find-text'), $('#sc-count'), {backgroundColor: 'transparent', color: 'transparent', overflow: 'auto', height: '529px'});
 		}
 		if (!$('#sc-start').length) {
 			if (monobook) $('div#toolbar').append('<img id="sc-start" src="//raw.github.com/Kangaroopower/Scope/master/util/Replace.png"/>');
