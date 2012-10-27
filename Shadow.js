@@ -1,16 +1,16 @@
 $(function () {
-	var Shadow = function (textarea, find, msgplace, shadowcss, textareacss, commoncss, matchcolor, highlightcolor) {
+	var Shadow = function (textarea, find, msgplace, shadowcss, textareacss, commoncss, regex, matchcolor, highlightcolor) {
 		this.textarea = textarea;
 		this.find = find || $('#sc-find-text');
-		this.msgplace = msgplace || $('#sc-count')
-		this.shadowcss = shadowcss || $.extend({
+		this.msgplace = msgplace || $('#sc-count');
+		this.shadowcss = shadowcss || {
 				left: '0px', top: '0px', border: '0px none', display: 'block',
 				outline: 'none medium', margin: '0px', padding: '0px', resize: 'none', 
 				position: 'absolute', zIndex: '0', 'font-size': '14px', 'line-height': '140%',
 				'font-family': 'Consolas, Eupheima UCAS, Ayuthaya, Menlo, monospace',
 				'white-space': 'pre-wrap', backgroundColor: 'transparent', color: 'transparent',
 				overflow: 'auto', height: '529px'
-			}, shadowcss);
+			};
 		this.textareacss = textareacss || {
 			position: 'relative', zIndex: '1', backgroundColor: 'transparent'
 		};
@@ -18,6 +18,7 @@ $(function () {
 				width: '100%', left: 0, top: 0, border: '0 none', display: 'block',
 				outline: 'medium none', margin: 0, padding: 0, resize: 'none'
 			};
+		this.regex = regex || Scope.evaluate;
 		this.matchcolor = matchcolor || '08c';
 		this.highlight = highlightcolor || '#0000FF';
 	}
@@ -45,7 +46,7 @@ $(function () {
 		note('synching');
 		var s = this.textarea.val(), regex, m;
 		if (this.find.val() === '') regex = null;
-		else regex = window.Scope.evaluate(true);
+		else regex = this.regex();
 		matches = [];
 		if (regex instanceof RegExp) {
 			while (m = regex.exec(s)) matches.push(m.index);
