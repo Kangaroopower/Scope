@@ -75,7 +75,7 @@
 			scshadow = new Shadow($('#wpTextbox1'));
 		} else {
 			sctxt = WikiaEditor.getInstance().getEditbox();
-			scshadow = new Shadow(WikiaEditor.getInstance().getEditbox(), $('#sc-find-text'), $('#sc-count'), {backgroundColor: 'transparent', color: 'transparent', overflow: 'auto', height: '529px'});
+			scshadow = new Shadow(WikiaEditor.getInstance().getEditbox(), $('#sc-find-text'), $('#sc-count'));
 		}
 		if (!$('#sc-start').length) {
 			if (monobook) $('div#toolbar').append('<img id="sc-start" src="//raw.github.com/Kangaroopower/Scope/master/util/Replace.png"/>');
@@ -89,7 +89,7 @@
 	function show () {
 		log('opening dialog');
 		if ($('#sc-ui').length) return hide();
-		if ($('.cke_toolbar_expand').length) $('.cke_toolbar_expand').after(Scope.dialog);
+		if ($('span.cke_toolbar_expand').length) $('span.cke_toolbar_expand').after(Scope.dialog);
 		else $('div#toolbar').after(Scope.dialog);
 		scshadow.init();
 		$('#sc-replace-button').click(replace);
@@ -127,8 +127,8 @@
 	}
  
 	/* Evaluates the regex to be used- Public because it's used by Shadow */
-	var evaluate = function (rall) {
-		var mod = rall ? 'g' : '';
+	var evaluate = function (alone) {
+		var mod = alone ? '' : 'g';
 		if (!$('#sc-cs').hasClass('scactive')) mod += 'i';
 		if ($('#sc-reg').hasClass('scactive')) return new RegExp(scfind.val(), mod);
 		else return new RegExp(scfind.val().replace(/\[\-[\]{}()*+?.,\\\^$|#\s]/g, "\\$&"), mod);
@@ -139,12 +139,12 @@
 		var rtxt = $('#sc-replace-text').val(), s = sctxt.val(), undotext = sctxt.val();
 		if (rall === true) {
 			var count;
-			if (s.match(evaluate(true)).length === 1) count = "One";
-			else count = s.match(evaluate(true)).length;
-			sctxt.val(s.replace(evaluate(true), rtxt));
+			if (s.match(evaluate()).length === 1) count = "One";
+			else count = s.match(evaluate()).length;
+			sctxt.val(s.replace(evaluate(), rtxt));
 			$("#sc-count").html('Done!').attr('title', count + ' replacement(s) made!');
 		} else {
-			if (sctxt.getSelection().text === "") sctxt.val(s.replace(evaluate(), rtxt));
+			if (sctxt.getSelection().text === "") sctxt.val(s.replace(evaluate(true), rtxt));
 			else if (scfind.val().test(s.substring(sctxt.getSelection().start, sctxt.getSelection().end)))sctxt.val(s.substring(0, sctxt.getSelection().start) + rtxt + s.substring(sctxt.getSelection().end));
 			scshadow.next();
 			$("#sc-count").html('Done!').attr('title', 'One replacement made!');
