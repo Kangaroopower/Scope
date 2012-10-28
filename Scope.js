@@ -75,7 +75,7 @@
 			scshadow = new Shadow($('#wpTextbox1'));
 		} else {
 			sctxt = WikiaEditor.getInstance().getEditbox();
-			scshadow = new Shadow(WikiaEditor.getInstance().getEditbox(), $('#sc-find-text'), $('#sc-count'));
+			scshadow = new Shadow(WikiaEditor.getInstance().getEditbox());
 		}
 		if (!$('#sc-start').length) {
 			if (monobook) $('div#toolbar').append('<img id="sc-start" src="//raw.github.com/Kangaroopower/Scope/master/util/Replace.png"/>');
@@ -128,6 +128,7 @@
  
 	/* Evaluates the regex to be used- Public because it's used by Shadow */
 	var evaluate = function (alone) {
+		log('scfind', scfind);
 		var mod = alone ? '' : 'g';
 		if (!$('#sc-cs').hasClass('scactive')) mod += 'i';
 		if ($('#sc-reg').hasClass('scactive')) return new RegExp(scfind.val(), mod);
