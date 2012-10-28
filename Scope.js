@@ -78,8 +78,8 @@
 			scshadow = new Shadow(WikiaEditor.getInstance().getEditbox());
 		}
 		if (!$('#sc-start').length) {
-			if (monobook) $('div#toolbar').append('<img id="sc-start" src="//raw.github.com/Kangaroopower/Scope/master/util/Replace.png"/>');
-			else $('span.cke_toolbar_expand').before('<img id="sc-start" src="//raw.github.com/Kangaroopower/Scope/master/util/Replace.png"/>');
+			if (monobook) $('div#toolbar').append('<img id="sc-start" src="//raw.github.com/Kangaroopower/Scope/master/pics/Replace.png"/>');
+			else $('span.cke_toolbar_expand').before('<img id="sc-start" src="//raw.github.com/Kangaroopower/Scope/master/pics/Replace.png"/>');
 		} 
 		$('#sc-start').click(show);
 		log('Loaded version:', Scope.version);
@@ -150,7 +150,7 @@
 			scshadow.next();
 			$("#sc-count").html('Done!').attr('title', 'One replacement made!');
 		}
-		if (!$('#sc-undo').length) $('#sc-replace-text').after('<img id="sc-undo"src="//raw.github.com/Kangaroopower/Scope/master/util/undo.png"/>');
+		if (!$('#sc-undo').length) $('#sc-replace-text').after('<img id="sc-undo"src="//raw.github.com/Kangaroopower/Scope/master/pics/undo.png"/>');
 		$('#sc-undo').click(function () {
 			sctxt.val(undotext);
 			$("#sc-count").html('Undone!').attr('title', '');
