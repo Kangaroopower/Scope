@@ -31,7 +31,7 @@
 
 	/* Load libraries first */
 	function load () {
-		if (mw.config.get('wgAction') !== 'edit'  && [1200,1201].indexOf(mw.config.get('wgNamespaceNumber')) !== -1 ) return;
+		if (/\boasis-one-column\b/.test(document.body.className)) return;
 		var loaded = 0,
 			onload = function (name) {
 				return function () {
@@ -72,6 +72,7 @@
 		log('Editor Loaded');
 		if (monobook) {
 			sctxt = $('#wpTextbox1');
+			//Monobook needs special css
 			scshadow = new Shadow($('#wpTextbox1'));
 		} else {
 			sctxt = WikiaEditor.getInstance().getEditbox();
@@ -145,8 +146,9 @@
 			sctxt.val(s.replace(evaluate(), rtxt));
 			$("#sc-count").html('Done!').attr('title', count + ' replacement(s) made!');
 		} else {
+			var sel = scfind.val().test(s.substring(sctxt.getSelection().start, sctxt.getSelection().end));
 			if (sctxt.getSelection().text === "") sctxt.val(s.replace(evaluate(true), rtxt));
-			else if (scfind.val().test(s.substring(sctxt.getSelection().start, sctxt.getSelection().end)))sctxt.val(s.substring(0, sctxt.getSelection().start) + rtxt + s.substring(sctxt.getSelection().end));
+			else if (sel) sctxt.val(s.substring(0, sctxt.getSelection().start) + rtxt + s.substring(sctxt.getSelection().end));
 			scshadow.next();
 			$("#sc-count").html('Done!').attr('title', 'One replacement made!');
 		}
