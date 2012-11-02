@@ -2,7 +2,7 @@ $(function () {
 	var Shadow = function (textarea, find, msgplace, shadowcss, textareacss, commoncss, regex, matchcolor, highlightcolor) {
 		this.textarea = textarea;
 		this.find = find || $('#sc-find-text');
-		this.msgplace = msgplace || $('#sc-count');
+		this.msg = msgplace || $('#sc-count').html;
 		this.shadowcss = shadowcss || {
 				left: '0px', top: '0px', border: '0px none', display: 'block',
 				outline: 'none medium', margin: '0px', padding: '0px', resize: 'none', 
@@ -18,18 +18,33 @@ $(function () {
 				width: '100%', left: 0, top: 0, border: '0 none', display: 'block',
 				outline: 'medium none', margin: 0, padding: 0, resize: 'none'
 			};
-		this.regex = regex || Scope.evaluate;
+		this.regex = regex || window.Scope.evaluate;
 		this.matchcolor = matchcolor || '08c';
 		this.highlight = highlightcolor || '#0000FF';
-	}
+	};
 
-	var matches = [], nTrav = 0, sch = -1;
+	var matches = [], nTrav = 0, sch = -1, rhtml = false;
 
 	var note = (window.console && function () {
 		var args = Array.prototype.slice.call(arguments);
 		args.unshift('Shadow:');
 		return window.console.log.apply(window.console, args);
 	}) || $.noop;
+
+	var isElement = function (o){
+		return (
+			typeof HTMLElement === "object" ? o instanceof HTMLElement : //DOM2
+			o && typeof o === "object" && o.nodeType === 1 && typeof o.nodeName==="string"
+		);
+	};
+
+	var response = function (text) {
+		if (rhtml === true) {
+			this.msg.html(text).attr('title', '');
+		} else {
+			this.msg(text);
+		}
+	};
 
 	Shadow.prototype.init = function () {
 		this.textarea.after('<div id="sc-shadow"></div>');
@@ -40,20 +55,32 @@ $(function () {
 		});
 		this.textarea.focus().on('keyup paste click', this.synch);
 		this.synch();
+		if (isElement(this.msg)) {
+			rhtml = true;
+		} else {
+			rhtml = false;
+		}
 	};
 
 	Shadow.prototype.synch = function () {
 		note('synching');
 		note('textarea', this.textarea, 'val', this.textarea.val());
 		var s = this.textarea.val(), regex, m;
-		if (this.find.val() === '') regex = null;
-		else regex = this.regex();
+		if (this.find.val() === '') {
+			regex = null;
+		} else {
+			regex = this.regex();
+		}
 		matches = [];
 		if (regex instanceof RegExp) {
-			while (m = regex.exec(s)) matches.push(m.index);
-			this.msgplace.html(matches.length + ' matches!');
+			while (m = regex.exec(s)) {
+				matches.push(m.index);
+			}
+			response(matches.length + ' matches!');
 			note(matches);
-		} else this.msgplace.html('&nbsp;');
+		} else {
+			response('&nbsp;');
+		}
 		$('#sc-shadow').html(function () {
 			var r = '';
 			for (var i = 0, start = 0; i < matches.length; i++) {
@@ -61,11 +88,15 @@ $(function () {
 				start = matches[i] + this.find.val().length;
 				r += '<span id="sc' + i + '"class="sc-match">' + this.find.val() + '</span>';
 			}
-			if (s.substr(start+1).length > 0) r += s.substr(start+1);
+			if (s.substr(start+1).length > 0){
+				r += s.substr(start+1);
+			}
 			var rltxt = r.length ? r : s;
 			return rltxt.replace('<', '&lt;');
 		});
-		if (matches.length) $('#sc-down').css({cursor: 'pointer'});
+		if (matches.length) {
+			$('#sc-down').css({cursor: 'pointer'});
+		}
 		$('#sc-shadow').css('height', this.textarea.height()); 
 		$('#sc-shadow').css('width', this.textarea.width());
 	};
@@ -75,15 +106,17 @@ $(function () {
 		$('#sc' + sch).removeAttr('style');
 		$('#sc' + high).css({backgroundColor:'#0000FF'});
 		sch = high;
-		if (nTrav === matches.length) nTrav = 0;
+		if (nTrav === matches.length) {
+			nTrav = 0;
+		}
 		nTrav++;
-		this.msgplace.html(nTrav + ' of ' + matches.length).attr('title', '');
+		response(nTrav + ' of ' + matches.length);
 	};
 
 	Shadow.prototype.prev = function () {
 		note(nTrav);
 		if (!matches.length) {
-			this.msgplace.html('No matches found').attr('title', '');
+			response('No matches found');
 			return;
 		}
 		this.textarea.focus();
@@ -100,7 +133,7 @@ $(function () {
 	Shadow.prototype.next = function () {
 		note(nTrav);
 		if (!matches.length) {
-			this.msgplace.html('No matches found').attr('title', '');
+			response('No matches found');
 			return;
 		}
 		this.textarea.focus();
