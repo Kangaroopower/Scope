@@ -31,7 +31,7 @@
 
 	/* Load libraries first */
 	function load () {
-		if (/\boasis-one-column\b/.test(document.body.className)) return;
+		if (!/\boasis-one-column\b/.test(document.body.className)) return;
 		var loaded = 0,
 			onload = function (name) {
 				return function () {
