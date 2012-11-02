@@ -64,7 +64,6 @@ $(function () {
 
 	Shadow.prototype.synch = function () {
 		note('synching');
-		note('textarea', this.textarea, 'val', this.textarea.val());
 		var s = this.textarea.val(), regex, m;
 		if (this.find.val() === '') {
 			regex = null;
