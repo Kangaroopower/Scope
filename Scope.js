@@ -80,8 +80,8 @@
 				return;
 			}
 			log('opening dialog');
-			if (monobook) $('span.cke_toolbar_expand').after(Scope.dialog);
-			else $('div#toolbar').after(Scope.dialog);
+			if (monobook) $('div#toolbar').after(Scope.dialog);
+			else $('span.cke_toolbar_expand').after(Scope.dialog);
 			
 			if (monobook) {
 				sctxt = $('#wpTextbox1');
