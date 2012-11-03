@@ -132,9 +132,9 @@
 	/* Evaluates the regex to be used- Public because it's used by Shadow */
 	var evaluate = function (alone) {
 		var mod = alone ? '' : 'g';
-		/* if (!$('#sc-cs').hasClass('scactive')) mod += 'i';
+		if (!$('#sc-cs').hasClass('scactive')) mod += 'i';
 		if ($('#sc-reg').hasClass('scactive')) return new RegExp($('#sc-find-text').val(), mod);
-		else */ return new RegExp($('#sc-find-text').val().replace(/\[\-[\]{}()*+?.,\\\^$|#\s]/g, "\\$&"), mod);
+		else return new RegExp($('#sc-find-text').val().replace(/\[\-[\]{}()*+?.,\\\^$|#\s]/g, "\\$&"), mod);
 	};
  
 	/* Does the replace */
