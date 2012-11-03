@@ -1,6 +1,6 @@
 $(function () {
 	var Shadow = function (textarea, args) {
-		this.textarea = textarea;
+		this.textarea = WikiaEditor.getInstance().getEditbox();
 		this.find = args.find || $('#sc-find-text');
 		this.msg = args.msgplace || $('#sc-count');
 		this.shadowcss = args.shadowcss || {
@@ -20,7 +20,6 @@ $(function () {
 		this.regex = args.regex;
 		this.matchcolor = args.matchcolor || '08c';
 		this.highlight = args.highlightcolor || '#0000FF';
-		note('beggining', this.textarea);
 	};
 
 	var matches = [], nTrav = 0, sch = -1;
@@ -39,28 +38,23 @@ $(function () {
 	};
 
 	var response = function (text, place) {
-		if (isElement(place)) {
-			place.html(text);
-		} else if (typeof place === 'function') {
+		place.html(text);
+		/* } else if (typeof place === 'function') {
 			place(text);
 		} else {
 			return;
-		}
+		} */
 	};
 
 	Shadow.prototype.init = function () {
-		$.getScript('http://dev.wikia.com/wiki/Textinputs_jquery.js?action=raw&ctype=text/javascript', function () {
-			note('loaded Rangy');
-			note('duringinit', this.textarea);
-			this.textarea.after('<div id="sc-shadow"></div>');
-			this.textarea.css(this.commoncss).css(this.textareacss);
-			$('#sc-shadow').css(this.commoncss).css(this.shadowcss);
-			this.textarea.scroll(function () {
-				$('#sc-shadow').scrollTop(this.textarea.scrollTop());
-			});
-			this.textarea.focus().on('keyup paste click', this.synch);
-			this.synch();
+		this.textarea.after('<div id="sc-shadow"></div>');
+		this.textarea.css(this.commoncss).css(this.textareacss);
+		$('#sc-shadow').css(this.commoncss).css(this.shadowcss);
+		this.textarea.scroll(function () {
+			$('#sc-shadow').scrollTop(this.textarea.scrollTop());
 		});
+		this.textarea.focus().on('keyup paste click', this.synch);
+		this.synch();
 	};
 
 	Shadow.prototype.synch = function () {
@@ -69,10 +63,8 @@ $(function () {
 		if (this.find.val() === '') {
 			regex = null;
 		} else {
-			regex = this.regex();
+			regex = window.Scope.evaluate();
 		}
-		note('duringsynch', this.textarea);
-		note('regex', regex);
 		matches = [];
 		if (regex instanceof RegExp) {
 			while (m = regex.exec(s)) {

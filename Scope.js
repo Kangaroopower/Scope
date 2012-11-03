@@ -87,14 +87,10 @@
 			if (monobook) {
 				sctxt = $('#wpTextbox1');
 				//Monobook needs special css
-				scshadow = new Shadow($('#wpTextbox1'), {
-					regex: window.Scope.evaluate
-				});
+				scshadow = new Shadow();
 			} else {
 				sctxt = WikiaEditor.getInstance().getEditbox();
-				scshadow = new Shadow(WikiaEditor.getInstance().getEditbox(), {
-					regex: window.Scope.evaluate
-				});
+				scshadow = new Shadow();
 			}
 			log('Loaded version:', Scope.version);
 			$(setup);
