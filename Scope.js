@@ -19,7 +19,7 @@
 	};
 
 	//Meta Vars
-	var sctxt, Scope = window.Scope, scshadow;
+	var sctxt, Scope = window.Scope, scshadow, scfind;
 
 	/* Logs stuff */
 	var log = (window.console && function () {
@@ -92,15 +92,17 @@
 	/* Opens and sets up gui */
 	function show () {
 		log('opening dialog');
-		if ($('#sc-ui').length) return hide();
+		if ($('#sc-ui').length) {
+			log('closing dialog');
+			hide();
+			return;
+		}
 		if ($('span.cke_toolbar_expand').length) $('span.cke_toolbar_expand').after(Scope.dialog);
 		else $('div#toolbar').after(Scope.dialog);
 		scshadow.init();
 		$('#sc-replace-button').click(replace);
 		$('#sc-down').click(scshadow.next);
-		$('#sc-rall-button').click(function () {
-			replace(true);
-		});
+		$('#sc-rall-button').click(replace(true));
 		$('#sc-cog').click(function (e) {
 			e.preventDefault();
 			if ($('#sc-drop').css('display') === 'none') $('#sc-drop').show();
@@ -117,6 +119,7 @@
 			if($(this).hasClass('scactive')) $(this).removeClass('scactive');
 			else $(this).addClass('scactive');
 		});
+		scfind = $('#sc-find-text');
 		$('#sc-find-text, #sc-cs').on('keyup paste click', scshadow.synch);
 		$('#sc-find-text').val(sctxt.getSelection().text).focus();
 		scshadow.synch();
@@ -130,11 +133,11 @@
 	}
  
 	/* Evaluates the regex to be used- Public because it's used by Shadow */
-	var evaluate = function (alone) {
+	function evaluate (alone) {
 		var mod = alone ? '' : 'g';
 		if (!$('#sc-cs').hasClass('scactive')) mod += 'i';
-		if ($('#sc-reg').hasClass('scactive')) return new RegExp($('#sc-find-text').val(), mod);
-		else return new RegExp($('#sc-find-text').val().replace(/\[\-[\]{}()*+?.,\\\^$|#\s]/g, "\\$&"), mod);
+		if ($('#sc-reg').hasClass('scactive')) return new RegExp(scfind.val(), mod);
+		else return new RegExp(scfind.val().replace(/\[\-[\]{}()*+?.,\\\^$|#\s]/g, "\\$&"), mod);
 	};
  
 	/* Does the replace */
@@ -147,7 +150,7 @@
 			sctxt.val(s.replace(evaluate(), rtxt));
 			$("#sc-count").html('Done!').attr('title', count + ' replacement(s) made!');
 		} else {
-			var sel = $('#sc-find-text').val().test(s.substring(sctxt.getSelection().start, sctxt.getSelection().end));
+			var sel = scfind.val().test(s.substring(sctxt.getSelection().start, sctxt.getSelection().end));
 			if (sctxt.getSelection().text === "") sctxt.val(s.replace(evaluate(true), rtxt));
 			else if (sel) sctxt.val(s.substring(0, sctxt.getSelection().start) + rtxt + s.substring(sctxt.getSelection().end));
 			scshadow.next();
