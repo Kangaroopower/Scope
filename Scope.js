@@ -14,7 +14,8 @@
 		version: "3.0 Alpine",
 		lib: [
 				{ name: 'Dialog', url: 'http://raw.github.com/Kangaroopower/Scope/master/Dialog.js' },
-				{ name: 'Shadow', url: 'http://raw.github.com/Kangaroopower/Scope/master/Shadow.js' }
+				{ name: 'Shadow', url: 'http://raw.github.com/Kangaroopower/Scope/master/Shadow.js' },
+				{ name: 'Rangy', url: 'http://dev.wikia.com/wiki/Textinputs_jquery.js?action=raw&ctype=text/javascript' }
 			]
 	};
 
