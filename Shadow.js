@@ -2,7 +2,7 @@ $(function () {
 	var Shadow = function (textarea, args) {
 		this.textarea = textarea;
 		this.find = args.find || $('#sc-find-text');
-		this.msg = args.msgplace || $('#sc-count').html;
+		this.msg = args.msgplace || $('#sc-count');
 		this.shadowcss = args.shadowcss || {
 				height: '100%', 'text-align': 'left', overflow: 'auto', 
 				'line-height': '140%', 'font-size': '13.5px', 
