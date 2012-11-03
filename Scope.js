@@ -66,7 +66,7 @@
 		else log('Cannot detect editor');
 	}
  
-	/*  */
+	/* Shows GUI */
 	function show (monobook) {
 		log('Editor loaded');
 		if (!$('#sc-start').length) {
