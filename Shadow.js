@@ -1,9 +1,9 @@
 $(function () {
-	var Shadow = function (textarea, find, msgplace, shadowcss, textareacss, commoncss, regex, matchcolor, highlightcolor) {
+	var Shadow = function (textarea, args) {
 		this.textarea = textarea;
-		this.find = find || $('#sc-find-text');
-		this.msg = msgplace || $('#sc-count').html;
-		this.shadowcss = shadowcss || {
+		this.find = args.find || $('#sc-find-text');
+		this.msg = args.msgplace || $('#sc-count').html;
+		this.shadowcss = args.shadowcss || {
 				left: '0px', top: '0px', border: '0px none', display: 'block',
 				outline: 'none medium', margin: '0px', padding: '0px', resize: 'none', 
 				position: 'absolute', zIndex: '0', 'font-size': '14px', 'line-height': '140%',
@@ -11,16 +11,19 @@ $(function () {
 				'white-space': 'pre-wrap', backgroundColor: 'transparent', color: 'transparent',
 				overflow: 'auto', height: '529px'
 			};
-		this.textareacss = textareacss || {
+		this.textareacss = args.textareacss || {
 			position: 'relative', zIndex: '1', backgroundColor: 'transparent'
 		};
-		this.commoncss = commoncss || {
+		this.commoncss = args.commoncss || {
 				width: '100%', left: 0, top: 0, border: '0 none', display: 'block',
 				outline: 'medium none', margin: 0, padding: 0, resize: 'none'
 			};
-		this.regex = regex || window.Scope.evaluate;
-		this.matchcolor = matchcolor || '08c';
-		this.highlight = highlightcolor || '#0000FF';
+		this.regex = args.regex;
+		this.matchcolor = args.matchcolor || '08c';
+		this.highlight = args.highlightcolor || '#0000FF';
+		$.getScript('http://dev.wikia.com/wiki/Textinputs_jquery.js?action=raw&ctype=text/javascript', function () {
+			note('loaded Rangy')
+		});
 	};
 
 	var matches = [], nTrav = 0, sch = -1, rhtml = false;
