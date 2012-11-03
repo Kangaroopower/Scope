@@ -4,12 +4,11 @@ $(function () {
 		this.find = args.find || $('#sc-find-text');
 		this.msg = args.msgplace || $('#sc-count').html;
 		this.shadowcss = args.shadowcss || {
-				left: '0px', top: '0px', border: '0px none', display: 'block',
-				outline: 'none medium', margin: '0px', padding: '0px', resize: 'none', 
-				position: 'absolute', zIndex: '0', 'font-size': '14px', 'line-height': '140%',
+				height: '100%', 'text-align': 'left', overflow: 'auto', 
+				'line-height': '140%', 'font-size': '13.5px', 
 				'font-family': 'Consolas, Eupheima UCAS, Ayuthaya, Menlo, monospace',
-				'white-space': 'pre-wrap', backgroundColor: 'transparent', color: 'transparent',
-				overflow: 'auto', height: '529px'
+				position: 'absolute', zIndex: '0', 'white-space': 'pre-wrap', 
+				backgroundColor: 'transparent', color: 'transparent',
 			};
 		this.textareacss = args.textareacss || {
 			position: 'relative', zIndex: '1', backgroundColor: 'transparent'
@@ -21,9 +20,6 @@ $(function () {
 		this.regex = args.regex;
 		this.matchcolor = args.matchcolor || '08c';
 		this.highlight = args.highlightcolor || '#0000FF';
-		$.getScript('http://dev.wikia.com/wiki/Textinputs_jquery.js?action=raw&ctype=text/javascript', function () {
-			note('loaded Rangy')
-		});
 	};
 
 	var matches = [], nTrav = 0, sch = -1, rhtml = false;
@@ -50,19 +46,22 @@ $(function () {
 	};
 
 	Shadow.prototype.init = function () {
-		this.textarea.after('<div id="sc-shadow"></div>');
-		this.textarea.css(this.commoncss).css(this.textareacss);
-		$('#sc-shadow').css(this.commoncss).css(this.shadowcss);
-		this.textarea.scroll(function () {
-			$('#sc-shadow').scrollTop(this.textarea.scrollTop());
+		$.getScript('http://dev.wikia.com/wiki/Textinputs_jquery.js?action=raw&ctype=text/javascript', function () {
+			note('loaded Rangy');
+			this.textarea.after('<div id="sc-shadow"></div>');
+			this.textarea.css(this.commoncss).css(this.textareacss);
+			$('#sc-shadow').css(this.commoncss).css(this.shadowcss);
+			this.textarea.scroll(function () {
+				$('#sc-shadow').scrollTop(this.textarea.scrollTop());
+			});
+			this.textarea.focus().on('keyup paste click', this.synch);
+			this.synch();
+			if (isElement(this.msg)) {
+				rhtml = true;
+			} else {
+				rhtml = false;
+			}
 		});
-		this.textarea.focus().on('keyup paste click', this.synch);
-		this.synch();
-		if (isElement(this.msg)) {
-			rhtml = true;
-		} else {
-			rhtml = false;
-		}
 	};
 
 	Shadow.prototype.synch = function () {
