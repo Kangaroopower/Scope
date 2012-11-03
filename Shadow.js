@@ -20,6 +20,7 @@ $(function () {
 		this.regex = args.regex;
 		this.matchcolor = args.matchcolor || '08c';
 		this.highlight = args.highlightcolor || '#0000FF';
+		note('beggining', this.textarea);
 	};
 
 	var matches = [], nTrav = 0, sch = -1;
@@ -50,6 +51,7 @@ $(function () {
 	Shadow.prototype.init = function () {
 		$.getScript('http://dev.wikia.com/wiki/Textinputs_jquery.js?action=raw&ctype=text/javascript', function () {
 			note('loaded Rangy');
+			note('duringinit', this.textarea);
 			this.textarea.after('<div id="sc-shadow"></div>');
 			this.textarea.css(this.commoncss).css(this.textareacss);
 			$('#sc-shadow').css(this.commoncss).css(this.shadowcss);
@@ -69,6 +71,8 @@ $(function () {
 		} else {
 			regex = this.regex();
 		}
+		note('duringsynch', this.textarea);
+		note('regex', regex);
 		matches = [];
 		if (regex instanceof RegExp) {
 			while (m = regex.exec(s)) {
