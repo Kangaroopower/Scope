@@ -13,7 +13,7 @@
 	window.Scope = {
 		version: "3.0 Alpine",
 		lib: [
-				{ name: 'Dialog', url: 'http://kangaroopower.wikia.com/wiki/Mediawiki:Dialog.js?action=raw&ctype=text/javascript&maxage=0&smaxage=0' },
+				{ name: 'Dialog', url: 'http://raw.github.com/Kangaroopower/Scope/master/Dialog.js' },
 				{ name: 'Shadow', url: 'http://raw.github.com/Kangaroopower/Scope/master/Shadow.js' }
 			]
 	};
@@ -119,7 +119,6 @@
 			if($(this).hasClass('scactive')) $(this).removeClass('scactive');
 			else $(this).addClass('scactive');
 		});
-		scfind = $('#sc-find-text');
 		$('#sc-find-text, #sc-cs').on('keyup paste click', scshadow.synch);
 		$('#sc-find-text').val(sctxt.getSelection().text).focus();
 		scshadow.synch();
@@ -143,6 +142,7 @@
 	/* Does the replace */
 	function replace (rall) {
 		var rtxt = $('#sc-replace-text').val(), s = sctxt.val(), undotext = sctxt.val();
+		scfind = $('#sc-find-text');
 		if (rall === true) {
 			var count;
 			if (s.match(evaluate()).length === 1) count = "One";
