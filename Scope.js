@@ -95,13 +95,14 @@
 					regex: window.Scope.evaluate
 				});
 			}
+			log('Loaded version:', Scope.version);
+			$(setup);
 		});
-		log('Loaded version:', Scope.version);
-		setup();
 	}
  
 	/* Opens and sets up gui */
 	function setup () {
+		log('Starting Setup');
 		scshadow.init();
 		$('#sc-replace-button').click(replace);
 		$('#sc-down').click(scshadow.next);
