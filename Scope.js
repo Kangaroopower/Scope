@@ -14,7 +14,6 @@
 		version: "3.0 Alpine",
 		lib: [
 				{ name: 'Dialog', url: 'http://kangaroopower.wikia.com/wiki/Mediawiki:Dialog.js?action=raw&ctype=text/javascript&maxage=0&smaxage=0' },
-				{ name: 'Rangy', url: 'http://dev.wikia.com/wiki/Textinputs_jquery.js?action=raw&ctype=text/javascript' },
 				{ name: 'Shadow', url: 'http://raw.github.com/Kangaroopower/Scope/master/Shadow.js' }
 			]
 	};
@@ -73,10 +72,14 @@
 		if (monobook) {
 			sctxt = $('#wpTextbox1');
 			//Monobook needs special css
-			scshadow = new Shadow($('#wpTextbox1'));
+			scshadow = new Shadow($('#wpTextbox1'), {
+				regex: window.Scope.evaluate;
+			});
 		} else {
 			sctxt = WikiaEditor.getInstance().getEditbox();
-			scshadow = new Shadow(WikiaEditor.getInstance().getEditbox());
+			scshadow = new Shadow(WikiaEditor.getInstance().getEditbox(), {
+				regex: window.Scope.evaluate;
+			});
 		}
 		if (!$('#sc-start').length) {
 			if (monobook) $('div#toolbar').append('<img id="sc-start" src="//raw.github.com/Kangaroopower/Scope/master/pics/Replace.png"/>');
@@ -129,9 +132,9 @@
 	/* Evaluates the regex to be used- Public because it's used by Shadow */
 	var evaluate = function (alone) {
 		var mod = alone ? '' : 'g';
-		if (!$('#sc-cs').hasClass('scactive')) mod += 'i';
+		/* if (!$('#sc-cs').hasClass('scactive')) mod += 'i';
 		if ($('#sc-reg').hasClass('scactive')) return new RegExp($('#sc-find-text').val(), mod);
-		else return new RegExp($('#sc-find-text').val().replace(/\[\-[\]{}()*+?.,\\\^$|#\s]/g, "\\$&"), mod);
+		else */ return new RegExp($('#sc-find-text').val().replace(/\[\-[\]{}()*+?.,\\\^$|#\s]/g, "\\$&"), mod);
 	};
  
 	/* Does the replace */
