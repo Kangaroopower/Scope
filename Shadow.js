@@ -1,5 +1,6 @@
 $(function () {
 	var Shadow = function (textarea, args) {
+		var args = args || {};
 		this.textarea = WikiaEditor.getInstance().getEditbox();
 		this.find = args.find || $('#sc-find-text');
 		this.msg = args.msgplace || $('#sc-count');
