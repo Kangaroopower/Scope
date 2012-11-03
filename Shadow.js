@@ -22,7 +22,7 @@ $(function () {
 		this.highlight = args.highlightcolor || '#0000FF';
 	};
 
-	var matches = [], nTrav = 0, sch = -1, rhtml = false;
+	var matches = [], nTrav = 0, sch = -1;
 
 	var note = (window.console && function () {
 		var args = Array.prototype.slice.call(arguments);
@@ -38,10 +38,12 @@ $(function () {
 	};
 
 	var response = function (text, place) {
-		if (rhtml === true) {
-			place.html(text).attr('title', '');
-		} else {
+		if (isElement(place)) {
+			place.html(text);
+		} else if (typeof place === 'function') {
 			place(text);
+		} else {
+			return;
 		}
 	};
 
@@ -56,11 +58,6 @@ $(function () {
 			});
 			this.textarea.focus().on('keyup paste click', this.synch);
 			this.synch();
-			if (isElement(this.msg)) {
-				rhtml = true;
-			} else {
-				rhtml = false;
-			}
 		});
 	};
 
