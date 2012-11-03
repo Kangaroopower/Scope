@@ -37,11 +37,11 @@ $(function () {
 		);
 	};
 
-	var response = function (text) {
+	var response = function (text, place) {
 		if (rhtml === true) {
-			this.msg.html(text).attr('title', '');
+			place.html(text).attr('title', '');
 		} else {
-			this.msg(text);
+			place(text);
 		}
 	};
 
@@ -77,10 +77,10 @@ $(function () {
 			while (m = regex.exec(s)) {
 				matches.push(m.index);
 			}
-			response(matches.length + ' matches!');
+			response(matches.length + ' matches!', this.msg);
 			note(matches);
 		} else {
-			response('&nbsp;');
+			response('&nbsp;', this.msg);
 		}
 		$('#sc-shadow').html(function () {
 			var r = '';
@@ -111,13 +111,13 @@ $(function () {
 			nTrav = 0;
 		}
 		nTrav++;
-		response(nTrav + ' of ' + matches.length);
+		response(nTrav + ' of ' + matches.length, this.msg);
 	};
 
 	Shadow.prototype.prev = function () {
 		note(nTrav);
 		if (!matches.length) {
-			response('No matches found');
+			response('No matches found', this.msg);
 			return;
 		}
 		this.textarea.focus();
@@ -134,7 +134,7 @@ $(function () {
 	Shadow.prototype.next = function () {
 		note(nTrav);
 		if (!matches.length) {
-			response('No matches found');
+			response('No matches found', this.msg);
 			return;
 		}
 		this.textarea.focus();
