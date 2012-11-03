@@ -73,12 +73,12 @@
 			sctxt = $('#wpTextbox1');
 			//Monobook needs special css
 			scshadow = new Shadow($('#wpTextbox1'), {
-				regex: window.Scope.evaluate;
+				regex: window.Scope.evaluate
 			});
 		} else {
 			sctxt = WikiaEditor.getInstance().getEditbox();
 			scshadow = new Shadow(WikiaEditor.getInstance().getEditbox(), {
-				regex: window.Scope.evaluate;
+				regex: window.Scope.evaluate
 			});
 		}
 		if (!$('#sc-start').length) {
