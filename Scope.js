@@ -48,57 +48,60 @@
 	function editor () {
 		log('doc');
 		if (window.RTE && RTE.getInstance && RTE.getInstance()) {
-			if (RTE.getInstance().mode === 'source') setup();
+			if (RTE.getInstance().mode === 'source') show();
 			else if(RTE.getInstance().mode === 'wysiwyg') hide();
 			else log('Cannot detect editor');
 		} else if (window.CKEDITOR) {
 			CKEDITOR.on('instanceReady', function () {
 				RTE.getInstance().on('wysiwygModeReady', hide);
-				RTE.getInstance().on('sourceModeReady', setup);
+				RTE.getInstance().on('sourceModeReady', show);
 			});
 		} else if (window.WikiaEditor) {
 			if (WikiaEditor.getInstance && WikiaEditor.getInstance()) {
-				if (WikiaEditor.getInstance().mode === 'source') setup();
+				if (WikiaEditor.getInstance().mode === 'source') show();
 				else hide();
-			} else if (GlobalTriggers) GlobalTriggers.on('WikiaEditorReady', setup);
+			} else if (GlobalTriggers) GlobalTriggers.on('WikiaEditorReady', show);
 			else log('Cannot detect editor');
-		} else if (mw.config.get('skin') === 'monobook') setup(true);
+		} else if (mw.config.get('skin') === 'monobook') show(true);
 		else log('Cannot detect editor');
 	}
  
-	/* Load script */
-	function setup (monobook) {
-		log('Editor Loaded');
-		if (monobook) {
-			sctxt = $('#wpTextbox1');
-			//Monobook needs special css
-			scshadow = new Shadow($('#wpTextbox1'), {
-				regex: window.Scope.evaluate
-			});
-		} else {
-			sctxt = WikiaEditor.getInstance().getEditbox();
-			scshadow = new Shadow(WikiaEditor.getInstance().getEditbox(), {
-				regex: window.Scope.evaluate
-			});
-		}
+	/*  */
+	function show (monobook) {
+		log('Editor loaded');
 		if (!$('#sc-start').length) {
 			if (monobook) $('div#toolbar').append('<img id="sc-start" src="//raw.github.com/Kangaroopower/Scope/master/pics/Replace.png"/>');
 			else $('span.cke_toolbar_expand').before('<img id="sc-start" src="//raw.github.com/Kangaroopower/Scope/master/pics/Replace.png"/>');
 		} 
-		$('#sc-start').click(show);
+		$('#sc-start').click(function () {
+			if ($('#sc-ui').length) {
+				log('closing dialog');
+				hide();
+				return;
+			}
+			log('opening dialog');
+			if (monobook) $('span.cke_toolbar_expand').after(Scope.dialog);
+			else $('div#toolbar').after(Scope.dialog);
+			
+			if (monobook) {
+				sctxt = $('#wpTextbox1');
+				//Monobook needs special css
+				scshadow = new Shadow($('#wpTextbox1'), {
+					regex: window.Scope.evaluate
+				});
+			} else {
+				sctxt = WikiaEditor.getInstance().getEditbox();
+				scshadow = new Shadow(WikiaEditor.getInstance().getEditbox(), {
+					regex: window.Scope.evaluate
+				});
+			}
+		});
 		log('Loaded version:', Scope.version);
+		setup();
 	}
  
 	/* Opens and sets up gui */
-	function show () {
-		log('opening dialog');
-		if ($('#sc-ui').length) {
-			log('closing dialog');
-			hide();
-			return;
-		}
-		if ($('span.cke_toolbar_expand').length) $('span.cke_toolbar_expand').after(Scope.dialog);
-		else $('div#toolbar').after(Scope.dialog);
+	function setup () {
 		scshadow.init();
 		$('#sc-replace-button').click(replace);
 		$('#sc-down').click(scshadow.next);
@@ -138,7 +141,7 @@
 		if ($('#sc-reg').hasClass('scactive')) return new RegExp(scfind.val(), mod);
 		else return new RegExp(scfind.val().replace(/\[\-[\]{}()*+?.,\\\^$|#\s]/g, "\\$&"), mod);
 	};
- 
+
 	/* Does the replace */
 	function replace (rall) {
 		var rtxt = $('#sc-replace-text').val(), s = sctxt.val(), undotext = sctxt.val();
