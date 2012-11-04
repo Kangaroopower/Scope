@@ -2,8 +2,8 @@ $(function () {
 	var Shadow = function (textarea, args) {
 		var args = args || {};
 		this.textarea = WikiaEditor.getInstance().getEditbox();
-		this.find = args.find || $('#sc-find-text');
-		this.msg = args.msgplace || $('#sc-count');
+		this.find = args.find || document.querySelector('#sc-find-text');
+		this.msg = args.msgplace || document.querySelector('#sc-count');
 		this.shadowcss = args.shadowcss || {
 				height: '100%', 'text-align': 'left', overflow: 'auto', 
 				'line-height': '140%', 'font-size': '13.5px', 
@@ -15,9 +15,9 @@ $(function () {
 			position: 'relative', zIndex: '1', backgroundColor: 'transparent'
 		};
 		this.commoncss = args.commoncss || {
-				width: '100%', left: 0, top: 0, border: '0 none', display: 'block',
-				outline: 'medium none', margin: 0, padding: 0, resize: 'none'
-			};
+			width: '100%', left: 0, top: 0, border: '0 none', display: 'block',
+			outline: 'medium none', margin: 0, padding: 0, resize: 'none'
+		};
 		this.regex = args.regex;
 		this.matchcolor = args.matchcolor || '08c';
 		this.highlight = args.highlightcolor || '#0000FF';
@@ -39,12 +39,13 @@ $(function () {
 	};
 
 	var response = function (text, place) {
-		place.html(text);
-		/* } else if (typeof place === 'function') {
+		if (isElement(place)) {
+			place.html(text);
+		} else if (typeof place === 'function') {
 			place(text);
 		} else {
 			return;
-		} */
+		}
 	};
 
 	Shadow.prototype.init = function () {
