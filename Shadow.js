@@ -1,7 +1,6 @@
 $(function () {
 	var Shadow = function (textarea, args) {
 		var args = args || {};
-		this.textarea = WikiaEditor.getInstance().getEditbox();
 		this.find = args.find || document.querySelector('#sc-find-text');
 		this.msg = args.msgplace || document.querySelector('#sc-count');
 		this.shadowcss = args.shadowcss || {
@@ -11,7 +10,7 @@ $(function () {
 				position: 'absolute', zIndex: '0', 'white-space': 'pre-wrap', 
 				backgroundColor: 'transparent', color: 'transparent',
 			};
-		this.textareacss = args.textareacss || {
+		shtextcss = args.textareacss || {
 			position: 'relative', zIndex: '1', backgroundColor: 'transparent'
 		};
 		this.commoncss = args.commoncss || {
@@ -23,7 +22,7 @@ $(function () {
 		this.highlight = args.highlightcolor || '#0000FF';
 	};
 
-	var matches = [], nTrav = 0, sch = -1;
+	var matches = [], nTrav = 0, sch = -1, shtext = WikiaEditor.getInstance().getEditbox();
 
 	var note = (window.console && function () {
 		var args = Array.prototype.slice.call(arguments);
@@ -49,19 +48,19 @@ $(function () {
 	};
 
 	Shadow.prototype.init = function () {
-		this.textarea.after('<div id="sc-shadow"></div>');
-		this.textarea.css(this.commoncss).css(this.textareacss);
+		shtext.after('<div id="sc-shadow"></div>');
+		shtext.css(this.commoncss).css(shtextcss);
 		$('#sc-shadow').css(this.commoncss).css(this.shadowcss);
-		this.textarea.scroll(function () {
-			$('#sc-shadow').scrollTop(this.textarea.scrollTop());
+		shtext.scroll(function () {
+			$('#sc-shadow').scrollTop(shtext.scrollTop());
 		});
-		this.textarea.focus().on('keyup paste click', this.synch);
+		shtext.focus().on('keyup paste click', this.synch);
 		this.synch();
 	};
 
 	Shadow.prototype.synch = function () {
 		note('synching');
-		var s = this.textarea.val(), regex, m;
+		var s = shtext.val(), regex, m;
 		if (this.find.val() === '') {
 			regex = null;
 		} else {
@@ -93,12 +92,12 @@ $(function () {
 		if (matches.length) {
 			$('#sc-down').css({cursor: 'pointer'});
 		}
-		$('#sc-shadow').css('height', this.textarea.height()); 
-		$('#sc-shadow').css('width', this.textarea.width());
+		$('#sc-shadow').css('height', shtext.height()); 
+		$('#sc-shadow').css('width', shtext.width());
 	};
 
 	Shadow.prototype.highlight = function (high) {
-		this.textarea.setSelection(matches[high], matches[high] + this.find.val().length);
+		shtext.setSelection(matches[high], matches[high] + this.find.val().length);
 		$('#sc' + sch).removeAttr('style');
 		$('#sc' + high).css({backgroundColor:'#0000FF'});
 		sch = high;
@@ -115,8 +114,8 @@ $(function () {
 			response('No matches found', this.msg);
 			return;
 		}
-		this.textarea.focus();
-		var p = matches.length-1, sel = this.textarea.getSelection();
+		shtext.focus();
+		var p = matches.length-1, sel = shtext.getSelection();
 		for (var i = matches.length-1; i >= 0; i--) {
 			if (sel.start > matches[i]) {
 				p = i;
@@ -132,11 +131,11 @@ $(function () {
 			response('No matches found', this.msg);
 			return;
 		}
-		this.textarea.focus();
-		var n = 0, sel = this.textarea.getSelection();
-		if (!sel || sel.end >= this.textarea.val().length) {
-			this.textarea.setSelection(0, 0);
-			sel = this.textarea.getSelection();
+		shtext.focus();
+		var n = 0, sel = shtext.getSelection();
+		if (!sel || sel.end >= shtext.val().length) {
+			shtext.setSelection(0, 0);
+			sel = shtext.getSelection();
 		}
 		for (var i = 0; i < matches.length; i++) {
 			if (sel.end < matches[i] + this.find.val().length) {
