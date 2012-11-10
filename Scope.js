@@ -93,7 +93,6 @@
 				scshadow = new Shadow();
 			}
 			log('Loaded version:', Scope.version);
-			scshadow.init();
 			$(setup);
 		});
 	}
@@ -101,6 +100,7 @@
 	/* Opens and sets up gui */
 	function setup () {
 		log('Starting Setup');
+		scshadow.init();
 		$('#sc-replace-button').click(replace);
 		$('#sc-down').click(scshadow.next);
 		$('#sc-rall-button').click(replace(true));
