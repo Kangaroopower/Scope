@@ -93,8 +93,8 @@
 				scshadow = new Shadow();
 			}
 			log('Loaded version:', Scope.version);
-			$(setup);
 			scshadow.init();
+			$(setup);
 		});
 	}
  
