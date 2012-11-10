@@ -94,13 +94,13 @@
 			}
 			log('Loaded version:', Scope.version);
 			$(setup);
+			scshadow.init();
 		});
 	}
  
 	/* Opens and sets up gui */
 	function setup () {
 		log('Starting Setup');
-		scshadow.init();
 		$('#sc-replace-button').click(replace);
 		$('#sc-down').click(scshadow.next);
 		$('#sc-rall-button').click(replace(true));
@@ -120,6 +120,7 @@
 			if($(this).hasClass('scactive')) $(this).removeClass('scactive');
 			else $(this).addClass('scactive');
 		});
+		scfind = $('#sc-find-text');
 		$('#sc-find-text, #sc-cs').on('keyup paste click', scshadow.synch);
 		$('#sc-find-text').val(sctxt.getSelection().text).focus();
 		scshadow.synch();
@@ -143,7 +144,6 @@
 	/* Does the replace */
 	function replace (rall) {
 		var rtxt = $('#sc-replace-text').val(), s = sctxt.val(), undotext = sctxt.val();
-		scfind = $('#sc-find-text');
 		if (rall === true) {
 			var count;
 			if (s.match(evaluate()).length === 1) count = "One";
