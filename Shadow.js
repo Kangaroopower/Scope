@@ -89,7 +89,7 @@
 	};
 
 	//Array forEach implementation for IE 8
-	var forEach = function(array func) {
+	var forEach = function(array, func) {
 		for(var i = 0; i < array.length; ++i) {
 			func.call(this, array[i]);
 		}
@@ -124,9 +124,6 @@
 		if (this.find.value === '') {
 			regex = null;
 		} else {
-			if (typeof regex === 'function') {
-				regex = eval(this.regex
-			}
 			regex = window.Scope.evaluate();
 		}
 		matches = [];
@@ -212,4 +209,4 @@
 	};
 	//Expose Shadow
 	window.Shadow = Shadow;
-})(window);
+}(window));
