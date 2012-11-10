@@ -8,10 +8,10 @@
 				'line-height': '140%', 'font-size': '13.5px', 
 				'font-family': 'Consolas, Eupheima UCAS, Ayuthaya, Menlo, monospace',
 				position: 'absolute', zIndex: '0', 'white-space': 'pre-wrap', 
-				backgroundColor: 'transparent', color: 'transparent'
+				'background-color': 'transparent', color: 'transparent'
 			};
 		this.textareacss = args.textareacss || {
-			position: 'relative', zIndex: '1', backgroundColor: 'transparent'
+			position: 'relative', zIndex: '1', 'background-color': 'transparent'
 		};
 		this.commoncss = args.commoncss || {
 			width: '100%', left: 0, top: 0, border: '0 none', display: 'block',
@@ -113,7 +113,6 @@
 				shtext[val] = this.synch;
 				this.find[val] = this.synch;
 			});
-			document.querySelectorAll('.sc-match').style.backgroundColor = this.highlightcolor;
 			this.synch();
 		});
 	};
@@ -141,7 +140,7 @@
 			for (var i = 0, start = 0; i < matches.length; i++) {
 				r += s.substr(start, matches[i] - start);
 				start = matches[i] + this.find.value.length;
-				r += '<span id="sc' + i + '"class="sc-match">' + this.find.value + '</span>';
+				r += '<span id="sc' + i + '"class="sc-match" style="background-color:'+this.highlightcolor+'">' + this.find.value + '</span>';
 			}
 			if (s.substr(start+1).length > 0) {
 				r += s.substr(start+1);
@@ -161,7 +160,7 @@
 	Shadow.prototype.highlight = function (high) {
 		shtext.setSelection(matches[high], matches[high] + this.find.value.length);
 		document.querySelector('#sc' + sch).removeAttribute('style');
-		css(document.querySelector('#sc' + high), {backgroundColor:'#0000FF'});
+		css(document.querySelector('#sc' + high), {'background-color':'#0000FF'});
 		sch = high;
 		if (nTrav === matches.length) {
 			nTrav = 0;
