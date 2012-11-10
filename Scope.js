@@ -128,7 +128,7 @@
 	/* hides gui */
 	function hide () {
 		var height = sctxt.css('height');
-		$('#sc-shadow, #sc-ui').remove();
+		$('#shadow, #sc-ui').remove();
 		sctxt.removeAttr('style').css({height:height});
 	}
  
