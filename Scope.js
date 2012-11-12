@@ -83,14 +83,18 @@
 			log('opening dialog');
 			if (monobook) $('div#toolbar').after(Scope.dialog);
 			else $('span.cke_toolbar_expand').after(Scope.dialog);
-			
+			scfind = $('#sc-find-text');
 			if (monobook) {
 				sctxt = $('#wpTextbox1');
 				//Monobook needs special css
-				scshadow = new Shadow();
+				scshadow = new Shadow('', {
+					regex: window.Scope.evaluate
+				});
 			} else {
 				sctxt = WikiaEditor.getInstance().getEditbox();
-				scshadow = new Shadow();
+				scshadow = new Shadow('', {
+					regex: window.Scope.evaluate
+				});
 			}
 			log('Loaded version:', Scope.version);
 			$(setup);
@@ -120,7 +124,6 @@
 			if($(this).hasClass('scactive')) $(this).removeClass('scactive');
 			else $(this).addClass('scactive');
 		});
-		scfind = $('#sc-find-text');
 		$('#sc-find-text, #sc-cs').on('keyup paste click', scshadow.synch);
 		$('#sc-find-text').val(sctxt.getSelection().text).focus();
 		scshadow.synch();
@@ -137,8 +140,8 @@
 	function evaluate (alone) {
 		var mod = alone ? '' : 'g';
 		if (!$('#sc-cs').hasClass('scactive')) mod += 'i';
-		if ($('#sc-reg').hasClass('scactive')) return new RegExp(scfind.val(), mod);
-		else return new RegExp(scfind.val().replace(/\[\-[\]{}()*+?.,\\\^$|#\s]/g, "\\$&"), mod);
+		if ($('#sc-reg').hasClass('scactive')) return new RegExp($('#sc-find-text').val(), mod);
+		else return new RegExp($('#sc-find-text').val().replace(/\[\-[\]{}()*+?.,\\\^$|#\s]/g, "\\$&"), mod);
 	};
 
 	/* Does the replace */

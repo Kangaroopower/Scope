@@ -1,8 +1,8 @@
-(function (window) {
+(function (window, $) {
 	var Shadow = function (textarea, args) {
 		var args = args || {};
-		this.find = args.find || document.querySelector('#sc-find-text');
-		this.msg = args.msgplace || document.querySelector('#sc-count');
+		this.find = args.find || $('#sc-find-text');
+		this.msg = args.msgplace || $('#sc-count');
 		this.shadowcss = args.shadowcss || {
 				height: '100%', 'text-align': 'left', overflow: 'auto', 
 				'line-height': '140%', 'font-size': '13.5px', 
@@ -103,17 +103,17 @@
 			theshadow.id = 'shadow';
 			shtext.parentNode.insertBefore(theshadow, shtext.nextSibling);
 			css(shtext, merge(this.commoncss, this.textareacss));
-			css(document.querySelector('#shadow'), merge(this.commoncss, this.shadowcss));
+			css($('#shadow'), merge(this.commoncss, this.shadowcss));
 			shtext.onscroll = function () { 
-				document.querySelector('#shadow').scrollTop = shtext.scrollTop;
+				$('#shadow').scrollTop = shtext.scrollTop;
 			}; 
 			shtext.focus();
 			var properties = ['onpaste', 'oncut', 'onclick', 'onkeyup'];
 			forEach(properties, function (val) {
-				shtext[val] = this.synch;
-				this.find[val] = this.synch;
+				shtext[val] = Shadow.prototype.synch;
+				this.find[val] = Shadow.prototype.synch;
 			});
-			this.synch();
+			Shadow.prototype.synch();
 		});
 	};
 
@@ -123,7 +123,11 @@
 		if (this.find.value === '') {
 			regex = null;
 		} else {
-			regex = window.Scope.evaluate();
+			if (typeof this.regex === 'function') {
+				regex = eval(''+this.regex+'();' );
+			} else {
+				regex = this.regex;
+			}
 		}
 		matches = [];
 		if (regex instanceof RegExp) {
@@ -147,11 +151,11 @@
 			}
 			var rltxt = r.length ? r : s;
 			return rltxt.replace('<', '&lt;');
-		}, document.querySelector('#shadow'));
+		}, $('#shadow'));
 		if (matches.length) {
-			css(document.querySelector('#sc-down'), {cursor: 'pointer'});
+			css($('#sc-down'), {cursor: 'pointer'});
 		}
-		css(document.querySelector('#shadow'), {
+		css($('#shadow'), {
 			height: shtext.style.height,
 			width: shtext.style.width
 		});
@@ -159,14 +163,15 @@
 
 	Shadow.prototype.highlight = function (high) {
 		shtext.setSelection(matches[high], matches[high] + this.find.value.length);
-		document.querySelector('#sc' + sch).removeAttribute('style');
-		css(document.querySelector('#sc' + high), {'background-color':'#0000FF'});
+		$('#sc' + sch).removeAttribute('style');
+		css($('#sc' + high), {'background-color':'#0000FF'});
 		sch = high;
 		if (nTrav === matches.length) {
 			nTrav = 0;
 		}
 		nTrav++;
 		response(nTrav + ' of ' + matches.length, this.msg);
+		Shadow.prototype.synch();
 	};
 
 	Shadow.prototype.prev = function () {
@@ -183,7 +188,7 @@
 				break;
 			}
 		}
-		this.highlight(p);
+		Shadow.prototype.highlight(p);
 	};
 
 	Shadow.prototype.next = function () {
@@ -204,8 +209,8 @@
 				break;
 			}
 		}
-		this.highlight(n);
+		Shadow.prototype.highlight(n);
 	};
 	//Expose Shadow
 	window.Shadow = Shadow;
-}(window));
+})(window, document.querySelectorAll);
