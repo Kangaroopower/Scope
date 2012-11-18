@@ -1,25 +1,25 @@
 (function (window, $) {
 	var Shadow = function (textarea, params) {
 		var args = params || {};
-		this.find = args.find || $('#sc-find-text');
-		this.msg = args.msgplace || $('#sc-count');
-		this.shadowcss = args.shadowcss || {
+		this.find = setParams(args, 'find', $('#sc-find-text'));
+		this.msg = setParams(args, 'msgplace', $('#sc-count'));
+		this.shadowcss = setParams(args, 'shadowcss', {
 				height: '100%', 'text-align': 'left', overflow: 'auto', 
 				'line-height': '140%', 'font-size': '13.5px', 
 				'font-family': 'Consolas, Eupheima UCAS, Ayuthaya, Menlo, monospace',
 				position: 'absolute', zIndex: '0', 'white-space': 'pre-wrap', 
 				'background-color': 'transparent', color: 'transparent'
-			};
-		this.textareacss = args.textareacss || {
-			position: 'relative', zIndex: '1', 'background-color': 'transparent'
-		};
-		this.commoncss = args.commoncss || {
-			width: '100%', left: 0, top: 0, border: '0 none', display: 'block',
-			outline: 'medium none', margin: 0, padding: 0, resize: 'none'
-		};
-		this.regex = args.regex;
-		this.matchcolor = args.matchcolor || '08c';
-		this.highlightcolor = args.highlightcolor || '#0000FF';
+			});
+		this.textareacss = setParams(args, 'textareacss', {
+				position: 'relative', zIndex: '1', 'background-color': 'transparent'
+			});
+		this.commoncss = setParams(args, 'commoncss', {
+				width: '100%', left: 0, top: 0, border: '0 none', display: 'block',
+				outline: 'medium none', margin: 0, padding: 0, resize: 'none'
+			});
+		this.regex = setParams(args, 'regex');
+		this.matchcolor = setParams(args, 'matchcolor', '#08c');
+		this.highlightcolor = setParams(args, 'regex', '#700066');
 	};
 
 	var matches = [], nTrav = 0, sch = -1, shtext = WikiaEditor.getInstance().getEditbox()[0];
@@ -32,6 +32,21 @@
 		args.unshift('Shadow:');
 		return window.console.log.apply(window.console, args);
 	}) || function () {};
+
+	//sets the parameters for Scope
+	var setParams = function (obj, name, fallback) {
+		var res;
+		if (name in obj) {
+			res = obj[name];
+		} else {
+			if (fallback) {
+				res = fallback;
+			} else {
+				res = null;
+			}
+		}
+		return res;
+	};
 
 	//credits to http://stackoverflow.com/questions/384286/
 	var isElement = function (o){
@@ -164,7 +179,6 @@
 	Shadow.prototype.highlight = function (high) {
 		shtext.setSelection(matches[high], matches[high] + this.find.value.length);
 		$('#sc' + sch).removeAttribute('style');
-		css($('#sc' + high), {'background-color':'#0000FF'});
 		sch = high;
 		if (nTrav === matches.length) {
 			nTrav = 0;
