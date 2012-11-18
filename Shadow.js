@@ -1,7 +1,7 @@
 (function (window, $) {
-	var Shadow = function (textarea, params) {
+	function Shadow (textarea, params) {
 		var args = params || {};
-		this.find = setParams(args, 'find', $('#sc-find-text'));
+		this.findbox = setParams(args, 'findplace', $('#sc-find-text'));
 		this.msg = setParams(args, 'msgplace', $('#sc-count'));
 		this.shadowcss = setParams(args, 'shadowcss', {
 				height: '100%', 'text-align': 'left', overflow: 'auto', 
@@ -126,7 +126,7 @@
 			var properties = ['onpaste', 'oncut', 'onclick', 'onkeyup'];
 			forEach(properties, function (val) {
 				shtext[val] = Shadow.prototype.synch;
-				this.find[val] = Shadow.prototype.synch;
+				this.findbox[val] = Shadow.prototype.synch;
 			});
 			Shadow.prototype.synch();
 		});
@@ -135,7 +135,7 @@
 	Shadow.prototype.synch = function () {
 		note('synching');
 		var s = shtext.value, regex, m;
-		if (this.find.value === '') {
+		if (this.findbox.value === '') {
 			regex = null;
 		} else {
 			if (typeof this.regex === 'function') {
@@ -158,8 +158,8 @@
 			var r = '';
 			for (var i = 0, start = 0; i < matches.length; i++) {
 				r += s.substr(start, matches[i] - start);
-				start = matches[i] + this.find.value.length;
-				r += '<span id="sc' + i + '"class="sc-match" style="background-color:'+this.highlightcolor+'">' + this.find.value + '</span>';
+				start = matches[i] + this.findbox.value.length;
+				r += '<span id="sc' + i + '"class="sc-match" style="background-color:'+this.highlightcolor+'">' + this.findbox.value + '</span>';
 			}
 			if (s.substr(start+1).length > 0) {
 				r += s.substr(start+1);
@@ -177,7 +177,7 @@
 	};
 
 	Shadow.prototype.highlight = function (high) {
-		shtext.setSelection(matches[high], matches[high] + this.find.value.length);
+		shtext.setSelection(matches[high], matches[high] + this.findbox.value.length);
 		$('#sc' + sch).removeAttribute('style');
 		sch = high;
 		if (nTrav === matches.length) {
@@ -218,7 +218,7 @@
 			sel = shtext.getSelection();
 		}
 		for (var i = 0; i < matches.length; i++) {
-			if (sel.end < matches[i] + this.find.value.length) {
+			if (sel.end < matches[i] + this.findbox.value.length) {
 				n = i;
 				break;
 			}
