@@ -15,6 +15,7 @@
 		lib: [
 				{ name: 'Dialog', url: 'http://raw.github.com/Kangaroopower/Scope/master/Dialog.js' },
 				{ name: 'Shadow', url: 'http://raw.github.com/Kangaroopower/Scope/master/Shadow.js' },
+				{ name: 'Bootstrap', url: 'http://raw.github.com/Kangaroopower/Scope/master/bootstrap.min.js' },
 				{ name: 'Rangy', url: 'http://dev.wikia.com/wiki/Textinputs_jquery.js?action=raw&ctype=text/javascript' }
 			]
 	};
@@ -36,7 +37,10 @@
 			onload = function (name) {
 				return function () {
 					log(name + ' loaded');
-					if (++loaded === Scope.lib.length) $(editor);
+					if (++loaded === Scope.lib.length) {
+						importStylesheetURI('http://raw.github.com/Kangaroopower/Scope/master/bootstrap.min.js');
+						$(editor);
+					}
 				};
 			};
 		for (var i = 0; i < Scope.lib.length; i++) {
@@ -110,11 +114,7 @@
 		$('#sc-rall-button').click(function () {
 			replace(true)
 		});
-		$('#sc-cog').click(function (e) {
-			e.preventDefault();
-			if ($('#sc-drop').css('display') === 'none') $('#sc-drop').show();
-			else $('#sc-drop').hide();
-		});
+		$('#sc-cog').dropdown();
 		$('#sc-find-text, #sc-replace-text').keydown(function (e) {
 			if(e.which === 13) {
 				e.preventDefault();
