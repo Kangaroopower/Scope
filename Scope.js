@@ -107,7 +107,9 @@
 		scshadow.init();
 		$('#sc-replace-button').click(replace);
 		$('#sc-down').click(scshadow.next);
-		$('#sc-rall-button').click(replace(true));
+		$('#sc-rall-button').click(function () {
+			replace(true)
+		});
 		$('#sc-cog').click(function (e) {
 			e.preventDefault();
 			if ($('#sc-drop').css('display') === 'none') $('#sc-drop').show();

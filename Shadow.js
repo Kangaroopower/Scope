@@ -1,6 +1,6 @@
 (function (window, $) {
-	var Shadow = function (textarea, args) {
-		var args = args || {};
+	var Shadow = function (textarea, params) {
+		var args = params || {};
 		this.find = args.find || $('#sc-find-text');
 		this.msg = args.msgplace || $('#sc-count');
 		this.shadowcss = args.shadowcss || {
@@ -213,4 +213,4 @@
 	};
 	//Expose Shadow
 	window.Shadow = Shadow;
-})(window, document.querySelectorAll);
+})(window, window.document.querySelectorAll);
