@@ -37,10 +37,7 @@
 			onload = function (name) {
 				return function () {
 					log(name + ' loaded');
-					if (++loaded === Scope.lib.length) {
-						importStylesheetURI('http://raw.github.com/Kangaroopower/Scope/master/bootstrap.min.css');
-						$(editor);
-					}
+					if (++loaded === Scope.lib.length) $(editor);
 				};
 			};
 		for (var i = 0; i < Scope.lib.length; i++) {
