@@ -38,7 +38,7 @@
 				return function () {
 					log(name + ' loaded');
 					if (++loaded === Scope.lib.length) {
-						importStylesheetURI('http://raw.github.com/Kangaroopower/Scope/master/bootstrap.min.js');
+						importStylesheetURI('http://raw.github.com/Kangaroopower/Scope/master/bootstrap.min.css');
 						$(editor);
 					}
 				};
