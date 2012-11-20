@@ -22,9 +22,9 @@
 		regex = setParams(args, 'regex');
 		matchcolor = setParams(args, 'matchcolor', '#08c');
 		highlightcolor = setParams(args, 'regex', '#700066');
-	};
+	}
 
-	var matches = [], nTrav = 0, sch = -1,  = WikiaEditor.getInstance().getEditbox()[0];
+	var matches = [], nTrav = 0, sch = -1;
 
 	/**** START UTILITY FUNCTIONS ****/
 
@@ -150,7 +150,7 @@
 			}
 		}
 		note('regex', regex);
-		note('isregex', regex instanceof RegExp)
+		note('isregex', regex instanceof RegExp);
 		matches = [];
 		if (regex instanceof RegExp) {
 			while (m = regex.exec(s)) {
