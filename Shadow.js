@@ -1,28 +1,30 @@
 (function (window, $) {
+	var shtext, findbox, msg, shadowcss, textareacss, commoncss, regex, matchcolor, highlightcolor;
 	function Shadow (textarea, params) {
 		var args = params || {};
-		this.findbox = setParams(args, 'findplace', $('#sc-find-text'));
-		this.msg = setParams(args, 'msgplace', $('#sc-count'));
-		this.shadowcss = setParams(args, 'shadowcss', {
+		shtext = textarea;
+		findbox = setParams(args, 'findplace', $('#sc-find-text'));
+		msg = setParams(args, 'msgplace', $('#sc-count'));
+		shadowcss = setParams(args, 'shadowcss', {
 				height: '100%', 'text-align': 'left', overflow: 'auto', 
 				'line-height': '140%', 'font-size': '13.5px', 
 				'font-family': 'Consolas, Eupheima UCAS, Ayuthaya, Menlo, monospace',
 				position: 'absolute', zIndex: '0', 'white-space': 'pre-wrap', 
 				'background-color': 'transparent', color: 'transparent'
 			});
-		this.textareacss = setParams(args, 'textareacss', {
+		textareacss = setParams(args, 'textareacss', {
 				position: 'relative', zIndex: '1', 'background-color': 'transparent'
 			});
-		this.commoncss = setParams(args, 'commoncss', {
+		commoncss = setParams(args, 'commoncss', {
 				width: '100%', left: 0, top: 0, border: '0 none', display: 'block',
 				outline: 'medium none', margin: 0, padding: 0, resize: 'none'
 			});
-		this.regex = setParams(args, 'regex');
-		this.matchcolor = setParams(args, 'matchcolor', '#08c');
-		this.highlightcolor = setParams(args, 'regex', '#700066');
+		regex = setParams(args, 'regex');
+		matchcolor = setParams(args, 'matchcolor', '#08c');
+		highlightcolor = setParams(args, 'regex', '#700066');
 	};
 
-	var matches = [], nTrav = 0, sch = -1, shtext = WikiaEditor.getInstance().getEditbox()[0];
+	var matches = [], nTrav = 0, sch = -1,  = WikiaEditor.getInstance().getEditbox()[0];
 
 	/**** START UTILITY FUNCTIONS ****/
 
@@ -56,6 +58,9 @@
 		);
 	};
 
+	//Returns the response from shadow- different from log- that outputs to console.log
+	//all the time (and that too only debug data), while this outputs info important to the user
+	//in any place, be it a function or a html element.
 	var response = function (text, place) {
 		if (isElement(place)) {
 			place.innerHTML =text;
@@ -117,8 +122,8 @@
 			var theshadow = document.createElement('div');
 			theshadow.id = 'shadow';
 			shtext.parentNode.insertBefore(theshadow, shtext.nextSibling);
-			css(shtext, merge(this.commoncss, this.textareacss));
-			css($('#shadow'), merge(this.commoncss, this.shadowcss));
+			css(shtext, merge(commoncss, textareacss));
+			css($('#shadow'), merge(commoncss, shadowcss));
 			shtext.onscroll = function () { 
 				$('#shadow').scrollTop = shtext.scrollTop;
 			}; 
@@ -126,7 +131,7 @@
 			var properties = ['onpaste', 'oncut', 'onclick', 'onkeyup'];
 			forEach(properties, function (val) {
 				shtext[val] = Shadow.prototype.synch;
-				this.findbox[val] = Shadow.prototype.synch;
+				findbox[val] = Shadow.prototype.synch;
 			});
 			Shadow.prototype.synch();
 		});
@@ -134,38 +139,40 @@
 
 	Shadow.prototype.synch = function () {
 		note('synching');
-		var s = shtext.value, regex, m;
-		if (this.findbox.value === '') {
+		var s = shtext.value.replace('<', '&lt;'), regex, m;
+		if (findbox.value === '') {
 			regex = null;
 		} else {
-			if (typeof this.regex === 'function') {
-				regex = eval(''+this.regex+'();' );
+			if (typeof regex === 'function') {
+				regex = eval(''+regex+'();' );
 			} else {
-				regex = this.regex;
+				regex = regex;
 			}
 		}
+		note('regex', regex);
+		note('isregex', regex instanceof RegExp)
 		matches = [];
 		if (regex instanceof RegExp) {
 			while (m = regex.exec(s)) {
 				matches.push(m.index);
 			}
-			response(matches.length + ' matches!', this.msg);
+			response(matches.length + ' matches!', msg);
 			note(matches);
 		} else {
-			response('&nbsp;', this.msg);
+			response('&nbsp;', msg);
 		}
 		inhtml(function () {
-			var r = '';
+			var r = '', sanitizedfind = findbox.value.replace('<', '&lt;');
 			for (var i = 0, start = 0; i < matches.length; i++) {
 				r += s.substr(start, matches[i] - start);
-				start = matches[i] + this.findbox.value.length;
-				r += '<span id="sc' + i + '"class="sc-match" style="background-color:'+this.highlightcolor+'">' + this.findbox.value + '</span>';
+				start = matches[i] + findbox.value.length;
+				r += '<span id="sc' + i + '"class="sc-match" style="background-color:'+highlightcolor+'">' + sanitizedfind + '</span>';
 			}
 			if (s.substr(start+1).length > 0) {
 				r += s.substr(start+1);
 			}
 			var rltxt = r.length ? r : s;
-			return rltxt.replace('<', '&lt;');
+			return rltxt;
 		}, $('#shadow'));
 		if (matches.length) {
 			css($('#sc-down'), {cursor: 'pointer'});
@@ -177,21 +184,21 @@
 	};
 
 	Shadow.prototype.highlight = function (high) {
-		shtext.setSelection(matches[high], matches[high] + this.findbox.value.length);
+		shtext.setSelection(matches[high], matches[high] + findbox.value.length);
 		$('#sc' + sch).removeAttribute('style');
 		sch = high;
 		if (nTrav === matches.length) {
 			nTrav = 0;
 		}
 		nTrav++;
-		response(nTrav + ' of ' + matches.length, this.msg);
+		response(nTrav + ' of ' + matches.length, msg);
 		Shadow.prototype.synch();
 	};
 
 	Shadow.prototype.prev = function () {
 		note(nTrav);
 		if (!matches.length) {
-			response('No matches found', this.msg);
+			response('No matches found', msg);
 			return;
 		}
 		shtext.focus();
@@ -208,7 +215,7 @@
 	Shadow.prototype.next = function () {
 		note(nTrav);
 		if (!matches.length) {
-			response('No matches found', this.msg);
+			response('No matches found', msg);
 			return;
 		}
 		shtext.focus();
@@ -218,7 +225,7 @@
 			sel = shtext.getSelection();
 		}
 		for (var i = 0; i < matches.length; i++) {
-			if (sel.end < matches[i] + this.findbox.value.length) {
+			if (sel.end < matches[i] + findbox.value.length) {
 				n = i;
 				break;
 			}

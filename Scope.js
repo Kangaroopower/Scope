@@ -137,10 +137,10 @@
  
 	/* Evaluates the regex to be used- Public because it's used by Shadow */
 	function evaluate (alone) {
-		var mod = alone ? '' : 'g';
+		var mod = alone ? '' : 'g', sanitizedfind = $('#sc-find-text').val().replace('<', '&lt;');
 		if (!$('#sc-cs').hasClass('scactive')) mod += 'i';
-		if ($('#sc-reg').hasClass('scactive')) return new RegExp($('#sc-find-text').val(), mod);
-		else return new RegExp($('#sc-find-text').val().replace(/\[\-[\]{}()*+?.,\\\^$|#\s]/g, "\\$&"), mod);
+		if ($('#sc-reg').hasClass('scactive')) return new RegExp(sanitizedfind, mod);
+		else return new RegExp(sanitizedfind.replace(/\[\-[\]{}()*+?.,\\\^$|#\s]/g, "\\$&"), mod);
 	};
 
 	/* Does the replace */
