@@ -1,4 +1,4 @@
-/*global mw:true, WikiaEditor:true, CKEDITOR:true, RTE:true, GlobalTriggers:true, Shadow:true */
+/*global WikiaEditor:true, CKEDITOR:true, RTE:true, GlobalTriggers:true */
 /**
  * Find and Replace 3.0 Alpine
  * 
@@ -9,30 +9,29 @@
  *
  */
 (function () {
-	//Scope Class
+	//Base for functions
 	window.Scope = {
-		version: "3.0 Alpine",
+		version: "3.21 Alpine",
 		lib: [
-				{ name: 'Dialog', url: 'http://raw.github.com/Kangaroopower/Scope/master/Dialog.js' },
-				{ name: 'Shadow', url: 'http://raw.github.com/Kangaroopower/Scope/master/Shadow.js' },
+				{ name: 'Dialog', url: 'http://kangaroopower.wikia.com/wiki/Mediawiki:Dialog.js?action=raw&ctype=text/javascript&maxage=0&smaxage=0' },
 				{ name: 'Bootstrap', url: 'http://raw.github.com/Kangaroopower/Scope/master/bootstrap.min.js' },
 				{ name: 'Rangy', url: 'http://dev.wikia.com/wiki/Textinputs_jquery.js?action=raw&ctype=text/javascript' }
 			]
 	};
-
+ 
 	//Meta Vars
-	var sctxt, Scope = window.Scope, scshadow, scfind;
-
+	var scfind, sctxt, matches = [], Scope = window.Scope, nTrav = 0, sch = -1;
+ 
 	/* Logs stuff */
 	var log = (window.console && function () {
 		var args = Array.prototype.slice.call(arguments);
 		args.unshift('Scope:');
 		return window.console.log.apply(window.console, args);
 	}) || $.noop;
-
+ 
 	/* Load libraries first */
 	function load () {
-		if (!/\boasis-one-column\b/.test(document.body.className)) return;
+		if (!/\boasis-one-column\b/.test(document.body.className)) return false;
 		var loaded = 0,
 			onload = function (name) {
 				return function () {
@@ -41,137 +40,182 @@
 				};
 			};
 		for (var i = 0; i < Scope.lib.length; i++) {
-			log('loading ', Scope.lib[i].name, '...');
+			console.log('loading ', Scope.lib[i].name, '...');
 			$.getScript(Scope.lib[i].url, onload(Scope.lib[i].name));
 		}
 	}
-
+ 
 	/* Check if editor has loaded after libraries have */
 	function editor () {
 		log('doc');
 		if (window.RTE && RTE.getInstance && RTE.getInstance()) {
-			if (RTE.getInstance().mode === 'source') show();
+			if (RTE.getInstance().mode === 'source') setup();
 			else if(RTE.getInstance().mode === 'wysiwyg') hide();
 			else log('Cannot detect editor');
 		} else if (window.CKEDITOR) {
 			CKEDITOR.on('instanceReady', function () {
 				RTE.getInstance().on('wysiwygModeReady', hide);
-				RTE.getInstance().on('sourceModeReady', show);
+				RTE.getInstance().on('sourceModeReady', setup);
 			});
 		} else if (window.WikiaEditor) {
 			if (WikiaEditor.getInstance && WikiaEditor.getInstance()) {
-				if (WikiaEditor.getInstance().mode === 'source') show();
+				if (WikiaEditor.getInstance().mode === 'source') setup();
 				else hide();
-			} else if (GlobalTriggers) GlobalTriggers.on('WikiaEditorReady', show);
+			} else if (GlobalTriggers) GlobalTriggers.on('WikiaEditorReady', setup);
 			else log('Cannot detect editor');
-		} else if (mw.config.get('skin') === 'monobook') show(true);
-		else log('Cannot detect editor');
+		} else log('Cannot detect editor');
 	}
  
-	/* Shows GUI */
-	function show (monobook) {
-		log('Editor loaded');
-		if (!$('#sc-start').length) {
-			if (monobook) $('div#toolbar').append('<img id="sc-start" src="//raw.github.com/Kangaroopower/Scope/master/pics/Replace.png"/>');
-			else $('span.cke_toolbar_expand').before('<img id="sc-start" src="//raw.github.com/Kangaroopower/Scope/master/pics/Replace.png"/>');
-		} 
-		$('#sc-start').click(function () {
-			if ($('#sc-ui').length) {
-				log('closing dialog');
-				hide();
-				return;
-			}
-			log('opening dialog');
-			if (monobook) $('div#toolbar').after(Scope.dialog);
-			else $('span.cke_toolbar_expand').after(Scope.dialog);
-			scfind = $('#sc-find-text');
-			if (monobook) {
-				sctxt = $('#wpTextbox1');
-				//Monobook needs special css
-				scshadow = new Shadow('', {
-					regex: window.Scope.evaluate
-				});
-			} else {
-				sctxt = WikiaEditor.getInstance().getEditbox();
-				scshadow = new Shadow('', {
-					regex: window.Scope.evaluate
-				});
-			}
-			log('Loaded version:', Scope.version);
-			$(setup);
-		});
+	/* Load script */
+	function setup () {
+		log('Editor Loaded');
+		sctxt = WikiaEditor.getInstance().getEditbox();
+		if (!$('#sc-start').length) $('span.cke_toolbar_expand').before('<img id="sc-start" src="//raw.github.com/Kangaroopower/Scope/master/pics/Replace.png"/>');
+		$('#sc-start').click(show);
+		log('Loaded: Scope', Scope.version);
 	}
  
 	/* Opens and sets up gui */
-	function setup () {
-		log('Starting Setup');
-		scshadow.init();
-		$('#sc-replace-button').click(replace);
-		$('#sc-down').click(scshadow.next);
-		$('#sc-rall-button').click(function () {
-			replace(true)
-		});
-		$('#sc-cog').dropdown();
-		$('#sc-find-text, #sc-replace-text').keydown(function (e) {
-			if(e.which === 13) {
-				e.preventDefault();
+	function show () {
+		log('opening dialog');
+		if (!$('#sc-ui').length) {
+			$('.cke_toolbar_expand').after(Scope.dialog);
+			$('#sc-replace-button').click(replace);
+			$('#sc-rall-button').click(function () {
 				replace(true);
-			}
-		});
-		$('#sc-cs, #sc-reg').click(function (e) {
-			e.preventDefault();
-			if($(this).hasClass('scactive')) $(this).removeClass('scactive');
-			else $(this).addClass('scactive');
-		});
-		$('#sc-find-text, #sc-cs').on('keyup paste click', scshadow.synch);
-		$('#sc-find-text').val(sctxt.getSelection().text).focus();
-		scshadow.synch();
+			});
+			$('#sc-down').click(next);
+			$('#sc-cog').dropdown();
+			$('#sc-find-text, #sc-replace-text').keydown(function (e) {
+				if(e.which === 13) {
+					e.preventDefault();
+					replace(true);
+				}
+			});
+			scfind = $('#sc-find-text');
+			$('#sc-cs, #sc-reg').click(function (e) {
+				e.preventDefault();
+				if($(this).hasClass('scactive')) $(this).removeClass('scactive');
+				else $(this).addClass('scactive');
+			});
+			$('#sc-find-text, #sc-cs').on('keyup paste click', synch);
+			sctxt.on('keyup paste click', synch).scroll(function () {
+				$('#sc-shadow').scrollTop(sctxt.scrollTop());
+			});
+			$('#sc-find-text').val(sctxt.getSelection().text).focus();
+			var commonCSS = {
+				width: '100%', left: 0, top: 0, border: '0 none', display: 'block',
+				outline: 'medium none', margin: 0, padding: 0, resize: 'none'
+			};
+			sctxt.css({position: 'relative', zIndex: '1', backgroundColor: 'transparent'}).after('<div id="sc-shadow"></div>');
+			$('#sc-shadow').css(commonCSS);
+			sctxt.css(commonCSS);
+			synch();
+		} else hide();
 	}
-
+ 
 	/* hides gui */
 	function hide () {
 		var height = sctxt.css('height');
-		$('#shadow, #sc-ui').remove();
+		$('#sc-shadow, #sc-ui').remove();
 		sctxt.removeAttr('style').css({height:height});
 	}
  
-	/* Evaluates the regex to be used- Public because it's used by Shadow */
-	function evaluate (alone) {
-		var mod = alone ? '' : 'g', sanitizedfind = $('#sc-find-text').val().replace('<', '&lt;');
+	/* Evaluates the regex to be used */
+	function evaluate (rall) {
+		var mod = rall ? 'g' : '';
 		if (!$('#sc-cs').hasClass('scactive')) mod += 'i';
-		if ($('#sc-reg').hasClass('scactive')) return new RegExp(sanitizedfind, mod);
-		else return new RegExp(sanitizedfind.replace(/\[\-[\]{}()*+?.,\\\^$|#\s]/g, "\\$&"), mod);
-	};
-
+		if ($('#sc-reg').hasClass('scactive')) return new RegExp(scfind.val(), mod);
+		else return new RegExp(scfind.val().replace(/\[\-[\]{}()*+?.,\\\^$|#\s]/g, "\\$&"), mod);
+	}
+ 
 	/* Does the replace */
 	function replace (rall) {
 		var rtxt = $('#sc-replace-text').val(), s = sctxt.val(), undotext = sctxt.val();
 		if (rall === true) {
-			var count;
-			if (s.match(evaluate()).length === 1) count = "One";
-			else count = s.match(evaluate()).length;
-			sctxt.val(s.replace(evaluate(), rtxt));
+			var ctest = s.match(evaluate(true)).length, count = ctest === 1 ? "One" : ctest;
+			sctxt.val(s.replace(evaluate(true), rtxt));
+			synch();
 			$("#sc-count").html('Done!').attr('title', count + ' replacement(s) made!');
 		} else {
-			var sel = scfind.val().test(s.substring(sctxt.getSelection().start, sctxt.getSelection().end));
-			if (sctxt.getSelection().text === "") sctxt.val(s.replace(evaluate(true), rtxt));
-			else if (sel) sctxt.val(s.substring(0, sctxt.getSelection().start) + rtxt + s.substring(sctxt.getSelection().end));
-			scshadow.next();
+			var sel = sctxt.getSelection();
+			if (sel.text === "") sctxt.val(s.replace(evaluate(), rtxt));
+			else if (scfind.val().test(s.substring(sel.start, sel.end)))sctxt.val(s.substring(0, sel.start) + rtxt + s.substring(sel.end));
+			next();
 			$("#sc-count").html('Done!').attr('title', 'One replacement made!');
 		}
 		if (!$('#sc-undo').length) $('#sc-replace-text').after('<img id="sc-undo"src="//raw.github.com/Kangaroopower/Scope/master/pics/undo.png"/>');
 		$('#sc-undo').click(function () {
 			sctxt.val(undotext);
+			synch();
 			$("#sc-count").html('Undone!').attr('title', '');
-			scshadow.synch();
 			$('#sc-undo').hide();
 		});
-		scshadow.synch();
 	}
-
-	//expose evaluate
-	Scope.evaluate = evaluate;
-
+ 
+	//Highlights next match
+	function next () {
+		log(nTrav);
+		if (!matches.length) {
+			$('#sc-count').html('No matches found').attr('title', '');
+			return;
+		}
+		sctxt.focus();
+		var n = 0, sel = sctxt.getSelection();
+		if (!sel || sel.end >= sctxt.val().length) {
+			sctxt.setSelection(0, 0);
+			sel = sctxt.getSelection();
+		}
+		for (var i = 0; i < matches.length; i++) {
+			if (sel.end < matches[i] + scfind.val().length) {
+				n = i;
+				break;
+			}
+		}
+		highlight(n);
+	}
+ 
+	//PUBLIC FUNCTIONS
+	/* Synchs shadow with the textarea */
+	Scope.synch = function () {
+		log('synching');
+		var s = sctxt.val(), regex, m;
+		if (scfind.val() === '') regex = null;
+		else regex = evaluate(true);
+		matches = [];
+		if (regex instanceof RegExp) {
+			while (m = regex.exec(s)) matches.push(m.index);
+			$('#sc-count').html(matches.length + ' matches!');
+			log(matches);
+		} else $('#sc-count').html('&nbsp;');
+		$('#sc-shadow').html(function () {
+			var r = '';
+			for (var i = 0, start = 0; i < matches.length; i++) {
+				r += s.substr(start, matches[i] - start);
+				start = matches[i] + scfind.val().length;
+				r += '<span id="sc' + i + '"class="sc-match">' + scfind.val() + '</span>';
+			}
+			if (s.substr(start+1).length > 0) r += s.substr(start+1);
+			return r.length ? r : s;
+		});
+		if (matches.length) $('#sc-down').css({cursor: 'pointer'});
+		$('#sc-shadow').css('height', sctxt.height()); 
+		$('#sc-shadow').css('width', sctxt.width());
+	};
+ 
+	//Highlight a certain match
+	Scope.highlight = function (high) {
+		sctxt.setSelection(matches[high], matches[high] + scfind.val().length);
+		$('#sc' + sch).removeAttr('style');
+		$('#sc' + high).css({backgroundColor:'#0000FF'});
+		sch = high;
+		if (nTrav === matches.length) nTrav = 0;
+		nTrav++;
+		$('#sc-count').html(nTrav + ' of ' + matches.length).attr('title', '');
+	};
+ 
+	var highlight = Scope.highlight, synch = Scope.synch;
+ 
 	//Load on edit
 	$(load);
 }());
