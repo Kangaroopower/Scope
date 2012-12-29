@@ -43,11 +43,8 @@ $.fn.shadow = (function () {
         this.__callbacks = $.Callbacks();
         
         var offset = $textarea.offset(),
-            color =  $textarea.css('color'),
             settings = {
                 position: 'absolute',
-                left: offset.left + 'px',
-                top:  offset.top  + 'px',
                 margin: 0, padding: 0,
                 backgroundColor: 'transparent',
                 resize: 'none',
@@ -70,7 +67,7 @@ $.fn.shadow = (function () {
                 whiteSpace:     'pre-wrap',
                 overflowX:      'hidden',
                 overflowY:      'auto',
-                color:          color,
+                color:          'transparent',
                 borderColor:    'transparent',
                 borderWidth:    $textarea.css('border-width'),
                 width:          $textarea.width()  + 'px',
