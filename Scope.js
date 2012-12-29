@@ -80,7 +80,7 @@
 	function show () {
 		log('opening dialog');
 		if (!$('#sc-ui').length) {
-			$('.cke_toolbar_expand').after(Scope.dialog);
+			$('span.cke_toolbar_expand').after(Scope.dialog);
 			$('#sc-replace-button').click(replace);
 			$('#sc-rall-button').click(function () {
 				replace(true);
