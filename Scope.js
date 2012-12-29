@@ -15,7 +15,7 @@
 		lib: [
 				{ name: 'Dialog', url: 'http://kangaroopower.wikia.com/wiki/Mediawiki:Dialog.js?action=raw&ctype=text/javascript&maxage=0&smaxage=0' },
 				{ name: 'Bootstrap', url: 'http://raw.github.com/Kangaroopower/Scope/master/lib/bootstrap.min.js' },
-				{ name: 'Shadow', url: 'http://raw.github.com/Kangaroopower/Scope/master/Shadow_dev.js' },
+				{ name: 'Shadow', url: 'https://raw.github.com/Kangaroopower/Scope/master/Shadow%20dev.js' },
 				{ name: 'Rangy', url: 'http://dev.wikia.com/wiki/Textinputs_jquery.js?action=raw&ctype=text/javascript' }
 			]
 	};
