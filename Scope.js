@@ -21,7 +21,7 @@
 	};
  
 	//Meta Vars
-	var scfind, sctxt, matches = [], Scope = window.Scope, nTrav = 0, sch = -1;
+	var scfind, sctxt, Scope = window.Scope, shadow;
  
 	/* Logs stuff */
 	var log = (window.console && function () {
@@ -71,6 +71,7 @@
 	function setup () {
 		log('Editor Loaded');
 		sctxt = WikiaEditor.getInstance().getEditbox();
+		shadow = sctxt.shadow();
 		if (!$('#sc-start').length) $('span.cke_toolbar_expand').before('<img id="sc-start" src="//raw.github.com/Kangaroopower/Scope/master/pics/Replace.png"/>');
 		$('#sc-start').click(show);
 		log('Loaded: Scope', Scope.version);
@@ -100,7 +101,7 @@
 				else $(this).addClass('scactive');
 			});
 			$('#sc-find-text').val(sctxt.getSelection().text).focus();
-			sctxt.shadow();
+			shadow.synch();
 		} else hide();
 	}
  
@@ -125,17 +126,20 @@
 		if (rall === true) {
 			var ctest = s.match(evaluate(true)).length, count = ctest === 1 ? "One" : ctest;
 			sctxt.val(s.replace(evaluate(true), rtxt));
+			shadow.synch();
 			$("#sc-count").html('Done!').attr('title', count + ' replacement(s) made!');
 		} else {
 			var sel = sctxt.getSelection();
 			if (sel.text === "") sctxt.val(s.replace(evaluate(), rtxt));
 			else if (scfind.val().test(s.substring(sel.start, sel.end)))sctxt.val(s.substring(0, sel.start) + rtxt + s.substring(sel.end));
+			shadow.synch();
 			$("#sc-count").html('Done!').attr('title', 'One replacement made!');
 		}
 		if (!$('#sc-undo').length) $('#sc-replace-text').after('<img id="sc-undo"src="//raw.github.com/Kangaroopower/Scope/master/pics/undo.png"/>');
 		$('#sc-undo').click(function () {
 			sctxt.val(undotext);
 			$("#sc-count").html('Undone!').attr('title', '');
+			shadow.synch();
 			$('#sc-undo').hide();
 		});
 	}
