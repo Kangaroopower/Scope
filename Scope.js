@@ -85,7 +85,7 @@
 			$('#sc-rall-button').click(function () {
 				replace(true);
 			});
-			$('#sc-down').click(next);
+			//$('#sc-down').click(next);
 			$('#sc-cog').dropdown();
 			$('#sc-find-text, #sc-replace-text').keydown(function (e) {
 				if(e.which === 13) {
