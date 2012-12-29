@@ -11,10 +11,11 @@
 (function () {
 	//Base for functions
 	window.Scope = {
-		version: "3.21 Alpine",
+		version: "3.5 Edge",
 		lib: [
 				{ name: 'Dialog', url: 'http://kangaroopower.wikia.com/wiki/Mediawiki:Dialog.js?action=raw&ctype=text/javascript&maxage=0&smaxage=0' },
 				{ name: 'Bootstrap', url: 'http://raw.github.com/Kangaroopower/Scope/master/bootstrap.min.js' },
+				{ name: 'Shadow', url: 'http://raw.github.com/Kangaroopower/Scope/master/Shadow_dev.js' },
 				{ name: 'Rangy', url: 'http://dev.wikia.com/wiki/Textinputs_jquery.js?action=raw&ctype=text/javascript' }
 			]
 	};
@@ -98,26 +99,15 @@
 				if($(this).hasClass('scactive')) $(this).removeClass('scactive');
 				else $(this).addClass('scactive');
 			});
-			$('#sc-find-text, #sc-cs').on('keyup paste click', synch);
-			sctxt.on('keyup paste click', synch).scroll(function () {
-				$('#sc-shadow').scrollTop(sctxt.scrollTop());
-			});
 			$('#sc-find-text').val(sctxt.getSelection().text).focus();
-			var commonCSS = {
-				width: '100%', left: 0, top: 0, border: '0 none', display: 'block',
-				outline: 'medium none', margin: 0, padding: 0, resize: 'none'
-			};
-			sctxt.css({position: 'relative', zIndex: '1', backgroundColor: 'transparent'}).after('<div id="sc-shadow"></div>');
-			$('#sc-shadow').css(commonCSS);
-			sctxt.css(commonCSS);
-			synch();
+			sctxt.shadow();
 		} else hide();
 	}
  
 	/* hides gui */
 	function hide () {
 		var height = sctxt.css('height');
-		$('#sc-shadow, #sc-ui').remove();
+		$('#shadow, #sc-ui').remove();
 		sctxt.removeAttr('style').css({height:height});
 	}
  
@@ -135,87 +125,20 @@
 		if (rall === true) {
 			var ctest = s.match(evaluate(true)).length, count = ctest === 1 ? "One" : ctest;
 			sctxt.val(s.replace(evaluate(true), rtxt));
-			synch();
 			$("#sc-count").html('Done!').attr('title', count + ' replacement(s) made!');
 		} else {
 			var sel = sctxt.getSelection();
 			if (sel.text === "") sctxt.val(s.replace(evaluate(), rtxt));
 			else if (scfind.val().test(s.substring(sel.start, sel.end)))sctxt.val(s.substring(0, sel.start) + rtxt + s.substring(sel.end));
-			next();
 			$("#sc-count").html('Done!').attr('title', 'One replacement made!');
 		}
 		if (!$('#sc-undo').length) $('#sc-replace-text').after('<img id="sc-undo"src="//raw.github.com/Kangaroopower/Scope/master/pics/undo.png"/>');
 		$('#sc-undo').click(function () {
 			sctxt.val(undotext);
-			synch();
 			$("#sc-count").html('Undone!').attr('title', '');
 			$('#sc-undo').hide();
 		});
 	}
- 
-	//Highlights next match
-	function next () {
-		log(nTrav);
-		if (!matches.length) {
-			$('#sc-count').html('No matches found').attr('title', '');
-			return;
-		}
-		sctxt.focus();
-		var n = 0, sel = sctxt.getSelection();
-		if (!sel || sel.end >= sctxt.val().length) {
-			sctxt.setSelection(0, 0);
-			sel = sctxt.getSelection();
-		}
-		for (var i = 0; i < matches.length; i++) {
-			if (sel.end < matches[i] + scfind.val().length) {
-				n = i;
-				break;
-			}
-		}
-		highlight(n);
-	}
- 
-	//PUBLIC FUNCTIONS
-	/* Synchs shadow with the textarea */
-	Scope.synch = function () {
-		log('synching');
-		var s = sctxt.val(), regex, m;
-		if (scfind.val() === '') regex = null;
-		else regex = evaluate(true);
-		matches = [];
-		if (regex instanceof RegExp) {
-			while (m = regex.exec(s)) matches.push(m.index);
-			$('#sc-count').html(matches.length + ' matches!');
-			log(matches);
-		} else $('#sc-count').html('&nbsp;');
-		$('#sc-shadow').html(function () {
-			var r = '';
-			for (var i = 0, start = 0; i < matches.length; i++) {
-				r += s.substr(start, matches[i] - start);
-				start = matches[i] + scfind.val().length;
-				r += '<span id="sc' + i + '"class="sc-match">' + scfind.val() + '</span>';
-			}
-			if (s.substr(start+1).length > 0) r += s.substr(start+1);
-			return r.length ? r : s;
-		});
-		if (matches.length) $('#sc-down').css({cursor: 'pointer'});
-		$('#sc-shadow').css('height', sctxt.height()); 
-		$('#sc-shadow').css('width', sctxt.width());
-	};
- 
-	//Highlight a certain match
-	Scope.highlight = function (high) {
-		sctxt.setSelection(matches[high], matches[high] + scfind.val().length);
-		$('#sc' + sch).removeAttr('style');
-		$('#sc' + high).css({backgroundColor:'#0000FF'});
-		sch = high;
-		if (nTrav === matches.length) nTrav = 0;
-		nTrav++;
-		$('#sc-count').html(nTrav + ' of ' + matches.length).attr('title', '');
-	};
- 
-	var highlight = Scope.highlight, synch = Scope.synch;
- 
 	//Load on edit
 	$(load);
 }());

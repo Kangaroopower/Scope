@@ -58,8 +58,6 @@ $.fn.shadow = (function () {
         this.$textarea = $textarea
         .css(
             $.extend(settings, {
-                //color: 'transparent',
-                color: 'blue',
                 zIndex: 11
             })
         );
