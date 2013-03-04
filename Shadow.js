@@ -1,237 +1,245 @@
-(function (window, $) {
-	var shtext, findbox, msg, shadowcss, textareacss, commoncss, regex, matchcolor, highlightcolor;
-	function Shadow (textarea, params) {
-		var args = params || {};
-		shtext = textarea;
-		findbox = setParams(args, 'findplace', $('#sc-find-text'));
-		msg = setParams(args, 'msgplace', $('#sc-count'));
-		shadowcss = setParams(args, 'shadowcss', {
-				height: '100%', 'text-align': 'left', overflow: 'auto', 
-				'line-height': '140%', 'font-size': '13.5px', 
-				'font-family': 'Consolas, Eupheima UCAS, Ayuthaya, Menlo, monospace',
-				position: 'absolute', zIndex: '0', 'white-space': 'pre-wrap', 
-				'background-color': 'transparent', color: 'transparent'
-			});
-		textareacss = setParams(args, 'textareacss', {
-				position: 'relative', zIndex: '1', 'background-color': 'transparent'
-			});
-		commoncss = setParams(args, 'commoncss', {
-				width: '100%', left: 0, top: 0, border: '0 none', display: 'block',
-				outline: 'medium none', margin: 0, padding: 0, resize: 'none'
-			});
-		regex = setParams(args, 'regex');
-		matchcolor = setParams(args, 'matchcolor', '#08c');
-		highlightcolor = setParams(args, 'regex', '#700066');
-	}
+/*jshint jquery:true, browser:true, es5:true, devel:true, camelcase:true, curly:false, undef:true, bitwise:true, eqeqeq:true, forin:true, immed:true, latedef:true, newcap:true, noarg:true, unused:true, regexp:true, strict:true, trailing:true*/
 
-	var matches = [], nTrav = 0, sch = -1;
+$.fn.shadow = (function () {
+    
+    'use strict';
 
-	/**** START UTILITY FUNCTIONS ****/
-
-	//logs Shadow stuff in console
-	var note = (window.console && function () {
-		var args = Array.prototype.slice.call(arguments);
-		args.unshift('Shadow:');
-		return window.console.log.apply(window.console, args);
-	}) || function () {};
-
-	//sets the parameters for Scope
-	var setParams = function (obj, name, fallback) {
-		var res;
-		if (name in obj) {
-			res = obj[name];
-		} else {
-			if (fallback) {
-				res = fallback;
-			} else {
-				res = null;
-			}
-		}
-		return res;
-	};
-
-	//credits to http://stackoverflow.com/questions/384286/
-	var isElement = function (o){
-		return (
-			typeof HTMLElement === "object" ? o instanceof HTMLElement : //DOM2
-			o && typeof o === "object" && o.nodeType === 1 && typeof o.nodeName==="string"
-		);
-	};
-
-	//Returns the response from shadow- different from log- that outputs to console.log
-	//all the time (and that too only debug data), while this outputs info important to the user
-	//in any place, be it a function or a html element.
-	var response = function (text, place) {
-		if (isElement(place)) {
-			place.innerHTML =text;
-		} else if (typeof place === 'function') {
-			place(text);
-		} else {
-			return;
-		}
-	};
-
-	//credits to http://jsperf.com/style-versus-jquery-css/8
-	var css = function (elements, obj) {
-		var style = elements.style;
-		if (!style) {
-			for (var e = 0, elen = elements.length; e < elen; e++) {
-				css(elements[e], obj);
-			}
-		} else {
-			for (var i in obj) {
-				style[i] = obj[i];
-			}
-		}
-	};
-
-	//credits to http://stackoverflow.com/questions/171251/
-	var merge = function(obj1, obj2){
-		var obj3 = {};
-		for (var firstattrname in obj1) { obj3[firstattrname] = obj1[firstattrname]; }
-		for (var secondattrname in obj2) { obj3[secondattrname] = obj2[secondattrname]; }
-		return obj3;
-	};
-
-	//Imports scripts
-	var asset = function (script, callback) {
-		var s = document.createElement('script');
-			s.setAttribute('src', script);
-			s.setAttribute('type', 'text/javascript');
-		document.getElementsByTagName('head')[0].appendChild(s);
-		script.onload = callback();
-	};
-
-	//allows for functions to be passed into innerhtml
-	var inhtml = function (func, elem) {
-		var thehtml = func();
-		elem.innerHTML = thehtml;
-	};
-
-	//Array forEach implementation for IE 8
-	var forEach = function(array, func) {
-		for(var i = 0; i < array.length; ++i) {
-			func.call(this, array[i]);
-		}
-	};
-
-	/**** START SHADOW ****/
-
-	Shadow.prototype.init = function () {
-		asset('http://raw.github.com/Kangaroopower/Scope/master/Rangy.js', function () {
-			var theshadow = document.createElement('div');
-			theshadow.id = 'shadow';
-			shtext.parentNode.insertBefore(theshadow, shtext.nextSibling);
-			css(shtext, merge(commoncss, textareacss));
-			css($('#shadow'), merge(commoncss, shadowcss));
-			shtext.onscroll = function () { 
-				$('#shadow').scrollTop = shtext.scrollTop;
-			}; 
-			shtext.focus();
-			var properties = ['onpaste', 'oncut', 'onclick', 'onkeyup'];
-			forEach(properties, function (val) {
-				shtext[val] = Shadow.prototype.synch;
-				findbox[val] = Shadow.prototype.synch;
-			});
-			Shadow.prototype.synch();
-		});
-	};
-
-	Shadow.prototype.synch = function () {
-		note('synching');
-		var s = shtext.value.replace('<', '&lt;'), regex, m;
-		if (findbox.value === '') {
-			regex = null;
-		} else {
-			if (typeof regex === 'function') {
-				regex = eval(''+regex+'();' );
-			} else {
-				regex = regex;
-			}
-		}
-		note('regex', regex);
-		note('isregex', regex instanceof RegExp);
-		matches = [];
-		if (regex instanceof RegExp) {
-			while (m = regex.exec(s)) {
-				matches.push(m.index);
-			}
-			response(matches.length + ' matches!', msg);
-			note(matches);
-		} else {
-			response('&nbsp;', msg);
-		}
-		inhtml(function () {
-			var r = '', sanitizedfind = findbox.value.replace('<', '&lt;');
-			for (var i = 0, start = 0; i < matches.length; i++) {
-				r += s.substr(start, matches[i] - start);
-				start = matches[i] + findbox.value.length;
-				r += '<span id="sc' + i + '"class="sc-match" style="background-color:'+highlightcolor+'">' + sanitizedfind + '</span>';
-			}
-			if (s.substr(start+1).length > 0) {
-				r += s.substr(start+1);
-			}
-			var rltxt = r.length ? r : s;
-			return rltxt;
-		}, $('#shadow'));
-		if (matches.length) {
-			css($('#sc-down'), {cursor: 'pointer'});
-		}
-		css($('#shadow'), {
-			height: shtext.style.height,
-			width: shtext.style.width
-		});
-	};
-
-	Shadow.prototype.highlight = function (high) {
-		shtext.setSelection(matches[high], matches[high] + findbox.value.length);
-		$('#sc' + sch).removeAttribute('style');
-		sch = high;
-		if (nTrav === matches.length) {
-			nTrav = 0;
-		}
-		nTrav++;
-		response(nTrav + ' of ' + matches.length, msg);
-		Shadow.prototype.synch();
-	};
-
-	Shadow.prototype.prev = function () {
-		note(nTrav);
-		if (!matches.length) {
-			response('No matches found', msg);
-			return;
-		}
-		shtext.focus();
-		var p = matches.length-1, sel = shtext.getSelection();
-		for (var i = matches.length-1; i >= 0; i--) {
-			if (sel.start > matches[i]) {
-				p = i;
-				break;
-			}
-		}
-		Shadow.prototype.highlight(p);
-	};
-
-	Shadow.prototype.next = function () {
-		note(nTrav);
-		if (!matches.length) {
-			response('No matches found', msg);
-			return;
-		}
-		shtext.focus();
-		var n = 0, sel = shtext.getSelection();
-		if (!sel || sel.end >= shtext.value.length) {
-			shtext.setSelection(0, 0);
-			sel = shtext.getSelection();
-		}
-		for (var i = 0; i < matches.length; i++) {
-			if (sel.end < matches[i] + findbox.value.length) {
-				n = i;
-				break;
-			}
-		}
-		Shadow.prototype.highlight(n);
-	};
-	//Expose Shadow
-	window.Shadow = Shadow;
-})(window, window.document.querySelectorAll);
+    // $.browser is deprecated but unfortunately needed
+    var browser = $.browser || (function () {
+        var uaMatch = function(ua) {                
+                ua = ua.toLowerCase();
+                var match = /(chrome)[ \/]([\w.]+)/.exec(ua) ||
+                    /(webkit)[ \/]([\w.]+)/.exec(ua) ||
+                    /(opera)(?:.*version|)[ \/]([\w.]+)/.exec(ua) ||
+                    /(msie) ([\w.]+)/.exec(ua) ||
+                    ua.indexOf("compatible") < 0 && /(mozilla)(?:.*? rv:([\w.]+)|)/.exec(ua) ||
+                    [];
+ 
+                return {
+                    browser: match[1] || "",
+                    version: match[2] || "0"
+                };
+            },
+            matched = uaMatch(window.navigator.userAgent),
+            browser = {};
+ 
+        if (matched.browser) {
+            browser[matched.browser] = true;
+            browser.version = matched.version;
+        }
+ 
+        // Chrome is Webkit, but Webkit is also Safari.
+        if (browser.chrome) {
+            browser.webkit = true;
+        } else if (browser.webkit) {
+            browser.safari = true;
+        }
+ 
+        return browser;
+    }());
+    
+    function Shadow ($textarea) {
+        
+        this.__callbacks = $.Callbacks();
+        
+        var offset = $textarea.offset(),
+            settings = {
+                position: 'absolute',
+                margin: 0, padding: 0,
+                backgroundColor: 'transparent',
+                resize: 'none',
+                cursor: 'text',
+                outline: 'none'
+            };
+            
+        this.$textarea = $textarea
+        .css(
+            $.extend(settings, {
+                zIndex: 11
+            })
+        );
+        
+        this.$shadow = $('<div class="shadow"></div>')
+        .insertAfter($textarea)
+        .css(
+            $.extend(settings, {
+                zIndex: 10,
+                whiteSpace:     'pre-wrap',
+                overflowX:      'hidden',
+                overflowY:      'auto',
+                color:          'transparent',
+                borderColor:    'transparent',
+                borderWidth:    $textarea.css('border-width'),
+                width:          $textarea.width()  + 'px',
+                height:         $textarea.height() + 'px',
+                fontSize:       $textarea.css('font-size'),
+                fontFamily:     $textarea.css('font-family'),
+                fontWeight:     $textarea.css('font-weight'),
+                fontStyle:      $textarea.css('font-style'),
+                lineHeight:     $textarea.css('line-height'),
+                letterSpacing:  $textarea.css('letter-spacing'),
+                textAlign:      $textarea.css('text-align'),
+                wordSpacing:    $textarea.css('word-spacing')
+                /*
+                quotes
+                punctuation-trim
+                text-decoration
+                text-indent
+                text-justify
+                text-outline
+                text-overflow
+                text-shadow
+                text-transform
+                text-wrap
+                word-break
+                word-wrap
+                */
+            })
+        );
+        
+        if (browser.mozilla) {
+            this.$shadow.css('padding', '1px 0 0 2px');
+        } else {
+            this.$shadow.css('padding', '1px 0 0 1px');
+        }
+        
+        $textarea
+        .scroll($.proxy(this.__scroll, this));
+        this.__scroll();
+        
+        $textarea
+        .on('propertychange keydown input paste', $.proxy(this.__synch, this));
+        if (browser.msie) {
+            $textarea
+            .on('keyup', $.proxy(this.__synch, this));
+        }
+        this.__synch();
+    }
+    
+    // public methods:
+    
+    Shadow.prototype.selection = function (start, end) {
+        if (start === undefined) {
+            return this.$textarea.getSelection();
+        } else {
+            start = Math.round(start);
+            end = end !== undefined ? Math.round(end) : start;
+            this.$textarea.getSelection(start, end);
+            if (start === end) {
+                this.$textarea.collapseSelection();
+            }
+            return this;
+        }
+    };
+    
+    Shadow.prototype.subscribe = function (callback) {
+        if ($.isFunction(callback)) {
+            this.__callbacks.add(callback);
+        }
+    };
+    
+    Shadow.prototype.unsubscribe = function (callback) {
+        this.__callbacks.remove(callback);
+    };
+    
+    Shadow.prototype.addClass = function (start, end, cssClass) {
+        // ...
+    };
+    
+    Shadow.prototype.replace = function (start, end, replacement) {
+        // ...
+    };
+    
+    // private methods
+    
+    var T_TEXT = 1,
+        T_ENTITY = 2;
+        
+    var ENTITIES = {
+        '<': '&lt;', '&': '&amp;', '>': '&gt;'
+    };
+    
+    Shadow.prototype.__tokenize = function (text) {
+        this.tokens = text.split(/([<&>])/);
+        for (var t, i = 0; i < this.tokens.length; i++) {
+            t = this.tokens[i];
+            this.tokens[i] = {
+                text: t,
+                type: T_TEXT
+            };
+            if (t.length === 1 && ENTITIES[t]) {
+                this.tokens[i].type = T_ENTITY;
+                this.tokens[i].alt  = ENTITIES[t];
+            }
+        }
+        console.log(this.tokens);
+    };
+    
+    Shadow.prototype.__render = function () {
+        var out = '';
+        for (var t, i = 0; i < this.tokens.length; i++) {
+            t = this.tokens[i];
+            switch (t.type) {
+                case T_TEXT:
+                    out += t.text;
+                    break;
+                case T_ENTITY:
+                    out += t.alt;
+                    break;
+            }
+        }
+        return out;
+    };
+    
+    Shadow.prototype.__scroll = function () {
+        this.$shadow.scrollTop(this.$textarea.scrollTop());
+    };
+    
+    Shadow.prototype.__ieFix = function () {
+        if (!browser.msie) return;
+        var textHeight = this.$textarea[0].scrollHeight;
+        if (textHeight > this.$textarea.height()) {
+            $('#buffer').remove();
+            $('<div>&nbsp;</div>')
+            .attr('id', 'buffer')
+            .css({
+                color: 'transparent',
+                background: 'transparent',
+                border: 'none',
+                width: '12px',
+                height: textHeight + 'px',
+                float: 'right',
+                top: 0,
+                right: 0
+            })
+            .prependTo(this.$shadow);
+        }
+        this.__scroll();
+    };
+    
+    Shadow.prototype.__synch = function () {
+        var value = this.$textarea.val(),
+            last = value[value.length - 1],
+            postfix = { "\r":1,"\n":1 }[last] ?  '&nbsp;' : '';
+        this.__tokenize(value);
+        this.__callbacks.fire(value);
+        this.$shadow.html(this.__render() + postfix);
+        this.__ieFix();
+    };
+    
+    function factory () {
+        /*jshint validthis:true*/
+        var $textarea = this.first();
+        if (!($textarea[0] instanceof HTMLTextAreaElement)) {
+            throw new Error('not a textarea');
+        }
+        var shadow = $textarea.data('shadow');
+        if (!shadow || !(shadow instanceof Shadow)) {
+            shadow = new Shadow($textarea);
+            $textarea.data('shadow', shadow);
+        }
+        return shadow;
+    }
+    
+    return factory;
+}());
