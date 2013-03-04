@@ -11,7 +11,7 @@
 (function () {
 	//Base for functions
 	window.Scope = {
-		version: "3.22 Edge",
+		version: "3.5 Edge",
 		lib: [
 				{ name: 'Dialog', url: 'http://kangaroopower.wikia.com/wiki/Mediawiki:Dialog.js?action=raw&ctype=text/javascript&maxage=0&smaxage=0' },
 				{ name: 'Bootstrap', url: 'http://raw.github.com/Kangaroopower/Scope/master/lib/bootstrap.min.js' },
@@ -157,7 +157,7 @@
     var T_TEXT = 1, T_ENTITY = 2;
     
     function tokenize (text) {
-        var start = 0, end = 0, len, tokens = text.split(/([<&>])/);
+        var start = 0, tokens = text.split(/([<&>])/);
 
         var ENTITIES = {
             '<': '&lt;', '&': '&amp;', '>': '&gt;'
@@ -225,7 +225,7 @@
             if (s.substr(start+1).length > 0) r += s.substr(start+1);
             return (r.length ? r : s)  + postfix;
         });
-    };
+    }
  
     //Highlight a certain match
     function highlight (h) {
