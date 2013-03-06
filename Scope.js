@@ -79,7 +79,7 @@
 	function show () {
 		log('opening dialog');
 		if (!$('#sc-ui').length) {
-			$('.cke_toolbar_expand').after(Scope.dialog);
+			$('span.cke_toolbar_expand').after(Scope.dialog);
 			$('#sc-replace-button').click(replace);
 			$('#sc-rall-button').click(function () {
 				replace(true);
@@ -154,111 +154,117 @@
 		});
 	}
  
-    var T_TEXT = 1, T_ENTITY = 2;
-    
-    function tokenize (text) {
-        var start = 0, tokens = text.split(/([<&>])/);
+	var T_TEXT = 1, T_ENTITY = 2;
+	
+	function tokenize (text) {
+		var start = 0, tokens = text.split(/([<&>])/);
 
-        var ENTITIES = {
-            '<': '&lt;', '&': '&amp;', '>': '&gt;'
-        };
+		var ENTITIES = {
+			'<': '&lt;', '&': '&amp;', '>': '&gt;'
+		};
 
-        for (var t, i = 0; i < tokens.length; i++) {
-            t = tokens[i];
-            tokens[i] = {
-                text: t,
-                type: T_TEXT,
-                start: start,
-                length: t.length
-            };
-            start += t.length;
-            if (t.length === 1 && ENTITIES[t]) {
-                tokens[i].type = T_ENTITY;
-                tokens[i].alt  = ENTITIES[t];
-            }
-        }
-        return tokens;
-    }
-    
-    function render (tokens) {
-        var out = '';
-        for (var t, i = 0; i < tokens.length; i++) {
-            t = tokens[i];
-            if (t.type === T_TEXT) {
-                out += t.text;
-            } else if (t.type === T_ENTITY) {
-                out += t.alt;
-            }
-        }
-        return out;
-    }
-    
-    function synch () {
-        var s = render(tokenize(sctxt.val())),
-            regex,
-            m,
-            postfix = { "\r":1,"\n":1 }[s[s.length - 1]] ?  '&nbsp;' : '';
+		for (var t, i = 0; i < tokens.length; i++) {
+			t = tokens[i];
+			tokens[i] = {
+				text: t,
+				type: T_TEXT,
+				start: start,
+				length: t.length
+			};
+			start += t.length;
+			if (t.length === 1 && ENTITIES[t]) {
+				tokens[i].type = T_ENTITY;
+				tokens[i].alt  = ENTITIES[t];
+			}
+		}
+		return tokens;
+	}
+	
+	function render (tokens) {
+		var out = '';
+		for (var t, i = 0; i < tokens.length; i++) {
+			t = tokens[i];
+			if (t.type === T_TEXT) {
+				out += t.text;
+			} else if (t.type === T_ENTITY) {
+				out += t.alt;
+			}
+		}
+		return out;
+	}
+	
+	function synch () {
+		var s = render(tokenize(sctxt.val())),
+			regex,
+			m,
+			postfix = { "\r":1,"\n":1 }[s[s.length - 1]] ?  '&nbsp;' : '';
 
-        if (scfind.val() === '') regex = null;
-        else regex = evaluate(true);
-        matches = [];
+		if (scfind.val() === '') regex = null;
+		else {
+			var mod = 'g';
+			if (!$('#sc-cs').hasClass('scactive')) mod += 'i';
+			if ($('#sc-reg').hasClass('scactive')) regex = scfind.val();
+			else regex = scfind.val().replace(/\[\-[\]{}()*+?.,\\\^$|#\s]/g, "\\$&");
+			regex = new RegExp(render(tokenize(regex)), mod);
+		}
+		matches = [];
 
-        if (regex instanceof RegExp) {
-            while (m = regex.exec(s)) matches.push({'index':m.index, 'phrase':m[0]});
-            $('#sc-count').html(matches.length + ' matches!');
-            log(matches);
-        } else $('#sc-count').html('&nbsp;');
+		if (regex instanceof RegExp) {
+			while (m = regex.exec(s)) matches.push({'index':m.index, 'phrase':m[0]});
+			$('#sc-count').html(matches.length + ' matches!');
+			log(matches);
+		} else $('#sc-count').html('&nbsp;');
 
-        if (matches.length) $('#sc-down').css({cursor: 'pointer'});
-        else $('#sc-down').css({cursor: 'default'});
+		if (matches.length) $('#sc-down').css({cursor: 'pointer'});
+		else $('#sc-down').css({cursor: 'default'});
 
-        $('#sc-shadow').css('height', sctxt.height()); 
-        $('#sc-shadow').css('width', sctxt.width());
+		$('#sc-shadow').css('height', sctxt.height()); 
+		$('#sc-shadow').css('width', sctxt.width());
 
-        $('#sc-shadow').html(function () {
-            var r = '';
-            for (var i = 0, start = 0; i < matches.length; i++) {
-                r += s.substr(start, matches[i].index - start);
-                start = matches[i].index + matches[i].phrase.length;
-                r += '<span id="sc' + i + '"class="sc-match">' + matches[i].phrase + '</span>';
-            }
-            if (s.substr(start+1).length > 0) r += s.substr(start+1);
-            return (r.length ? r : s)  + postfix;
-        });
-    }
+		$('#sc-shadow').html(function () {
+			var r = '';
+			for (var i = 0, start = 0; i < matches.length; i++) {
+				r += s.substr(start, matches[i].index - start);
+				start = matches[i].index + matches[i].phrase.length;
+				r += '<span id="sc' + i + '"class="sc-match">' + matches[i].phrase + '</span>';
+			}
+			if (s.substr(start+1).length > 0) r += s.substr(start+1);
+			return (r.length ? r : s)  + postfix;
+		});
+	}
  
-    //Highlight a certain match
-    function highlight (h) {
-        sctxt.setSelection(matches[h].index, matches[h].index + matches[h].phrase.length);
-        $('#sc' + sch).removeAttr('style');
-        $('#sc' + h).css({backgroundColor:'#0000FF'});
-        sch = h;
-        if (nTrav === matches.length) nTrav = 0;
-        nTrav++;
-        $('#sc-count').html(nTrav + ' of ' + matches.length).attr('title', '');
-    }
+	//Highlight a certain match
+	function highlight (h) {
+		sctxt.setSelection(matches[h].index, matches[h].index + matches[h].phrase.length);
+		$('#sc' + sch).removeAttr('style');
+		$('#sc' + h).css({backgroundColor:'#0000FF'});
+		sch = h;
+		if (nTrav === matches.length) nTrav = 0;
+		nTrav++;
+		$('#sc-count').html(nTrav + ' of ' + matches.length).attr('title', '');
+	}
 
-    //Highlights next match
-    function next () {
-        log(nTrav);
-        if (!matches.length) {
-            $('#sc-count').html('No matches found').attr('title', '');
-            return;
-        }
-        sctxt.focus();
-        var n = 0, sel = sctxt.getSelection();
-        if (!sel || sel.end >= sctxt.val().length) {
-            sctxt.setSelection(0, 0);
-            sel = sctxt.getSelection();
-        }
-        for (var i = 0; i < matches.length; i++) {
-            if (sel.end < matches[i].index + matches[i].phrase.length) {
-                n = i;
-                break;
-            }
-        }
-        highlight(n);
-    }
+	//Highlights next match
+	function next () {
+		log(nTrav);
+		if (!matches.length) {
+			$('#sc-count').html('No matches found').attr('title', '');
+			return;
+		}
+		sctxt.focus();
+		var n = 0, sel = sctxt.getSelection();
+		if (!sel || sel.end >= sctxt.val().length) {
+			sctxt.setSelection(0, 0);
+			sel = sctxt.getSelection();
+		}
+		for (var i = 0; i < matches.length; i++) {
+			if (sel.end < matches[i].index + matches[i].phrase.length) {
+				n = i;
+				break;
+			}
+		}
+		highlight(n);
+	}
  
 	//Load on edit
 	$(load);
