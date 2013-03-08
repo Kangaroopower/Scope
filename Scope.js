@@ -127,7 +127,10 @@
 		var mod = rall ? 'g' : '';
 		if (!$('#sc-cs').hasClass('scactive')) mod += 'i';
 		if ($('#sc-reg').hasClass('scactive')) return new RegExp(scfind.val(), mod);
-		else return new RegExp(scfind.val().replace(/\[\-[\]{}()*+?.,\\\^$|#\s]/g, "\\$&"), mod);
+		else {
+			var regex = scfind.val().replace(/\[\-[\]{}()*+?.,\\\^$|#\s]/g, "\\$&");
+			return new RegExp(regex.replace("\\", "\\\\"), mod);
+		}
 	}
  
 	/* Does the replace */
