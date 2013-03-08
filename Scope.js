@@ -97,6 +97,7 @@
 				e.preventDefault();
 				if($(this).hasClass('scactive')) $(this).removeClass('scactive');
 				else $(this).addClass('scactive');
+				synch();
 			});
 			$('#sc-find-text, #sc-cs').on('keyup paste click', synch);
 			sctxt.on('keyup paste click', synch).scroll(function () {
