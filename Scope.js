@@ -204,8 +204,11 @@
 			var mod = 'g';
 			if (!$('#sc-cs').hasClass('scactive')) mod += 'i';
 			if ($('#sc-reg').hasClass('scactive')) regex = scfind.val();
-			else regex = scfind.val().replace(/\[\-[\]{}()*+?.,\\\^$|#\s]/g, "\\$&");
-			regex = regex.replace("\\", "\\\\");
+			else {
+				regex = scfind.val().replace(/\[\-[\]{}()*+?.,\\\^$|#\s]/g, "\\$&");
+				regex = regex.replace("\\", "\\\\");
+			}
+
 			regex = new RegExp(render(tokenize(regex)), mod);
 		}
 		matches = [];
