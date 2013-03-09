@@ -93,7 +93,7 @@
 				}
 			});
 			scfind = $('#sc-find-text');
-			$('#sc-cs, #sc-reg').click(function (e) {
+			$('#sc-cs, #sc-reg, #sc-ww').click(function (e) {
 				e.preventDefault();
 				if($(this).hasClass('scactive')) $(this).removeClass('scactive');
 				else $(this).addClass('scactive');
@@ -123,13 +123,16 @@
 	}
  
 	/* Evaluates the regex to be used */
-	function evaluate (rall) {
-		var mod = rall ? 'g' : '';
+	function evaluate (rall, shadow) {
+		var mod = rall ? 'g' : '', ww = false;
 		if (!$('#sc-cs').hasClass('scactive')) mod += 'i';
-		if ($('#sc-reg').hasClass('scactive')) return new RegExp(scfind.val(), mod);
+		if ($('#sc-ww').hasClass('scactive')) ww = true;
+		if ($('#sc-reg').hasClass('scactive')) return shadow ? {'mod': mod, 'reg': scfind.val()} : new RegExp(scfind.val(), mod);
 		else {
 			var regex = scfind.val().replace(/\[\-[\]{}()*+?.,\\\^$|#\s]/g, "\\$&");
-			return new RegExp(regex.replace("\\", "\\\\"), mod);
+			regex = regex.replace("\\", "\\\\");
+			if (ww) regex = "\b" + regex + "\b";
+			return shadow ? {'mod': mod, 'reg': regex} : new RegExp(regex, mod);
 		}
 	}
  
@@ -205,15 +208,8 @@
 
 		if (scfind.val() === '') regex = null;
 		else {
-			var mod = 'g';
-			if (!$('#sc-cs').hasClass('scactive')) mod += 'i';
-			if ($('#sc-reg').hasClass('scactive')) regex = scfind.val();
-			else {
-				regex = scfind.val().replace(/\[\-[\]{}()*+?.,\\\^$|#\s]/g, "\\$&");
-				regex = regex.replace("\\", "\\\\");
-			}
-
-			regex = new RegExp(render(tokenize(regex)), mod);
+			var r = evaluate(true, true);
+			regex = new RegExp(render(tokenize(r.reg)), r.mod);
 		}
 		matches = [];
 
