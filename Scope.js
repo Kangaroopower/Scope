@@ -131,7 +131,7 @@
 		else {
 			var regex = scfind.val().replace(/\[\-[\]{}()*+?.,\\\^$|#\s]/g, "\\$&");
 			regex = regex.replace("\\", "\\\\");
-			if (ww) regex = "\b" + regex + "\b";
+			if (ww) regex = "\\b" + regex + "\\b";
 			return shadow ? {'mod': mod, 'reg': regex} : new RegExp(regex, mod);
 		}
 	}
@@ -139,6 +139,7 @@
 	/* Does the replace */
 	function replace (rall) {
 		var rtxt = $('#sc-replace-text').val(), s = sctxt.val(), undotext = sctxt.val();
+		if (scfind.val() === '') return;
 		if (rall === true) {
 			var count, ctest = s.match(evaluate(true)).length;
 			count = ctest === 1 ? "One" : ctest;
@@ -215,7 +216,7 @@
 
 		if (regex instanceof RegExp) {
 			while (m = regex.exec(s)) matches.push({'index':m.index, 'phrase':m[0]});
-			$('#sc-count').html(matches.length + ' matches!');
+			$('#sc-count').html(matches.length + ' match(es)!');
 			log(matches);
 		} else $('#sc-count').html('&nbsp;');
 
