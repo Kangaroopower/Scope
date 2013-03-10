@@ -129,8 +129,7 @@
 		if ($('#sc-ww').hasClass('scactive')) ww = true;
 		if ($('#sc-reg').hasClass('scactive')) return shadow ? {'mod': mod, 'reg': scfind.val()} : new RegExp(scfind.val(), mod);
 		else {
-			var regex = scfind.val().replace(/\[\-[\]{}()*+?.,\\\^$|#\s]/g, "\\$&");
-			regex = regex.replace("\\", "\\\\");
+			var regex = scfind.val().replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
 			if (ww) regex = "\\b" + regex + "\\b";
 			return shadow ? {'mod': mod, 'reg': regex} : new RegExp(regex, mod);
 		}
