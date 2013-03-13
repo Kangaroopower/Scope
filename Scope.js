@@ -109,7 +109,7 @@
 				outline: 'medium none', margin: 0, padding: 0, resize: 'none'
 			};
 			sctxt.css({position: 'relative', zIndex: '1', backgroundColor: 'transparent'}).after('<div id="sc-shadow"></div>');
-			$('#sc-shadow').css(cCSS).css({'font-size', sctxt.css('font-size'), height:sctxt.height(), 'line-height': sctxt.css("line-height")});
+			$('#sc-shadow').css(cCSS).css({'font-size': sctxt.css('font-size'), height:sctxt.height(), 'line-height': sctxt.css("line-height")});
 			sctxt.css(cCSS);
 			synch();
 		} else hide();
