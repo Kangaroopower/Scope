@@ -11,7 +11,7 @@
 (function () {
 	//Base for functions
 	window.Scope = {
-		version: "3.6 Edge",
+		version: "3.61 Edge",
 		lib: [
 				{ name: 'Dialog', url: 'http://kangaroopower.wikia.com/wiki/Mediawiki:Dialog.js?action=raw&ctype=text/javascript&maxage=0&smaxage=0' },
 				{ name: 'Bootstrap', url: 'http://raw.github.com/Kangaroopower/Scope/master/lib/bootstrap.min.js' },
