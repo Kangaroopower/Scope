@@ -66,7 +66,7 @@
 	/* Parses input from "terminal" */
 	function evaluate () {
 		var tokenized = $('#sc-text').val().split('/');
-		if (tokenized[0] === "#SANITIZE") {
+		if (tokenized[0].toLowerCase() === "#sanitize") {
 			//escaping: courtesy of http://stackoverflow.com/questions/3446170/
 			var escaped = tokenized[1].replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&"),
 				secondsplit = tokenized[3].split(' ');
