@@ -200,6 +200,19 @@
 		}
 		return out;
 	}
+
+	//there has to be an easier way to do this
+	/*function mFix (arr, txt) {
+		for (var i = 0; i < arr.length; i++;) {
+			arr[i] = arr[i].replace("").replace("&lt;", "<").replace("&gt;").replace("&amp;");
+		}
+
+	}
+
+	function tFix (txt) {
+		return txt.replace("&lt;", "<").replace("&gt;").replace("&amp;");
+
+	}*/
 	
 	function synch () {
 		var s = render(tokenize(sctxt.val())),
@@ -240,6 +253,7 @@
  
 	//Highlight a certain match
 	function highlight (h) {
+		//var realmatches = hiliteHelper(matches, tFix(sctxt.val()));
 		sctxt.setSelection(matches[h].index, matches[h].index + matches[h].phrase.length);
 		$('#sc' + sch).removeAttr('style');
 		$('#sc' + h).css({backgroundColor:'#0000FF'});
