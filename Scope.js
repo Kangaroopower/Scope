@@ -11,9 +11,9 @@
 (function () {
 	//Base for functions
 	window.Scope = {
-		version: "3.61 Edge",
+		version: "3.62 Edge",
 		lib: [
-				{ name: 'Dialog', url: 'http://kangaroopower.wikia.com/wiki/Mediawiki:Dialog.js?action=raw&ctype=text/javascript&maxage=0&smaxage=0' },
+				{ name: 'Dialog', url: 'https://raw.github.com/Kangaroopower/Scope/master/Dialog.js' },
 				{ name: 'Bootstrap', url: 'http://raw.github.com/Kangaroopower/Scope/master/lib/bootstrap.min.js' },
 				{ name: 'Rangy', url: 'http://dev.wikia.com/wiki/Textinputs_jquery.js?action=raw&ctype=text/javascript' }
 			]
@@ -141,11 +141,12 @@
 		var rtxt = $('#sc-replace-text').val(), s = sctxt.val(), undotext = sctxt.val();
 		if (scfind.val() === '') return;
 		if (rall === true) {
-			var count, ctest = s.match(evaluate(true)).length;
+			var count, ctest = s.match(evaluate(true)).length, plural;
 			count = ctest === 1 ? "One" : ctest;
+			plural = count === "One" ? "" : "s";
 			sctxt.val(s.replace(evaluate(true), rtxt));
 			synch();
-			$("#sc-count").html('Done!').attr('title', count + ' replacement(s) made!');
+			$("#sc-count").html('Done!').attr('title', count + ' replacement'+ plural +' made!');
 		} else {
 			var sel = sctxt.getSelection();
 			if (sel.text === "") sctxt.val(s.replace(evaluate(), rtxt));
