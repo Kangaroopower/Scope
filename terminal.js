@@ -82,13 +82,14 @@
 	/* Does the replace */
 	function replace (regex, rtxt) {
 		undotext = sctxt.val();
+		var count = sctxt.val().match(regex).length;
 		sctxt.val(sctxt.val().replace(regex, rtxt));
-		$("#sc-tcount").html('Done! '+ sctxt.val().match(evaluate()).length + ' replacement(s) made!');
-		if (!$('#sc-undo').length) $('#sc-replace-text').after('<img id="sc-undo" style="height:20px;cursor:pointer;vertical-align:middle" src="//raw.github.com/Kangaroopower/Scope/master/pics/undo.png">');
-		$('#sc-undo').click(function () {
+		$("#sc-tcount").html('Done! '+ count + ' replacement(s) made!');
+		if (!$('#sc-tundo').length) $('#sc-terminal').append('&nbsp;<img id="sc-tundo" style="height:20px;cursor:pointer;vertical-align:middle" src="//raw.github.com/Kangaroopower/Scope/master/pics/undo.png">');
+		$('#sc-tundo').click(function () {
 			sctxt.val(undotext);
 			$("#sc-tcount").html('Undone!');
-			$('#sc-undo').hide();
+			$('#sc-tundo').remove();
 		});
 	}
 
