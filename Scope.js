@@ -8,10 +8,10 @@
  * @Shadow author Pecoes
  *
  */
-(function () {
+(function (w) {
 	//Base for functions
-	window.Scope = {
-		version: "3.62 Edge",
+	w.Scope = {
+		version: "3.63 Edge",
 		lib: [
 				{ name: 'Dialog', url: 'https://raw.github.com/Kangaroopower/Scope/master/Dialog.js' },
 				{ name: 'Bootstrap', url: 'http://raw.github.com/Kangaroopower/Scope/master/lib/bootstrap.min.js' },
@@ -20,13 +20,13 @@
 	};
  
 	//Meta Vars
-	var scfind, sctxt, matches = [], Scope = window.Scope, nTrav = 0, sch = -1;
+	var scfind, sctxt, matches = [], Scope = w.Scope, nTrav = 0, sch = -1, terminal = {};
  
 	/* Logs stuff */
-	var log = (window.console && function () {
+	var log = (w.console && function () {
 		var args = Array.prototype.slice.call(arguments);
 		args.unshift('Scope:');
-		return window.console.log.apply(window.console, args);
+		return w.console.log.apply(w.console, args);
 	}) || $.noop;
  
 	/* Load libraries first */
@@ -48,16 +48,16 @@
 	/* Check if editor has loaded after libraries have */
 	function editor () {
 		log('doc');
-		if (window.RTE && RTE.getInstance && RTE.getInstance()) {
+		if (w.RTE && RTE.getInstance && RTE.getInstance()) {
 			if (RTE.getInstance().mode === 'source') setup();
 			else if(RTE.getInstance().mode === 'wysiwyg') hide();
 			else log('Cannot detect editor');
-		} else if (window.CKEDITOR) {
+		} else if (w.CKEDITOR) {
 			CKEDITOR.on('instanceReady', function () {
 				RTE.getInstance().on('wysiwygModeReady', hide);
 				RTE.getInstance().on('sourceModeReady', setup);
 			});
-		} else if (window.WikiaEditor) {
+		} else if (w.WikiaEditor) {
 			if (WikiaEditor.getInstance && WikiaEditor.getInstance()) {
 				if (WikiaEditor.getInstance().mode === 'source') setup();
 				else hide();
@@ -230,7 +230,8 @@
 
 		if (regex instanceof RegExp) {
 			while (m = regex.exec(s)) matches.push({'index':m.index, 'phrase':m[0]});
-			$('#sc-count').html(matches.length + ' match(es)!');
+			var countxt = matches.length === 1 ? " match" : " matches";
+			$('#sc-count').html(matches.length + countxt);
 			log(matches);
 		} else $('#sc-count').html('&nbsp;');
 
@@ -288,4 +289,4 @@
  
 	//Load on edit
 	$(load);
-}());
+}(window));
