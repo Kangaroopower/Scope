@@ -253,9 +253,9 @@
 		$('#sc' + sch).removeAttr('style');
 		$('#sc' + h).css({backgroundColor:'#0000FF'});
 		sch = h;
-		if (nTrav === hmatches.length) nTrav = 0;
+		if (nTrav === matches.length) nTrav = 0;
 		nTrav++;
-		$('#sc-count').html(nTrav + ' of '  + hmatches.length).attr('title', '');
+		$('#sc-count').html(nTrav + ' of '  + matches.length).attr('title', '');
 	}
 
 	//Highlights next match
