@@ -11,7 +11,7 @@
 (function (w) {
 	//Base for functions
 	w.Scope = {
-		version: "3.63 Edge",
+		version: "3.64 Edge",
 		lib: [
 				{ name: 'Dialog', url: 'https://raw.github.com/Kangaroopower/Scope/master/Dialog.js' },
 				{ name: 'Bootstrap', url: 'http://raw.github.com/Kangaroopower/Scope/master/lib/bootstrap.min.js' },
@@ -20,7 +20,7 @@
 	};
  
 	//Meta Vars
-	var scfind, sctxt, matches = [], Scope = w.Scope, nTrav = 0, sch = -1, terminal = {};
+	var scfind, sctxt, matches = [], hmatches = [], Scope = w.Scope, nTrav = 0, sch = -1;
  
 	/* Logs stuff */
 	var log = (w.console && function () {
@@ -201,35 +201,29 @@
 		}
 		return out;
 	}
-
-	//there has to be an easier way to do this
-	/*function mFix (arr, txt) {
-		for (var i = 0; i < arr.length; i++;) {
-			arr[i] = arr[i].replace("").replace("&lt;", "<").replace("&gt;").replace("&amp;");
-		}
-
-	}
-
-	function tFix (txt) {
-		return txt.replace("&lt;", "<").replace("&gt;").replace("&amp;");
-
-	}*/
 	
 	function synch () {
 		var s = render(tokenize(sctxt.val())),
+			hs = sctxt.val(),
 			regex,
+			hregex,
 			m,
+			n,
 			postfix = { "\r":1,"\n":1 }[s[s.length - 1]] ?  '&nbsp;' : '';
 
 		if (scfind.val() === '') regex = null;
 		else {
 			var r = evaluate(true, true);
 			regex = new RegExp(render(tokenize(r.reg)), r.mod);
+			hregex = new RegExp(r.reg, r.mod);
 		}
 		matches = [];
+		hmatches = [];
 
 		if (regex instanceof RegExp) {
 			while (m = regex.exec(s)) matches.push({'index':m.index, 'phrase':m[0]});
+			while (n = hregex.exec(hs)) hmatches.push({'index': n.index, 'phrase':n[0]});
+
 			var countxt = matches.length === 1 ? " match" : " matches";
 			$('#sc-count').html(matches.length + countxt);
 			log(matches);
@@ -255,20 +249,19 @@
  
 	//Highlight a certain match
 	function highlight (h) {
-		//var realmatches = hiliteHelper(matches, tFix(sctxt.val()));
-		sctxt.setSelection(matches[h].index, matches[h].index + matches[h].phrase.length);
+		sctxt.setSelection(hmatches[h].index, hmatches[h].index + hmatches[h].phrase.length);
 		$('#sc' + sch).removeAttr('style');
 		$('#sc' + h).css({backgroundColor:'#0000FF'});
 		sch = h;
-		if (nTrav === matches.length) nTrav = 0;
+		if (nTrav === hmatches.length) nTrav = 0;
 		nTrav++;
-		$('#sc-count').html(nTrav + ' of ' + matches.length).attr('title', '');
+		$('#sc-count').html(nTrav + ' of '  + hmatches.length).attr('title', '');
 	}
 
 	//Highlights next match
 	function next () {
 		log(nTrav);
-		if (!matches.length) {
+		if (!hmatches.length) {
 			$('#sc-count').html('No matches found').attr('title', '');
 			return;
 		}
@@ -278,8 +271,8 @@
 			sctxt.setSelection(0, 0);
 			sel = sctxt.getSelection();
 		}
-		for (var i = 0; i < matches.length; i++) {
-			if (sel.end < matches[i].index + matches[i].phrase.length) {
+		for (var i = 0; i < hmatches.length; i++) {
+			if (sel.end < hmatches[i].index + hmatches[i].phrase.length) {
 				n = i;
 				break;
 			}
