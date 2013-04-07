@@ -65,7 +65,7 @@
 
 	/* Parses input from "terminal" */
 	function evaluate () {
-		if ($('#sc-text').val() == "//") return;
+		if ($('#sc-text').val().substring(0, 2) == "//") return;
 		var tokenized = $('#sc-text').val().split('/');
 		if (tokenized[0].toLowerCase() === "#sanitize") {
 			//escaping: courtesy of http://stackoverflow.com/questions/3446170/
