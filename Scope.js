@@ -48,15 +48,15 @@
 	/* Check if editor has loaded after libraries have */
 	function editor () {
 		log('doc');
-		if (w.CKEDITOR) {
+		if (w.RTE && RTE.getInstance && RTE.getInstance()) {
+			if (RTE.getInstance().mode === 'source') setup();
+			else if(RTE.getInstance().mode === 'wysiwyg') hide();
+			else log('Cannot detect editor');
+		} else if (w.CKEDITOR) {
 			CKEDITOR.on('instanceReady', function () {
 				RTE.getInstance().on('wysiwygModeReady', hide);
 				RTE.getInstance().on('sourceModeReady', setup);
 			});
-		} else if (w.RTE && RTE.getInstance && RTE.getInstance()) {
-			if (RTE.getInstance().mode === 'source') setup();
-			else if(RTE.getInstance().mode === 'wysiwyg') hide();
-			else log('Cannot detect editor');
 		} else if (w.WikiaEditor) {
 			if (WikiaEditor.getInstance && WikiaEditor.getInstance()) {
 				if (WikiaEditor.getInstance().mode === 'source') setup();
