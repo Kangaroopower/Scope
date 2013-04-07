@@ -23,15 +23,15 @@
 	function editor () {
 		log('doc');
 		if (mw.config.get('wgAction') !== 'edit'  && [1200,1201].indexOf(mw.config.get('wgNamespaceNumber')) !== -1 ) return;
-		if (window.CKEDITOR) {
+		if (window.RTE && RTE.getInstance && RTE.getInstance()) {
+			if (RTE.getInstance().mode === 'source') setup();
+			else if(RTE.getInstance().mode === 'wysiwyg') $('#sc-terminal').remove();
+			else log('Cannot detect editor');
+		} else if (window.CKEDITOR) {
 			CKEDITOR.on('instanceReady', function () {
 				RTE.getInstance().on('wysiwygModeReady', $('#sc-terminal').remove());
 				RTE.getInstance().on('sourceModeReady', setup);
 			});
-		} else if (window.RTE && RTE.getInstance && RTE.getInstance()) {
-			if (RTE.getInstance().mode === 'source') setup();
-			else if(RTE.getInstance().mode === 'wysiwyg') $('#sc-terminal').remove();
-			else log('Cannot detect editor');
 		} else if (window.WikiaEditor) {
 			if (WikiaEditor.getInstance && WikiaEditor.getInstance()) {
 				if (WikiaEditor.getInstance().mode === 'source') setup();
