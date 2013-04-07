@@ -11,7 +11,7 @@
 (function (w) {
 	//Base for functions
 	w.Scope = {
-		version: "3.64 Edge",
+		version: "3.65 Edge",
 		lib: [
 				{ name: 'Dialog', url: 'https://raw.github.com/Kangaroopower/Scope/master/Dialog.js' },
 				{ name: 'Bootstrap', url: 'http://raw.github.com/Kangaroopower/Scope/master/lib/bootstrap.min.js' },
@@ -48,15 +48,15 @@
 	/* Check if editor has loaded after libraries have */
 	function editor () {
 		log('doc');
-		if (w.RTE && RTE.getInstance && RTE.getInstance()) {
-			if (RTE.getInstance().mode === 'source') setup();
-			else if(RTE.getInstance().mode === 'wysiwyg') hide();
-			else log('Cannot detect editor');
-		} else if (w.CKEDITOR) {
+		if (w.CKEDITOR) {
 			CKEDITOR.on('instanceReady', function () {
 				RTE.getInstance().on('wysiwygModeReady', hide);
 				RTE.getInstance().on('sourceModeReady', setup);
 			});
+		} else if (w.RTE && RTE.getInstance && RTE.getInstance()) {
+			if (RTE.getInstance().mode === 'source') setup();
+			else if(RTE.getInstance().mode === 'wysiwyg') hide();
+			else log('Cannot detect editor');
 		} else if (w.WikiaEditor) {
 			if (WikiaEditor.getInstance && WikiaEditor.getInstance()) {
 				if (WikiaEditor.getInstance().mode === 'source') setup();
@@ -70,7 +70,7 @@
 	function setup () {
 		log('Editor Loaded');
 		sctxt = WikiaEditor.getInstance().getEditbox();
-		if (!$('#sc-start').length) $('span.cke_toolbar_expand').before('<img id="sc-start" src="//raw.github.com/Kangaroopower/Scope/master/pics/Replace.png"/>');
+		if (!$('#sc-start').length) $('span.cke_toolbar_expand').before('<img title="Scope" id="sc-start" src="//raw.github.com/Kangaroopower/Scope/master/pics/Replace.png"/>');
 		$('#sc-start').click(show);
 		log('Loaded: Scope', Scope.version);
 	}

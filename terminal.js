@@ -10,7 +10,7 @@
 (function () {
 
 	//Meta Vars
-	var sctxt, undotext = '', version = "3.1 Terminal";
+	var sctxt, undotext = '', version = "3.11 Terminal";
 
 	/* Logs stuff */
 	var log = (window.console && function () {
@@ -23,15 +23,15 @@
 	function editor () {
 		log('doc');
 		if (mw.config.get('wgAction') !== 'edit'  && [1200,1201].indexOf(mw.config.get('wgNamespaceNumber')) !== -1 ) return;
-		if (window.RTE && RTE.getInstance && RTE.getInstance()) {
-			if (RTE.getInstance().mode === 'source') setup();
-			else if(RTE.getInstance().mode === 'wysiwyg') $('#sc-terminal').remove();
-			else log('Cannot detect editor');
-		} else if (window.CKEDITOR) {
+		if (window.CKEDITOR) {
 			CKEDITOR.on('instanceReady', function () {
 				RTE.getInstance().on('wysiwygModeReady', $('#sc-terminal').remove());
 				RTE.getInstance().on('sourceModeReady', setup);
 			});
+		} else if (window.RTE && RTE.getInstance && RTE.getInstance()) {
+			if (RTE.getInstance().mode === 'source') setup();
+			else if(RTE.getInstance().mode === 'wysiwyg') $('#sc-terminal').remove();
+			else log('Cannot detect editor');
 		} else if (window.WikiaEditor) {
 			if (WikiaEditor.getInstance && WikiaEditor.getInstance()) {
 				if (WikiaEditor.getInstance().mode === 'source') setup();
@@ -45,7 +45,7 @@
 	function setup () {
 		log('Editor Loaded');
 		sctxt = WikiaEditor.getInstance().getEditbox();
-		if (!$('#sc-terminal-start').length) $('span.cke_toolbar_expand').before('<img style="cursor:pointer;" id="sc-terminal-start" src="//raw.github.com/Kangaroopower/Scope/master/pics/Replace.png"/>');
+		if (!$('#sc-terminal-start').length) $('span.cke_toolbar_expand').before('<img title="Scope Terminal" style="cursor:pointer;" id="sc-terminal-start" src="//raw.github.com/Kangaroopower/Scope/master/pics/Replace.png"/>');
 		$('#sc-terminal-start').click(show);
 		log('Loaded version:', version);
 	}
@@ -85,7 +85,7 @@
 		var count = sctxt.val().match(regex).length;
 		sctxt.val(sctxt.val().replace(regex, rtxt));
 		$("#sc-tcount").html('Done! '+ count + ' replacement(s) made!');
-		if (!$('#sc-tundo').length) $('#sc-terminal').append('&nbsp;<img id="sc-tundo" style="height:20px;cursor:pointer;vertical-align:middle" src="//raw.github.com/Kangaroopower/Scope/master/pics/undo.png">');
+		if (!$('#sc-tundo').length) $('#sc-terminal').append('<img id="sc-tundo" style="height:20px;cursor:pointer;vertical-align:middle" src="//raw.github.com/Kangaroopower/Scope/master/pics/undo.png">');
 		$('#sc-tundo').click(function () {
 			sctxt.val(undotext);
 			$("#sc-tcount").html('Undone!');
