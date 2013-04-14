@@ -11,7 +11,7 @@
 (function (w) {
 	//Base for functions
 	w.Scope = {
-		version: "3.65 Edge",
+		version: "3.66 Edge",
 		lib: [
 				{ name: 'Dialog', url: 'https://raw.github.com/Kangaroopower/Scope/master/Dialog.js' },
 				{ name: 'Bootstrap', url: 'http://raw.github.com/Kangaroopower/Scope/master/lib/bootstrap.min.js' },
@@ -148,11 +148,11 @@
 			synch();
 			$("#sc-count").html('Done!').attr('title', count + ' replacement'+ plural +' made!');
 		} else {
-			var sel = sctxt.getSelection();
+			var sel = sctxt.getSelection(), reg = evaluate();
 			if (sel.text === "") sctxt.val(s.replace(evaluate(), rtxt));
-			else if (scfind.val().test(s.substring(sel.start, sel.end)))sctxt.val(s.substring(0, sel.start) + rtxt + s.substring(sel.end));
+			else if (reg.test(s.substring(sel.start, sel.end))) sctxt.val(s.substring(0, sel.start) + rtxt + s.substring(sel.end));
 			next();
-			$("#sc-count").html('Done!').attr('title', 'One replacement made!');
+			synch();
 		}
 		if (!$('#sc-undo').length) $('#sc-replace-text').after('<img id="sc-undo"src="//raw.github.com/Kangaroopower/Scope/master/pics/undo.png"/>');
 		$('#sc-undo').click(function () {
