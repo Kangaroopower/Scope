@@ -70,19 +70,38 @@
 
     /* Parses input from "terminal" */
     function evaluate () {
-        if ($('#sc-text').val().substring(0, 2) === "//") return;
-        var secondsplit, tokenized = $('#sc-text').val().split('/');
-        if (tokenized[0].toLowerCase() === "#sanitize") {
+        $("#sc-text").css({"background-color": "white"});
+        $("#sc-tcount").html("");
+
+        var secondsplit, t = $('#sc-text').val().split('/');
+        secondsplit = (t[0].toLowerCase() === '#sanitize') ? t[3].split(' ') : t[2].split(' ');
+        
+        if (!/^\/.+\/(i|g|m)*$/.test("/" + t[1] + "/" + $.trim(secondsplit[0]))) {
+            $("#sc-text").css({"background-color": "#f2dede"});
+            $("#sc-tcount").html("Input Error");
+            return false;
+        }
+
+        if ($("#sc-text").val().toLowerCase() === "#undo") {
+            undo();
+            undotext = sctxt.val();
+        }
+
+        if (t[0].toLowerCase() === '#sanitize') {
             //escaping: courtesy of http://stackoverflow.com/questions/3446170/
-            var escaped = tokenized[1].replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
-            secondsplit = tokenized[3].split(' ');
-            //you skip an array piece for the replace because you want a "with" to be in between
+            var escaped = t[1].replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
+            //you skip an array piece for the replace because you want a 'with' to be in between
             //eg: /a/ig with b
             replace(new RegExp(escaped, $.trim(secondsplit[0])), secondsplit[2]); 
         } else {
-            secondsplit = tokenized[2].split(' ');
-            replace(new RegExp(tokenized[1], $.trim(secondsplit[0])), secondsplit[2]);
+            replace(new RegExp(t[1], $.trim(secondsplit[0])), secondsplit[2]);
         }    
+    }
+
+    /* Does undos */
+    function undo () {
+        sctxt.val(undotext);
+        $("#sc-tcount").html('Undone!');
     }
  
     /* Does the replace */
@@ -93,8 +112,7 @@
         $("#sc-tcount").html('Done! '+ count + ' replacement(s) made!');
         if (!$('#sc-tundo').length) $('#sc-terminal').append('<img id="sc-tundo" style="height:20px;cursor:pointer;vertical-align:middle" src="//raw.github.com/Kangaroopower/Scope/master/pics/undo.png">');
         $('#sc-tundo').click(function () {
-            sctxt.val(undotext);
-            $("#sc-tcount").html('Undone!');
+            undo();
             $('#sc-tundo').remove();
         });
     }
