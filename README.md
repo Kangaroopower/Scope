@@ -13,3 +13,4 @@ To use the stable versions of the script, visit [the official code page](http://
 ##Credits
 * **Main Developer**- [Kangaroopower](http://github.com/kangaroopower)
 * **Main Shadow Developer**- [Pecoes](http://github.com/pecoes)
+* **Creator of load process**- [TyA](https://github.com/ty-a/)
