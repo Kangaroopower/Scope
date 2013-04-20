@@ -162,6 +162,8 @@
 			$('#sc-undo').hide();
 		});
 	}
+
+	/*** START SHADOW ***/
  
 	var T_TEXT = 1, T_ENTITY = 2;
 	
