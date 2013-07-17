@@ -4,6 +4,8 @@
  * Scope 3.0 Terminal
  * 
  * Creates a Find and Replace Terminal
+ * 
+ * CURRENTLY NOT WORKING
  *
  * @author Kangaroopower
  *
@@ -76,33 +78,55 @@
         $("#sc-text").css({"background-color": "white"});
         $("#sc-tcount").html("");
 
-        var ts, tr = $('#sc-text').val().split('/'), v = $('#sc-text').val();
-        ts = (tr[0].toLowerCase() === '#sanitize') ? tr[3].split(' ') : tr[2].split(' ');
-        
-        if (!/^\/.+\/(i|g|m)*$/.test("/" + tr[1] + "/" + $.trim(ts[0])) || !/with/ig.test(v)) {
+        var split1 = [], split2, v = $('#sc-text').val();
+
+        var index = v.indexOf("/"), revs = 0;
+
+        while (index !== -1 && revs <= 2) {
+            if (v.charAt(index - 1) !== "\\") {
+                if (revs === 0) {
+                    split1.push(v.substring(0, index));
+                    index = index + 1;
+                }
+                if (revs === 1) {
+                    split1.push(v.substring(index, v.indexOf("/", index)));
+                    index = v.indexOf("/", index) + 1;
+                }
+                if (revs === 2) {
+                    split1.push(v.substring(index));
+                    index = -1
+                }
+                revs++;
+            }
+        }
+
+        split2 = (split1[0].toLowerCase() === '#sanitize') ? split1[3].split(' ') : split1[2].split(' ');
+
+        if (!/^\/.+\/(i|g|m)*$/.test("/" + split1[1] + "/" + $.trim(split2[0])) || !/with/ig.test(v)) {
             $("#sc-text").css({"background-color": "#f2dede"});
             $("#sc-tcount").html("Input Error");
             return false;
         }
 
-        if (!((tr[1].match(/with/).length + 1) === v.match(/with/).length)) {
+        /*if (!((split1[1].match(/with/).length + split2[2].match(/with/).length + 1) === v.match(/with/).length)) {
             $("#sc-text").css({"background-color": "#f2dede"});
             $("#sc-tcount").html("Input Error");
             return false;
-        }
+        }*/
         if ($("#sc-text").val().toLowerCase() === "#undo") {
             undo();
             undotext = sctxt.val();
+            return;
         }
 
-        if (tr[0].toLowerCase() === '#sanitize') {
+        if ($.trim(split1[0].toLowerCase()) === '#sanitize') {
             //escaping: courtesy of http://stackoverflow.com/questions/3446170/
-            var escaped = tr[1].replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
+            var escaped = split1[1].replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
             //you skip an array piece for the replace because you want a 'with' to be in between
             //eg: /a/ig with b
-            replace(new RegExp(escaped, $.trim(ts[0])), ts[2]); 
+            replace(new RegExp(escaped, $.trim(split2[0])), split2[2]); 
         } else {
-            replace(new RegExp(tr[1], $.trim(ts[0])), ts[2]);
+            replace(new RegExp(split1[1], $.trim(split2[0])), split2[2]);
         }    
     }
 
