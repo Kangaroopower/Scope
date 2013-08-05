@@ -115,7 +115,7 @@
 		} else hide();
 	}
  
-	/* hides gui */
+	/* Hides gui */
 	function hide () {
 		var height = sctxt.css('height');
 		$('#sc-shadow, #sc-ui').remove();
