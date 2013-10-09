@@ -11,7 +11,7 @@
 (function (w) {
 	//Base for functions
 	w.Scope = {
-		version: "3.66 Edge",
+		version: "3.67 Edge",
 		lib: [
 				{ name: 'Dialog', url: 'https://raw.github.com/Kangaroopower/Scope/master/Dialog.js' },
 				{ name: 'Bootstrap', url: 'http://raw.github.com/Kangaroopower/Scope/master/lib/bootstrap.min.js' },
@@ -127,8 +127,9 @@
 		var mod = rall ? 'g' : '', ww = false;
 		if (!$('#sc-cs').hasClass('scactive')) mod += 'i';
 		if ($('#sc-ww').hasClass('scactive')) ww = true;
-		if ($('#sc-reg').hasClass('scactive')) return shadow ? {'mod': mod, 'reg': scfind.val()} : new RegExp(scfind.val(), mod);
-		else {
+		if ($('#sc-reg').hasClass('scactive')) {
+			return shadow ? {'mod': mod, 'reg': scfind.val()} : new RegExp(scfind.val(), mod);
+		} else {
 			//escaping: courtesy of http://stackoverflow.com/questions/3446170/
 			var regex = scfind.val().replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
 			if (ww) regex = "\\b" + regex + "\\b";
@@ -223,8 +224,8 @@
 		hmatches = [];
 
 		if (regex instanceof RegExp) {
-			while (m = regex.exec(s)) matches.push({'index':m.index, 'phrase':m[0]});
-			while (n = hregex.exec(hs)) hmatches.push({'index': n.index, 'phrase':n[0]});
+			while ((m = regex.exec(s))) matches.push({'index':m.index, 'phrase':m[0]});
+			while ((n = hregex.exec(hs))) hmatches.push({'index': n.index, 'phrase':n[0]});
 
 			var countxt = matches.length === 1 ? " match" : " matches";
 			$('#sc-count').html(matches.length + countxt);
