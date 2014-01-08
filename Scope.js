@@ -8,10 +8,10 @@
  * @Shadow author Pecoes
  *
  */
-(function (w) {
+(function (w, $) {
 	//Base for functions
-	w.Scope = {
-		version: "3.67 Edge",
+	var Scope = {
+		version: "3.69 Edge",
 		lib: [
 				{ name: 'Dialog', url: 'https://raw.github.com/Kangaroopower/Scope/master/Dialog.js' },
 				{ name: 'Bootstrap', url: 'http://raw.github.com/Kangaroopower/Scope/master/lib/bootstrap.min.js' },
@@ -20,7 +20,7 @@
 	};
  
 	//Meta Vars
-	var scfind, sctxt, matches = [], hmatches = [], Scope = w.Scope, nTrav = 0, sch = -1;
+	var scfind, sctxt, matches = [], hmatches = [], nTrav = 0, sch = -1;
  
 	/* Logs stuff */
 	var log = (w.console && function () {
@@ -31,18 +31,15 @@
  
 	/* Load libraries first */
 	function load () {
-		if (!/\boasis-one-column\b/.test(document.body.className)) return false;
-		var loaded = 0,
-			onload = function (name) {
-				return function () {
-					log(name + ' loaded');
-					if (++loaded === Scope.lib.length) $(editor);
-				};
-			};
+		var lib = [];
+
 		for (var i = 0; i < Scope.lib.length; i++) {
-			console.log('loading ', Scope.lib[i].name, '...');
-			$.getScript(Scope.lib[i].url, onload(Scope.lib[i].name));
+			log('loading ', Scope.lib[i].name, '...');
+			lib.push(Scope.lib[i].url);
 		}
+
+		mw.loader.implement('Scope.lib', lib, {}, {});
+		mw.loader.using(['Scope.lib'], editor);
 	}
  
 	/* Check if editor has loaded after libraries have */
@@ -284,5 +281,8 @@
 	}
  
 	//Load on edit
-	$(load);
-}(window));
+	if (({edit:1, submit:1})[mw.config.get('wgAction')] === 1) $(load);
+ 
+	//Expose to the world
+	w.Scope = Scope;
+}(window, jQuery));
