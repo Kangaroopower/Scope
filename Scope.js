@@ -11,10 +11,10 @@
 (function (w, $) {
 	//Base for functions
 	var Scope = {
-		version: "3.69 Edge",
+		version: "3.69.1 Edge",
 		lib: [
-				{ name: 'Dialog', url: 'https://raw.github.com/Kangaroopower/Scope/master/Dialog.js' },
-				{ name: 'Bootstrap', url: 'http://raw.github.com/Kangaroopower/Scope/master/lib/bootstrap.min.js' },
+				{ name: 'Dialog', url: 'https://rawgithub.com/Kangaroopower/Scope/master/Dialog.js' },
+				{ name: 'Bootstrap', url: 'http://rawgithub.com/Kangaroopower/Scope/master/lib/bootstrap.min.js' },
 				{ name: 'Rangy', url: 'http://dev.wikia.com/wiki/Textinputs_jquery.js?action=raw&ctype=text/javascript' }
 			]
 	};
