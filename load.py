@@ -159,7 +159,7 @@ page = page.read()
 
 # page.replace("What to find", "What to replace it with")
 page = page.replace("Edge", "Alpine")
-page = page.replace("raw.github.com/Kangaroopower/Scope/master/Dialog.js", "kangaroopower.wikia.com/wiki/Mediawiki:Dialog.js?action=raw&ctype=text/javascript&maxage=0&smaxage=0")
+page = page.replace("rawgithub.com/Kangaroopower/Scope/master/Dialog.js", "kangaroopower.wikia.com/wiki/Mediawiki:Dialog.js?action=raw&ctype=text/javascript&maxage=0&smaxage=0")
 
 summary = raw_input("Edit summary [Updating script]: ")
 if summary == '':
